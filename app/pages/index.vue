@@ -9,18 +9,27 @@
       id="desktop-icons"
       class="absolute left-8 top-6 grid grid-flow-col-dense gap-8 grid-rows-8 grid-cols-2"
     >
-      <button @click="switchQaOpen" class="flex flex-col gap-1 items-center justify-center">
+      <button
+        @click="switchQaOpen"
+        class="flex flex-col gap-1 items-center justify-center"
+      >
         <SvgoMessage :filled="true" class="!size-10" />
         <span>問答</span>
       </button>
 
-      <button @click="switchPaintOpen" class="flex flex-col gap-1 items-center justify-center">
+      <button
+        @click="switchPaintOpen"
+        class="flex flex-col gap-1 items-center justify-center"
+      >
         <SvgoFileKrita :filled="true" class="!size-10" />
         <span>電繪組.kra</span>
       </button>
 
-      <button @click="switchGameOpen" class="flex flex-col gap-1 items-center justify-center">
-        <PhGameController :size="40" weight="fill" class="text-black-50" />
+      <button
+        @click="switchGameOpen"
+        class="flex flex-col gap-1 items-center justify-center"
+      >
+        <SvgoFileUnity :filled="true" class="!size-10" />
         <span>遊戲組.cs</span>
       </button>
     </div>
@@ -28,8 +37,6 @@
 </template>
 
 <script setup lang="ts">
-import { PhGameController } from "@phosphor-icons/vue";
-
 const qaOpen = ref(false);
 const paintOpen = ref(false);
 const gameOpen = ref(false);
