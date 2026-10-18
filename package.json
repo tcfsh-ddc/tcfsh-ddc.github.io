@@ -9,12 +9,16 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "format": "oxfmt .",
-    "format:fix": "oxfmt --write ."
+    "format:fix": "oxfmt --write .",
+    "nuxt": "npx nuxt"
   },
   "dependencies": {
+    "@nuxt/fonts": "1.0.1",
     "@tailwindcss/vite": "^4.3.3",
+    "add": "^2.0.9",
     "nuxt": "^4.6.2",
     "nuxt-svgo": "5.3.0",
+    "pnpm": "^12.14.0",
     "shadcn-nuxt": "2.8.2",
     "tailwindcss": "^4.3.3",
     "vue": "^3.5.43",
