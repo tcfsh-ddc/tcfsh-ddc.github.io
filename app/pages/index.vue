@@ -14,18 +14,27 @@
         <span>系統狀態</span>
       </button>
     </nav> -->
-    <WindowWelcome />
-    <WindowQA v-model:open="qaOpen" />
+    <WindowHomeWelcome />
+    <WindowHomeQA v-model:open="qaOpen" />
+    <WindowHomePaint v-bind:open="paintOpen" />
 
     <div
       id="desktop-icons"
-      class="absolute left-8 top-6 grid gap-4 grid-cols-2"
+      class="absolute left-8 top-6 grid grid-flow-col-dense gap-8 grid-rows-8 grid-cols-2"
     >
       <button
         @click="openQaOpen"
-        class="flex flex-col gap-2 items-center justify-center"
+        class="flex flex-col gap-1 items-center justify-center"
       >
         <SvgoMessage :filled="true" class="!size-10" />
+        <span>問答</span>
+      </button>
+
+      <button
+        @click="openPaintOpen"
+        class="flex flex-col gap-1 items-center justify-center"
+      >
+        <SvgoPalette :filled="true" class="!size-10" />
         <span>問答</span>
       </button>
     </div>
@@ -34,7 +43,12 @@
 
 <script setup lang="ts">
 const qaOpen = ref(false);
+const paintOpen = ref(true);
+
 function openQaOpen() {
   qaOpen.value = true;
+}
+function openPaintOpen() {
+  paintOpen.value = true;
 }
 </script>
