@@ -8,6 +8,7 @@
       @pointermove="onPointerMove"
       @pointerup="endInteraction"
       @pointercancel="endInteraction"
+      @dblclick="onDoubleClick"
     >
       <div
         v-bind="$attrs"
@@ -17,6 +18,7 @@
           'select-none': interaction !== null,
         }"
       >
+        <!-- Titlebar -->
         <div
           v-if="$slots.titlebar"
           class="relative flex shrink-0 px-4 py-1 items-center"
@@ -219,4 +221,17 @@ defineExpose({
   restore,
   toggleMaximized,
 });
+
+// 如果雙擊視窗，則最大化視窗
+function onDoubleClick() {
+  console.log("double click");
+  // 如果視窗已經最大化，則恢復視窗大小
+  if (isMaximized.value) {
+    restore();
+    return;
+  } else {
+    maximize();
+    return;
+  }
+}
 </script>
