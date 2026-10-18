@@ -3,55 +3,76 @@
     v-show="isOpen"
     ref="windowElement"
     v-bind="$attrs"
-    class="os-window"
+    class="absolute p-1 left-0 top-0 box-border flex flex-col overflow-hidden rounded-2xl border border-none bg-black-800 text-inherit shadow will-change-auto"
     :class="{
-      'os-window--maximized': isMaximized,
-      'os-window--interacting': interaction !== null,
+      'rounded-none': isMaximized,
+      'select-none': interaction !== null,
     }"
     :style="windowStyle"
     @pointermove="onPointerMove"
     @pointerup="endInteraction"
     @pointercancel="endInteraction"
   >
-    <div v-if="$slots.titlebar" class="os-window__titlebar" @pointerdown="onPointerDown">
+    <div
+      v-if="$slots.titlebar"
+      class="relative shrink-0 [touch-action:none] flex px-4 py-1"
+      @pointerdown="onPointerDown"
+    >
       <slot name="titlebar" />
     </div>
 
-    <div class="os-window__content" @pointerdown="onPointerDown">
+    <div
+      class="relative flex min-h-0 min-w-0 flex-1 flex-col bg-black-900 rounded-xl overflow-hidden w-full p-2"
+      @pointerdown="onPointerDown"
+    >
       <slot />
     </div>
 
     <button
-      class="os-window__maximize-button"
-      :class="{ 'os-window__maximize-button--with-close': showCloseButton }"
+      class="group absolute right-1 top-1 z-2 grid size-6 cursor-pointer place-items-center rounded-full bg-blue text-inherit transition-colors hover:bg-blue-dark"
+      :class="{ 'right-8': showCloseButton }"
       type="button"
       :aria-label="isMaximized ? '還原視窗' : '最大化視窗'"
       :title="isMaximized ? '還原視窗' : '最大化視窗'"
       @pointerdown.stop="focusWindow"
       @click="toggleMaximized"
     >
-      <PhCornersIn v-if="isMaximized" :size="18" aria-hidden="true" />
-      <PhCornersOut v-else :size="18" aria-hidden="true" />
+      <PhCornersIn
+        v-if="isMaximized"
+        :size="14"
+        aria-hidden="true"
+        class="group-hover:opacity-100 text-black-50 opacity-0"
+      />
+      <PhCornersOut
+        v-else
+        :size="14"
+        aria-hidden="true"
+        class="group-hover:opacity-100 text-black-50 opacity-0"
+      />
     </button>
 
     <button
       v-if="showCloseButton"
-      class="os-window__close-button"
+      class="group absolute right-1 top-1 z-2 grid size-6 cursor-pointer place-items-center rounded-full bg-purple text-inherit transition-colors hover:bg-purple-dark"
       type="button"
       aria-label="關閉視窗"
       title="關閉視窗"
       @pointerdown.stop="focusWindow"
       @click="isOpen = false"
     >
-      <PhX :size="18" aria-hidden="true" />
+      <PhX
+        :size="14"
+        aria-hidden="true"
+        class="group-hover:opacity-100 text-black-50 opacity-0"
+      />
     </button>
 
     <template v-if="resizable && !isMaximized">
       <span
         v-for="handle in resizeHandles"
         :key="handle"
-        class="os-window__resize-handle"
-        :class="`os-window__resize-handle--${handle}`"
+        class="absolute z-[3] touch-none"
+        :class="resizeHandleClasses[handle]"
         aria-hidden="true"
         @pointerdown.stop="onResizePointerDown($event, handle)"
       />
@@ -139,6 +160,16 @@ const {
 
 const resizable = computed(() => props.resizable);
 const showCloseButton = computed(() => props.showCloseButton);
+const resizeHandleClasses: Record<ResizeHandle, string> = {
+  n: "left-2 top-0 h-2 w-[calc(100%-1rem)] cursor-ns-resize",
+  ne: "right-0 top-0 size-3 cursor-nesw-resize",
+  e: "right-0 top-2 h-[calc(100%-1rem)] w-2 cursor-ew-resize",
+  se: "bottom-0 right-0 size-3 cursor-nwse-resize",
+  s: "bottom-0 left-2 h-2 w-[calc(100%-1rem)] cursor-ns-resize",
+  sw: "bottom-0 left-0 size-3 cursor-nesw-resize",
+  w: "left-0 top-2 h-[calc(100%-1rem)] w-2 cursor-ew-resize",
+  nw: "left-0 top-0 size-3 cursor-nwse-resize",
+};
 
 function onPointerDown(event: PointerEvent) {
   if (windowElement.value) startDrag(event, windowElement.value);
@@ -181,164 +212,3 @@ defineExpose({
   toggleMaximized,
 });
 </script>
-
-<style scoped>
-.os-window {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  overflow: hidden;
-  border: var(--window-border, 1px solid rgb(255 255 255 / 30%));
-  border-radius: var(--window-radius, 12px);
-  background: var(--window-background, rgb(20 20 28 / 96%));
-  box-shadow: var(--window-shadow, 0 18px 50px rgb(0 0 0 / 35%));
-  color: var(--window-color, inherit);
-  will-change: width, height, transform;
-}
-
-.os-window__titlebar {
-  position: relative;
-  flex: 0 0 auto;
-  touch-action: none;
-}
-
-.os-window__content {
-  position: relative;
-  flex: 1 1 auto;
-  min-width: 0;
-  min-height: 0;
-}
-
-.os-window--interacting {
-  user-select: none;
-}
-
-.os-window--maximized {
-  border-radius: 0;
-}
-
-.os-window__maximize-button {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 2;
-  display: grid;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  place-items: center;
-  border: var(--window-control-border, 1px solid rgb(255 255 255 / 35%));
-  border-radius: var(--window-control-radius, 7px);
-  background: var(--window-control-background, rgb(0 0 0 / 25%));
-  color: var(--window-control-color, currentColor);
-  cursor: pointer;
-}
-
-.os-window__maximize-button--with-close {
-  right: 52px;
-}
-
-.os-window__close-button {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 2;
-  display: grid;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  place-items: center;
-  border: var(--window-control-border, 1px solid rgb(255 255 255 / 35%));
-  border-radius: var(--window-control-radius, 7px);
-  background: var(--window-close-background, var(--window-control-background, rgb(0 0 0 / 25%)));
-  color: var(--window-control-color, currentColor);
-  cursor: pointer;
-}
-
-.os-window__close-button:hover {
-  background: var(--window-close-hover-background, #d8335b);
-  color: white;
-}
-
-.os-window__close-button:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
-}
-
-.os-window__maximize-button:hover {
-  background: var(--window-control-hover-background, rgb(255 255 255 / 16%));
-}
-
-.os-window__maximize-button:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
-}
-
-.os-window__resize-handle {
-  position: absolute;
-  z-index: 3;
-  touch-action: none;
-}
-
-.os-window__resize-handle--n,
-.os-window__resize-handle--s {
-  left: 8px;
-  width: calc(100% - 16px);
-  height: 8px;
-  cursor: ns-resize;
-}
-
-.os-window__resize-handle--n {
-  top: 0;
-}
-.os-window__resize-handle--s {
-  bottom: 0;
-}
-
-.os-window__resize-handle--e,
-.os-window__resize-handle--w {
-  top: 8px;
-  width: 8px;
-  height: calc(100% - 16px);
-  cursor: ew-resize;
-}
-
-.os-window__resize-handle--e {
-  right: 0;
-}
-.os-window__resize-handle--w {
-  left: 0;
-}
-
-.os-window__resize-handle--ne,
-.os-window__resize-handle--se,
-.os-window__resize-handle--sw,
-.os-window__resize-handle--nw {
-  width: 12px;
-  height: 12px;
-}
-
-.os-window__resize-handle--ne {
-  top: 0;
-  right: 0;
-  cursor: nesw-resize;
-}
-.os-window__resize-handle--se {
-  right: 0;
-  bottom: 0;
-  cursor: nwse-resize;
-}
-.os-window__resize-handle--sw {
-  bottom: 0;
-  left: 0;
-  cursor: nesw-resize;
-}
-.os-window__resize-handle--nw {
-  top: 0;
-  left: 0;
-  cursor: nwse-resize;
-}
-</style>
