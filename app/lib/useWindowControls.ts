@@ -228,6 +228,50 @@ export function useWindowControls(options: Options) {
     activeTween?.kill();
   }
 
+  async function animateOpen(element: Element, done: () => void) {
+    const gsap = gsapInstance ?? (await import("gsap")).gsap;
+    gsapInstance = gsap;
+    const surface = element.querySelector<HTMLElement>("[data-window-surface]");
+    if (!surface) {
+      done();
+      return;
+    }
+    gsap.killTweensOf(surface);
+    gsap.fromTo(
+      surface,
+      { autoAlpha: 0, y: 20 },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.3,
+        ease: "power3.out",
+        clearProps: "opacity,visibility,transform",
+        onComplete: done,
+      },
+    );
+  }
+
+  async function animateClose(element: Element, done: () => void) {
+    const gsap = gsapInstance ?? (await import("gsap")).gsap;
+    gsapInstance = gsap;
+    const surface = element.querySelector<HTMLElement>("[data-window-surface]");
+    if (!surface) {
+      done();
+      return;
+    }
+    gsap.killTweensOf(surface);
+    gsap.to(surface, {
+      autoAlpha: 0,
+      y: 20,
+      duration: 0.22,
+      ease: "power2.in",
+      onComplete: () => {
+        gsap.set(surface, { clearProps: "opacity,visibility,transform" });
+        done();
+      },
+    });
+  }
+
   return {
     rect: readonly(rect),
     isMaximized: readonly(isMaximized),
@@ -245,5 +289,7 @@ export function useWindowControls(options: Options) {
     updateBounds,
     initialize,
     dispose,
+    animateOpen,
+    animateClose,
   };
 }
