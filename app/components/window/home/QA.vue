@@ -1,6 +1,6 @@
 <template>
   <Window
-    v-model:open="notesOpen"
+    v-model:open="open"
     :show-close-button="true"
     class="demo-window demo-window--notes"
     :initial-x="610"
@@ -68,7 +68,7 @@ import {
 } from "reka-ui";
 import { PhPlus } from "@phosphor-icons/vue";
 
-const notesOpen = defineModel<boolean>("open", {
+const open = defineModel<boolean>("open", {
   default: false,
 });
 
