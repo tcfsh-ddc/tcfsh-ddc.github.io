@@ -6,7 +6,7 @@
     :initial-x="610"
     :initial-y="74"
     :initial-width="390"
-    :initial-height="280"
+    :initial-height="500"
     :min-width="260"
     :min-height="190"
   >
