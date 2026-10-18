@@ -5,9 +5,11 @@
     >
       <!-- 畫面內容 -->
       <div
-        class="flex-1 flex flex-col bg-blue-dark rounded-frame-1 rounded-b-none"
+        class="flex-1 min-h-0 flex flex-col bg-blue-dark rounded-frame-1 rounded-b-none overflow-hidden"
       >
-        <slot />
+        <WindowsContainer>
+          <slot />
+        </WindowsContainer>
       </div>
 
       <!-- 工作列 -->
