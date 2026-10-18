@@ -1,83 +1,89 @@
 <template>
-  <section
-    v-show="isOpen"
-    ref="windowElement"
-    v-bind="$attrs"
-    class="absolute p-1 left-0 top-0 box-border flex flex-col overflow-hidden rounded-2xl border border-none bg-black-800 text-inherit shadow will-change-auto"
-    :class="{
-      'rounded-none': isMaximized,
-      'select-none': interaction !== null,
-    }"
-    :style="windowStyle"
-    @pointermove="onPointerMove"
-    @pointerup="endInteraction"
-    @pointercancel="endInteraction"
-  >
-    <div
-      v-if="$slots.titlebar"
-      class="relative shrink-0 [touch-action:none] flex px-4 py-1"
-      @pointerdown="onPointerDown"
+  <Transition :css="false" appear @enter="animateOpen" @leave="animateClose">
+    <section
+      v-if="isOpen"
+      ref="windowElement"
+      class="absolute left-0 top-0"
+      :style="windowStyle"
+      @pointermove="onPointerMove"
+      @pointerup="endInteraction"
+      @pointercancel="endInteraction"
     >
-      <slot name="titlebar" />
-    </div>
+      <div
+        v-bind="$attrs"
+        data-window-surface
+        class="relative flex size-full box-border flex-col overflow-hidden rounded-2xl border-none bg-black-800 p-1 text-inherit shadow will-change-transform"
+        :class="{
+          'select-none': interaction !== null,
+        }"
+      >
+        <div
+          v-if="$slots.titlebar"
+          class="relative flex shrink-0 px-4 py-1 [touch-action:none]"
+          @pointerdown="onPointerDown"
+        >
+          <slot name="titlebar" />
+        </div>
 
-    <div
-      class="relative flex min-h-0 min-w-0 flex-1 flex-col bg-black-900 rounded-xl overflow-hidden w-full p-2"
-      @pointerdown="onPointerDown"
-    >
-      <slot />
-    </div>
+        <div
+          class="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-xl bg-black-900 p-2"
+          @pointerdown="onPointerDown"
+        >
+          <slot />
+        </div>
 
-    <button
-      class="group absolute right-1 top-1 z-2 grid size-6 cursor-pointer place-items-center rounded-full bg-blue text-inherit transition-colors hover:bg-blue-dark"
-      :class="{ 'right-8': showCloseButton }"
-      type="button"
-      :aria-label="isMaximized ? '還原視窗' : '最大化視窗'"
-      :title="isMaximized ? '還原視窗' : '最大化視窗'"
-      @pointerdown.stop="focusWindow"
-      @click="toggleMaximized"
-    >
-      <PhCornersIn
-        v-if="isMaximized"
-        :size="14"
-        aria-hidden="true"
-        class="group-hover:opacity-100 text-black-50 opacity-0"
-      />
-      <PhCornersOut
-        v-else
-        :size="14"
-        aria-hidden="true"
-        class="group-hover:opacity-100 text-black-50 opacity-0"
-      />
-    </button>
+        <button
+          class="group absolute right-1 top-1 z-2 grid size-6 cursor-pointer place-items-center rounded-full bg-blue text-inherit transition-colors hover:bg-blue-dark"
+          :class="{ 'right-8': showCloseButton }"
+          type="button"
+          :aria-label="isMaximized ? '還原視窗' : '最大化視窗'"
+          :title="isMaximized ? '還原視窗' : '最大化視窗'"
+          @pointerdown.stop="focusWindow"
+          @click="toggleMaximized"
+        >
+          <PhCornersIn
+            v-if="isMaximized"
+            :size="14"
+            aria-hidden="true"
+            class="text-black-50 opacity-0 group-hover:opacity-100"
+          />
+          <PhCornersOut
+            v-else
+            :size="14"
+            aria-hidden="true"
+            class="text-black-50 opacity-0 group-hover:opacity-100"
+          />
+        </button>
 
-    <button
-      v-if="showCloseButton"
-      class="group absolute right-1 top-1 z-2 grid size-6 cursor-pointer place-items-center rounded-full bg-purple text-inherit transition-colors hover:bg-purple-dark"
-      type="button"
-      aria-label="關閉視窗"
-      title="關閉視窗"
-      @pointerdown.stop="focusWindow"
-      @click="isOpen = false"
-    >
-      <PhX
-        :size="14"
-        aria-hidden="true"
-        class="group-hover:opacity-100 text-black-50 opacity-0"
-      />
-    </button>
+        <button
+          v-if="showCloseButton"
+          class="group absolute right-1 top-1 z-2 grid size-6 cursor-pointer place-items-center rounded-full bg-purple text-inherit transition-colors hover:bg-purple-dark"
+          type="button"
+          aria-label="關閉視窗"
+          title="關閉視窗"
+          @pointerdown.stop="focusWindow"
+          @click="isOpen = false"
+        >
+          <PhX
+            :size="14"
+            aria-hidden="true"
+            class="text-black-50 opacity-0 group-hover:opacity-100"
+          />
+        </button>
 
-    <template v-if="resizable && !isMaximized">
-      <span
-        v-for="handle in resizeHandles"
-        :key="handle"
-        class="absolute z-[3] touch-none"
-        :class="resizeHandleClasses[handle]"
-        aria-hidden="true"
-        @pointerdown.stop="onResizePointerDown($event, handle)"
-      />
-    </template>
-  </section>
+        <template v-if="resizable && !isMaximized">
+          <span
+            v-for="handle in resizeHandles"
+            :key="handle"
+            class="absolute z-[3] touch-none"
+            :class="resizeHandleClasses[handle]"
+            aria-hidden="true"
+            @pointerdown.stop="onResizePointerDown($event, handle)"
+          />
+        </template>
+      </div>
+    </section>
+  </Transition>
 </template>
 
 <script setup lang="ts">
@@ -156,6 +162,8 @@ const {
   updateBounds,
   initialize,
   dispose,
+  animateOpen,
+  animateClose,
 } = controls;
 
 const resizable = computed(() => props.resizable);
