@@ -1,8 +1,8 @@
 <template>
   <Window
     class=""
-    :initial-x="36"
-    :initial-y="32"
+    :initial-x="250"
+    :initial-y="100"
     :initial-width="520"
     :initial-height="330"
   >
