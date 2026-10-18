@@ -35,6 +35,7 @@
         </div>
 
         <button
+          v-if="maxable"
           class="group absolute right-1 top-1 z-2 grid size-6 cursor-pointer place-items-center rounded-full bg-blue text-inherit transition-colors hover:bg-blue-dark"
           :class="{ 'right-8': showCloseButton }"
           type="button"
@@ -103,8 +104,10 @@ interface Props {
   minWidth?: number;
   minHeight?: number;
   movable?: boolean;
+  maxable?: boolean;
   resizable?: boolean;
   showCloseButton?: boolean;
+  allowDoubleMaxmize?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -115,8 +118,10 @@ const props = withDefaults(defineProps<Props>(), {
   minWidth: 240,
   minHeight: 160,
   movable: true,
+  maxable: true,
   resizable: true,
   showCloseButton: false,
+  allowDoubleMaxmize: true,
 });
 
 const isOpen = defineModel<boolean>("open", { default: true });
@@ -224,6 +229,9 @@ defineExpose({
 
 // 如果雙擊視窗，則最大化視窗
 function onDoubleClick() {
+  if (!props.allowDoubleMaxmize) {
+    return;
+  }
   console.log("double click");
   // 如果視窗已經最大化，則恢復視窗大小
   if (isMaximized.value) {
