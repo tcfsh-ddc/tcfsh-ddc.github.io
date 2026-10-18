@@ -29,3 +29,42 @@
 p {
   @apply text-lg;
 }
+
+/* 全局自訂卷軸 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(128 128 128 / 35%) transparent;
+}
+
+/* Chrome、Edge、Safari 等 WebKit 瀏覽器 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* 卷軸軌道 */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 卷軸滑塊 */
+::-webkit-scrollbar-thumb {
+  background-color: rgb(128 128 128 / 35%);
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+
+/* 滑鼠懸停時加深 */
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(128 128 128 / 60%);
+}
+
+/* 按下卷軸時 */
+::-webkit-scrollbar-thumb:active {
+  background-color: rgb(128 128 128 / 80%);
+}
+
+/* 隱藏卷軸兩端的按鈕 */
+::-webkit-scrollbar-button {
+  display: none;
+}
