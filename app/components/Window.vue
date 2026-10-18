@@ -3,7 +3,7 @@
     <section
       v-if="isOpen"
       ref="windowElement"
-      class="absolute left-0 top-0"
+      class="absolute left-0 top-0 will-change-transform"
       :style="windowStyle"
       @pointermove="onPointerMove"
       @pointerup="endInteraction"
@@ -12,14 +12,14 @@
       <div
         v-bind="$attrs"
         data-window-surface
-        class="relative flex size-full box-border flex-col overflow-hidden rounded-2xl border-none bg-black-800 p-1 text-inherit shadow will-change-transform"
+        class="relative flex size-full box-border flex-col overflow-hidden rounded-2xl border-none bg-black-800 p-1 text-inherit shadow"
         :class="{
           'select-none': interaction !== null,
         }"
       >
         <div
           v-if="$slots.titlebar"
-          class="relative flex shrink-0 px-4 py-1 [touch-action:none]"
+          class="relative flex shrink-0 px-4 py-1 items-center"
           @pointerdown="onPointerDown"
         >
           <slot name="titlebar" />
