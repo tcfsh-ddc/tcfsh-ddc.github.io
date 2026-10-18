@@ -23,7 +23,8 @@
       @pointerdown.stop="focusWindow"
       @click="toggleMaximized"
     >
-      <span class="os-window__maximize-icon" aria-hidden="true" />
+      <PhCornersIn v-if="isMaximized" :size="18" aria-hidden="true" />
+      <PhCornersOut v-else :size="18" aria-hidden="true" />
     </button>
 
     <template v-if="!isMaximized">
@@ -40,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
+import { PhCornersIn, PhCornersOut } from "@phosphor-icons/vue";
 import type { CSSProperties } from "vue";
 import { windowsContainerKey } from "~/utils/windows";
 
@@ -363,31 +365,6 @@ defineExpose({
 .os-window__maximize-button:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
-}
-
-.os-window__maximize-icon {
-  position: relative;
-  display: block;
-  width: 13px;
-  height: 13px;
-  border: 1.5px solid currentColor;
-  border-radius: 1px;
-}
-
-.os-window--maximized .os-window__maximize-icon {
-  transform: translate(2px, -2px);
-}
-
-.os-window--maximized .os-window__maximize-icon::before {
-  position: absolute;
-  top: 3px;
-  left: -5px;
-  width: 11px;
-  height: 11px;
-  border: 1.5px solid currentColor;
-  border-radius: 1px;
-  background: var(--window-control-background, rgb(0 0 0 / 25%));
-  content: "";
 }
 
 .os-window__resize-handle {
