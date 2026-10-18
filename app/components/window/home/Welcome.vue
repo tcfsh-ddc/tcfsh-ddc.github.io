@@ -4,9 +4,11 @@
     :initial-x="250"
     :initial-y="100"
     :initial-width="880"
-    :initial-height="600"
+    :initial-height="650"
     :maxable="false"
+    :resizable="false"
     :allow-double-maxmize="false"
+    :show-close-button="true"
   >
     <template #titlebar>
       <p class="text-black-50">歡迎 - 台中一中數位創作研究社</p>
@@ -80,6 +82,17 @@
           <h3 class="text-black-400 text-2xl">認識音樂組</h3>
         </div>
       </div>
+
+      <p class="mt-2 text-black-700">
+        本社網由第二十一屆副社長
+        <a
+          href="https://samhacker.xyz"
+          class="text-black-600 hover:text-black-500 transition-colors underline underline-offset-4"
+        >
+          SamHacker</a
+        >
+        設計並建置
+      </p>
     </div>
   </Window>
 </template>
