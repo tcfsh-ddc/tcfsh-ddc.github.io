@@ -18,7 +18,7 @@
       <div
         class="text-black-200 ml-8 gap-2 font-extralight pointer-events-none @md:flex hidden"
       >
-        <p v-for="content in menuItems">{{ content }}</p>
+        <span v-for="content in menuItems">{{ content }}</span>
       </div>
       <PhDotsThree
         class="text-black-200 @md:hidden block ml-4"
