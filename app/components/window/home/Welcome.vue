@@ -1,6 +1,5 @@
 <template>
   <Window
-    v-model:open="welcomeOpen"
     class=""
     :initial-x="36"
     :initial-y="32"
