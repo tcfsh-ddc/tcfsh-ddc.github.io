@@ -19,13 +19,13 @@
 
     <div
       id="desktop-icons"
-      class="absolute left-8 top-4 grid gap-4 grid-cols-2"
+      class="absolute left-8 top-6 grid gap-4 grid-cols-2"
     >
       <button
         @click="openQaOpen"
         class="flex flex-col gap-2 items-center justify-center"
       >
-        <PhQuestion :size="48" aria-hidden="true" />
+        <SvgoMessage :filled="true" class="!size-10" />
         <span>問答</span>
       </button>
     </div>
@@ -33,8 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import { PhQuestion } from "@phosphor-icons/vue";
-
 const qaOpen = ref(false);
 function openQaOpen() {
   qaOpen.value = true;
