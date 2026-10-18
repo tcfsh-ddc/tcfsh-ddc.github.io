@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+@theme {
+  --color-lime: #0fffc4;
+  --color-lime-dark: #00cc9a;
+  --color-blue: #215cff;
+  --color-blue-dark: #0036cc;
+  --color-purple: #ff00cd;
+  --color-purple-dark: #cc00a4;
+
+  --radius-frame-0: 24px;
+  --radius-frame-1: 14px;
+}
