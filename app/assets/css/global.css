@@ -8,8 +8,24 @@
   --color-purple: #ff00cd;
   --color-purple-dark: #cc00a4;
 
+  --color-black-50: #f3f3f3;
+  --color-black-100: #e7e7e7;
+  --color-black-200: #dadada;
+  --color-black-300: #cbcbcb;
+  --color-black-400: #a0a0a0;
+  --color-black-500: #7e7e7e;
+  --color-black-600: #616161;
+  --color-black-700: #454545;
+  --color-black-800: #272727;
+  --color-black-900: #191919;
+  --color-black-950: #000000;
+
   --radius-frame-0: 24px;
   --radius-frame-1: 14px;
 
   --default-font-family: "GlowSans", "Noto Sans TC", sans-serif;
+}
+
+p {
+  @apply text-lg;
 }
