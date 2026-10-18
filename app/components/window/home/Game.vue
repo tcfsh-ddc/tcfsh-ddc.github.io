@@ -5,21 +5,25 @@
     class="game-window @container"
     :initial-x="292"
     :initial-y="80"
-    :initial-width="531"
-    :initial-height="380"
+    :initial-width="700"
+    :initial-height="800"
     :min-width="340"
     :min-height="260"
   >
     <template #titlebar>
-      <div class="grid w-full min-w-0 grid-cols-[1fr_auto_1fr] items-center gap-3 pr-14">
+      <div
+        class="grid w-full min-w-0 grid-cols-[1fr_auto_1fr] items-center gap-3 pr-14"
+      >
         <div
-          class="hidden min-w-0 items-center gap-2 font-extralight text-black-200 @lg:flex"
+          class="hidden min-w-0 items-center gap-2 font-extralight text-black-200 @xl:flex"
           aria-label="編輯器選單"
         >
           <span v-for="item in menuItems" :key="item">{{ item }}</span>
         </div>
-        <p class="truncate text-base font-extralight text-black-50">遊戲組.cs - Chaos</p>
-        <div class="hidden justify-self-end overflow-hidden rounded bg-black-900 @md:flex">
+        <p class="truncate text-base text-black-50">{{ fileName }} - Chaos</p>
+        <div
+          class="hidden justify-self-end overflow-hidden rounded bg-black-900 @md:flex"
+        >
           <span
             class="grid size-5 place-items-center rounded-sm bg-blue-dark text-base font-bold text-white"
             >P</span
@@ -30,6 +34,7 @@
     </template>
 
     <TabsRoot
+      v-model="activeTab"
       default-value="code"
       activation-mode="automatic"
       class="flex min-h-0 min-w-0 flex-1 flex-col gap-2"
@@ -51,23 +56,40 @@
           </button>
         </div>
 
-        <TabsList class="flex min-w-0 items-center gap-2.5 overflow-x-auto" aria-label="介紹檔案">
-          <TabsTrigger value="code" :class="tabClass">introduction.cs</TabsTrigger>
-          <TabsTrigger value="markdown" :class="tabClass">introduction.md</TabsTrigger>
+        <TabsList
+          class="flex min-w-0 items-center gap-2.5 overflow-x-auto"
+          aria-label="介紹檔案"
+        >
+          <TabsTrigger
+            value="code"
+            :class="tabClass"
+            class="flex gap-0 justify-center items-center"
+          >
+            <span class="@md:block hidden">introduction</span>.cs
+          </TabsTrigger>
+          <TabsTrigger
+            value="markdown"
+            :class="tabClass"
+            class="flex gap-0 justify-center items-center"
+          >
+            <span class="@md:block hidden">introduction</span>.md
+          </TabsTrigger>
         </TabsList>
       </div>
 
       <TabsContent
         value="code"
-        class="min-h-0 min-w-0 flex-1 overflow-auto text-xs font-extralight leading-[17px] text-white outline-none"
+        class="min-h-0 min-w-0 flex-1 overflow-auto font-extralight leading-5 text-white outline-none"
         aria-label="遊戲組介紹程式碼"
       >
         <div class="grid w-max min-w-full grid-cols-[auto_1fr] gap-2.5">
           <ol class="select-none text-right text-black-400" aria-hidden="true">
-            <li v-for="(_, index) in codeLines" :key="index">{{ index + 1 }}</li>
+            <li v-for="(_, index) in codeLines" :key="index">
+              {{ index + 1 }}
+            </li>
           </ol>
           <pre
-            class="m-0 whitespace-pre font-inherit leading-[17px]"
+            class="m-0 whitespace-pre font-inherit leading-5"
           ><code v-if="highlightedCode" class="hljs block font-inherit" v-html="highlightedCode"></code><code v-else class="block font-inherit">{{ sourceCode }}</code></pre>
         </div>
       </TabsContent>
@@ -84,11 +106,23 @@
 </template>
 
 <script setup lang="ts">
-import { PhFile, PhFloppyDisk, PhPlay, PhSteps, PhStop } from "@phosphor-icons/vue";
+import {
+  PhFile,
+  PhFloppyDisk,
+  PhPlay,
+  PhSteps,
+  PhStop,
+} from "@phosphor-icons/vue";
 import hljs from "highlight.js/lib/core";
 import csharp from "highlight.js/lib/languages/csharp";
 import { TabsContent, TabsList, TabsRoot, TabsTrigger } from "reka-ui";
 import MdGame from "@/content/divisions/game.md?raw";
+
+const activeTab = ref("code");
+
+const fileName = computed(() =>
+  activeTab.value === "markdown" ? "遊戲組.md" : "遊戲組.cs",
+);
 
 const open = defineModel<boolean>("open", { default: false });
 const menuItems = ["檔案", "編輯", "原始", "工具", "關於"];
@@ -145,7 +179,9 @@ const highlightedCode = ref("");
 
 onMounted(() => {
   hljs.registerLanguage("csharp", csharp);
-  highlightedCode.value = hljs.highlight(sourceCode, { language: "csharp" }).value;
+  highlightedCode.value = hljs.highlight(sourceCode, {
+    language: "csharp",
+  }).value;
 });
 </script>
 
