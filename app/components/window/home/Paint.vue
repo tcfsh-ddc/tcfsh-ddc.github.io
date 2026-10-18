@@ -3,8 +3,8 @@
     v-model:open="open"
     :show-close-button="true"
     class="demo-window demo-window--notes @container"
-    :initial-x="610"
-    :initial-y="74"
+    :initial-x="200"
+    :initial-y="60"
     :initial-width="768"
     :initial-height="500"
     :min-width="260"
@@ -27,10 +27,12 @@
       />
     </template>
 
-    <div class="flex min-h-0 min-w-0 gap-3 h-full w-full">
+    <div
+      class="flex flex-col-reverse @md:flex-row min-h-0 min-w-0 gap-3 h-full w-full"
+    >
       <!-- 功能列 -->
       <div
-        class="flex flex-col gap-4 h-full w-fit items-center min-h-fit"
+        class="flex flex-row @md:flex-col gap-4 h-full w-fit items-center min-h-fit"
         aria-hidden="true"
       >
         <PhPen
@@ -47,18 +49,20 @@
         <PhCircle :size="26" class="text-black-400" />
         <PhTextT :size="26" class="text-black-400" />
 
-        <div class="border-1 border-black-800 h-0 w-4" />
+        <div class="border-1 border-black-800 h-0 w-4 hidden @md:block" />
 
-        <PhGradient :size="26" class="text-black-400" />
-        <PhPaintBrush :size="26" class="text-black-400" />
-        <PhPaintBucket :size="26" class="text-black-400" />
+        <PhGradient :size="26" class="text-black-400 hidden @md:block" />
+        <PhPaintBrush :size="26" class="text-black-400 hidden @md:block" />
+        <PhPaintBucket :size="26" class="text-black-400 hidden @md:block" />
       </div>
 
       <!-- 畫布 -->
-      <div class="flex-1 flex items-center justify-center">
+      <div class="flex-1 flex items-center justify-center h-[90%] w-full">
         <div
-          class="bg-white flex flex-col gap-2 h-[80%] min-h-80 w-[80%] min-w-40"
-        ></div>
+          class="bg-white flex flex-col gap-2 max-h-full max-w-full @md:h-[80%] @md:min-h-80 @md:w-[80%] @md:min-w-40 overflow-auto"
+        >
+          <Markdown>{{ MdPaint }}</Markdown>
+        </div>
       </div>
     </div>
   </Window>
@@ -77,6 +81,7 @@ import {
   PhPaintBucket,
   PhDotsThree,
 } from "@phosphor-icons/vue";
+import MdPaint from "@/content/divisions/paint.md?raw";
 
 const open = defineModel<boolean>("open", {
   default: false,

@@ -1,29 +1,15 @@
 <template>
   <div class="home-desktop relative">
-    <!-- <nav class="app-launcher" aria-label="桌面應用程式">
-      <button type="button" :aria-pressed="welcomeOpen" @click="welcomeOpen = !welcomeOpen">
-        <PhHouse :size="20" aria-hidden="true" />
-        <span>歡迎</span>
-      </button>
-      <button type="button" :aria-pressed="notesOpen" @click="notesOpen = !notesOpen">
-        <PhNotePencil :size="20" aria-hidden="true" />
-        <span>待辦事項</span>
-      </button>
-      <button type="button" :aria-pressed="statusOpen" @click="statusOpen = !statusOpen">
-        <PhPulse :size="20" aria-hidden="true" />
-        <span>系統狀態</span>
-      </button>
-    </nav> -->
     <WindowHomeWelcome />
     <WindowHomeQA v-model:open="qaOpen" />
-    <WindowHomePaint v-bind:open="paintOpen" />
+    <WindowHomePaint v-model:open="paintOpen" />
 
     <div
       id="desktop-icons"
       class="absolute left-8 top-6 grid grid-flow-col-dense gap-8 grid-rows-8 grid-cols-2"
     >
       <button
-        @click="openQaOpen"
+        @click="switchQaOpen"
         class="flex flex-col gap-1 items-center justify-center"
       >
         <SvgoMessage :filled="true" class="!size-10" />
@@ -31,11 +17,11 @@
       </button>
 
       <button
-        @click="openPaintOpen"
+        @click="switchPaintOpen"
         class="flex flex-col gap-1 items-center justify-center"
       >
-        <SvgoPalette :filled="true" class="!size-10" />
-        <span>問答</span>
+        <SvgoFileKrita :filled="true" class="!size-10" />
+        <span>電繪組.kra</span>
       </button>
     </div>
   </div>
@@ -43,12 +29,20 @@
 
 <script setup lang="ts">
 const qaOpen = ref(false);
-const paintOpen = ref(true);
+const paintOpen = ref(false);
 
-function openQaOpen() {
-  qaOpen.value = true;
+function switchQaOpen() {
+  qaOpen.value = !qaOpen.value;
 }
-function openPaintOpen() {
-  paintOpen.value = true;
+function switchPaintOpen() {
+  console.log("[openPaintOpen] 開啟電繪組介紹");
+  paintOpen.value = !paintOpen.value;
 }
 </script>
+
+<style>
+#desktop-icons button span {
+  color: white;
+  text-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+}
+</style>
