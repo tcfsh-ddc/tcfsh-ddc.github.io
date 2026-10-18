@@ -1,5 +1,6 @@
 <template>
   <section
+    v-show="isOpen"
     ref="windowElement"
     v-bind="$attrs"
     class="os-window"
@@ -8,15 +9,21 @@
       'os-window--interacting': interaction !== null,
     }"
     :style="windowStyle"
-    @pointerdown="onWindowPointerDown"
     @pointermove="onPointerMove"
     @pointerup="endInteraction"
     @pointercancel="endInteraction"
   >
-    <slot />
+    <div v-if="$slots.titlebar" class="os-window__titlebar" @pointerdown="onPointerDown">
+      <slot name="titlebar" />
+    </div>
+
+    <div class="os-window__content" @pointerdown="onPointerDown">
+      <slot />
+    </div>
 
     <button
       class="os-window__maximize-button"
+      :class="{ 'os-window__maximize-button--with-close': showCloseButton }"
       type="button"
       :aria-label="isMaximized ? '還原視窗' : '最大化視窗'"
       :title="isMaximized ? '還原視窗' : '最大化視窗'"
@@ -27,22 +34,34 @@
       <PhCornersOut v-else :size="18" aria-hidden="true" />
     </button>
 
-    <template v-if="!isMaximized">
+    <button
+      v-if="showCloseButton"
+      class="os-window__close-button"
+      type="button"
+      aria-label="關閉視窗"
+      title="關閉視窗"
+      @pointerdown.stop="focusWindow"
+      @click="isOpen = false"
+    >
+      <PhX :size="18" aria-hidden="true" />
+    </button>
+
+    <template v-if="resizable && !isMaximized">
       <span
         v-for="handle in resizeHandles"
         :key="handle"
         class="os-window__resize-handle"
         :class="`os-window__resize-handle--${handle}`"
         aria-hidden="true"
-        @pointerdown.stop="startResize($event, handle)"
+        @pointerdown.stop="onResizePointerDown($event, handle)"
       />
     </template>
   </section>
 </template>
 
 <script setup lang="ts">
-import { PhCornersIn, PhCornersOut } from "@phosphor-icons/vue";
-import type { CSSProperties } from "vue";
+import { PhCornersIn, PhCornersOut, PhX } from "@phosphor-icons/vue";
+import { useWindowControls, type ResizeHandle } from "~/lib/useWindowControls";
 import { windowsContainerKey } from "~/utils/windows";
 
 defineOptions({ inheritAttrs: false });
@@ -54,24 +73,9 @@ interface Props {
   initialHeight?: number;
   minWidth?: number;
   minHeight?: number;
-}
-
-type ResizeHandle = "n" | "ne" | "e" | "se" | "s" | "sw" | "w" | "nw";
-
-interface WindowRect {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-interface Interaction {
-  type: "drag" | "resize";
-  pointerId: number;
-  startPointerX: number;
-  startPointerY: number;
-  startRect: WindowRect;
-  handle?: ResizeHandle;
+  movable?: boolean;
+  resizable?: boolean;
+  showCloseButton?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -81,7 +85,12 @@ const props = withDefaults(defineProps<Props>(), {
   initialHeight: 320,
   minWidth: 240,
   minHeight: 160,
+  movable: true,
+  resizable: true,
+  showCloseButton: false,
 });
+
+const isOpen = defineModel<boolean>("open", { default: true });
 
 const emit = defineEmits<{
   maximizeChange: [isMaximized: boolean];
@@ -89,227 +98,82 @@ const emit = defineEmits<{
 
 const container = inject(windowsContainerKey, null);
 const windowElement = ref<HTMLElement | null>(null);
-const rect = reactive<WindowRect>({
-  x: props.initialX,
-  y: props.initialY,
-  width: props.initialWidth,
-  height: props.initialHeight,
+const controls = useWindowControls({
+  initialX: props.initialX,
+  initialY: props.initialY,
+  initialWidth: props.initialWidth,
+  initialHeight: props.initialHeight,
+  minWidth: props.minWidth,
+  minHeight: props.minHeight,
+  movable: toRef(props, "movable"),
+  resizable: toRef(props, "resizable"),
+  bounds: () => {
+    if (container) return container.bounds.value;
+    return {
+      width: windowElement.value?.parentElement?.clientWidth ?? 0,
+      height: windowElement.value?.parentElement?.clientHeight ?? 0,
+    };
+  },
+  bringToFront: () => container?.bringToFront() ?? 1,
+  onMaximizeChange: (value) => emit("maximizeChange", value),
 });
-const restoredRect = ref<WindowRect>({ ...rect });
-const isMaximized = ref(false);
-const interaction = ref<Interaction | null>(null);
-const zIndex = ref(1);
-const resizeHandles: ResizeHandle[] = ["n", "ne", "e", "se", "s", "sw", "w", "nw"];
 
-let gsapInstance: (typeof import("gsap"))["gsap"] | undefined;
-let activeTween: ReturnType<(typeof import("gsap"))["gsap"]["to"]> | undefined;
+const {
+  rect,
+  isMaximized,
+  interaction,
+  resizeHandles,
+  windowStyle,
+  startDrag,
+  startResize: beginResize,
+  onPointerMove,
+  endInteraction,
+  focusWindow,
+  toggleMaximized,
+  maximize,
+  restore,
+  updateBounds,
+  initialize,
+  dispose,
+} = controls;
 
-const windowStyle = computed<CSSProperties>(() => ({
-  width: `${rect.width}px`,
-  height: `${rect.height}px`,
-  transform: `translate3d(${rect.x}px, ${rect.y}px, 0)`,
-  zIndex: zIndex.value,
-}));
+const resizable = computed(() => props.resizable);
+const showCloseButton = computed(() => props.showCloseButton);
 
-function getBounds() {
-  if (container) return container.bounds.value;
-
-  const parent = windowElement.value?.parentElement;
-  return {
-    width: parent?.clientWidth ?? 0,
-    height: parent?.clientHeight ?? 0,
-  };
+function onPointerDown(event: PointerEvent) {
+  if (windowElement.value) startDrag(event, windowElement.value);
 }
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), Math.max(min, max));
-}
-
-function fitRectToBounds(source: WindowRect): WindowRect {
-  const bounds = getBounds();
-
-  if (bounds.width <= 0 || bounds.height <= 0) return { ...source };
-
-  const width = clamp(source.width, Math.min(props.minWidth, bounds.width), bounds.width);
-  const height = clamp(source.height, Math.min(props.minHeight, bounds.height), bounds.height);
-
-  return {
-    x: clamp(source.x, 0, bounds.width - width),
-    y: clamp(source.y, 0, bounds.height - height),
-    width,
-    height,
-  };
-}
-
-function focusWindow() {
-  zIndex.value = container?.bringToFront() ?? zIndex.value;
-}
-
-function isInteractiveTarget(target: EventTarget | null) {
-  if (!(target instanceof Element)) return false;
-
-  return Boolean(
-    target.closest(
-      "button, a, input, textarea, select, option, [contenteditable='true'], [data-window-no-drag]",
-    ),
-  );
-}
-
-function onWindowPointerDown(event: PointerEvent) {
-  focusWindow();
-
-  if (isMaximized.value || event.button !== 0 || isInteractiveTarget(event.target)) return;
-
-  interaction.value = {
-    type: "drag",
-    pointerId: event.pointerId,
-    startPointerX: event.clientX,
-    startPointerY: event.clientY,
-    startRect: { ...rect },
-  };
-
-  windowElement.value?.setPointerCapture(event.pointerId);
-  event.preventDefault();
-}
-
-function startResize(event: PointerEvent, handle: ResizeHandle) {
-  focusWindow();
-
-  if (event.button !== 0) return;
-
-  interaction.value = {
-    type: "resize",
-    pointerId: event.pointerId,
-    startPointerX: event.clientX,
-    startPointerY: event.clientY,
-    startRect: { ...rect },
-    handle,
-  };
-
-  (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
-  event.preventDefault();
-}
-
-function onPointerMove(event: PointerEvent) {
-  const currentInteraction = interaction.value;
-
-  if (!currentInteraction || currentInteraction.pointerId !== event.pointerId) return;
-
-  const deltaX = event.clientX - currentInteraction.startPointerX;
-  const deltaY = event.clientY - currentInteraction.startPointerY;
-  const bounds = getBounds();
-  const start = currentInteraction.startRect;
-
-  if (currentInteraction.type === "drag") {
-    rect.x = clamp(start.x + deltaX, 0, bounds.width - start.width);
-    rect.y = clamp(start.y + deltaY, 0, bounds.height - start.height);
-    return;
+function onResizePointerDown(event: PointerEvent, handle: ResizeHandle) {
+  if (event.currentTarget instanceof HTMLElement) {
+    beginResize(event, handle, event.currentTarget);
   }
-
-  const handle = currentInteraction.handle!;
-  const minWidth = Math.min(props.minWidth, bounds.width);
-  const minHeight = Math.min(props.minHeight, bounds.height);
-  let left = start.x;
-  let top = start.y;
-  let right = start.x + start.width;
-  let bottom = start.y + start.height;
-
-  if (handle.includes("e")) right = clamp(right + deltaX, left + minWidth, bounds.width);
-  if (handle.includes("s")) bottom = clamp(bottom + deltaY, top + minHeight, bounds.height);
-  if (handle.includes("w")) left = clamp(left + deltaX, 0, right - minWidth);
-  if (handle.includes("n")) top = clamp(top + deltaY, 0, bottom - minHeight);
-
-  Object.assign(rect, {
-    x: left,
-    y: top,
-    width: right - left,
-    height: bottom - top,
-  });
 }
 
-function endInteraction(event: PointerEvent) {
-  if (interaction.value?.pointerId !== event.pointerId) return;
-
-  interaction.value = null;
-}
-
-function animateTo(target: WindowRect) {
-  activeTween?.kill();
-
-  if (!gsapInstance) {
-    Object.assign(rect, target);
-    return;
-  }
-
-  const animationState = { ...rect };
-  activeTween = gsapInstance.to(animationState, {
-    ...target,
-    duration: 0.35,
-    ease: "power3.inOut",
-    overwrite: true,
-    onUpdate: () => Object.assign(rect, animationState),
-    onComplete: () => {
-      Object.assign(rect, target);
-      activeTween = undefined;
-    },
-  });
-}
-
-function maximize() {
-  if (isMaximized.value) return;
-
-  const bounds = getBounds();
-  restoredRect.value = { ...rect };
-  isMaximized.value = true;
-  emit("maximizeChange", true);
-  animateTo({ x: 0, y: 0, width: bounds.width, height: bounds.height });
-}
-
-function restore() {
-  if (!isMaximized.value) return;
-
-  isMaximized.value = false;
-  emit("maximizeChange", false);
-  animateTo(fitRectToBounds(restoredRect.value));
-}
-
-function toggleMaximized() {
-  focusWindow();
-  isMaximized.value ? restore() : maximize();
-}
+watch(isOpen, (open) => {
+  if (open) nextTick(focusWindow);
+});
 
 watch(
   () => container?.bounds.value,
-  (bounds) => {
-    if (!bounds || bounds.width === 0 || bounds.height === 0) return;
-
-    if (isMaximized.value) {
-      activeTween?.kill();
-      Object.assign(rect, { x: 0, y: 0, width: bounds.width, height: bounds.height });
-      return;
-    }
-
-    Object.assign(rect, fitRectToBounds(rect));
-  },
+  (bounds) => bounds && updateBounds(bounds),
   { deep: true },
 );
 
-onMounted(async () => {
+onMounted(() => {
   if (!container) {
     console.warn("<Window> should be placed inside <WindowsContainer>.");
   }
 
-  focusWindow();
-  Object.assign(rect, fitRectToBounds(rect));
-  const gsapModule = await import("gsap");
-  gsapInstance = gsapModule.gsap;
+  void initialize();
 });
 
 onBeforeUnmount(() => {
-  activeTween?.kill();
+  dispose();
 });
 
 defineExpose({
+  isOpen,
   rect: readonly(rect),
   isMaximized: readonly(isMaximized),
   maximize,
@@ -323,6 +187,8 @@ defineExpose({
   position: absolute;
   top: 0;
   left: 0;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   overflow: hidden;
   border: var(--window-border, 1px solid rgb(255 255 255 / 30%));
@@ -331,6 +197,19 @@ defineExpose({
   box-shadow: var(--window-shadow, 0 18px 50px rgb(0 0 0 / 35%));
   color: var(--window-color, inherit);
   will-change: width, height, transform;
+}
+
+.os-window__titlebar {
+  position: relative;
+  flex: 0 0 auto;
+  touch-action: none;
+}
+
+.os-window__content {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
 }
 
 .os-window--interacting {
@@ -356,6 +235,37 @@ defineExpose({
   background: var(--window-control-background, rgb(0 0 0 / 25%));
   color: var(--window-control-color, currentColor);
   cursor: pointer;
+}
+
+.os-window__maximize-button--with-close {
+  right: 52px;
+}
+
+.os-window__close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  place-items: center;
+  border: var(--window-control-border, 1px solid rgb(255 255 255 / 35%));
+  border-radius: var(--window-control-radius, 7px);
+  background: var(--window-close-background, var(--window-control-background, rgb(0 0 0 / 25%)));
+  color: var(--window-control-color, currentColor);
+  cursor: pointer;
+}
+
+.os-window__close-button:hover {
+  background: var(--window-close-hover-background, #d8335b);
+  color: white;
+}
+
+.os-window__close-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 
 .os-window__maximize-button:hover {
