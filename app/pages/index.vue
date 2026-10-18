@@ -37,6 +37,8 @@
 </template>
 
 <script setup lang="ts">
+import "@/assets/css/markdown.css";
+
 const qaOpen = ref(false);
 const paintOpen = ref(false);
 const gameOpen = ref(false);
