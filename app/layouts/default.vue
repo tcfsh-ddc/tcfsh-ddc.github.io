@@ -5,7 +5,8 @@
     >
       <!-- 畫面內容 -->
       <div
-        class="flex-1 min-h-0 flex flex-col bg-blue-dark rounded-frame-1 rounded-b-none overflow-hidden"
+        class="flex-1 min-h-0 flex flex-col bg-blue-dark rounded-frame-1 rounded-b-none overflow-hidden p-1"
+        id="desktop-frame"
       >
         <WindowsContainer>
           <slot />
@@ -19,3 +20,11 @@
 </template>
 
 <script setup></script>
+
+<style>
+#desktop-frame {
+  background-image: url("~/assets/images/desktop-bg.png");
+  background-position: 90% center;
+  background-repeat: no-repeat;
+}
+</style>
