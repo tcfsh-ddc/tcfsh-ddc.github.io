@@ -35,7 +35,7 @@
       </div>
 
       <div class="grid grid-cols-3 gap-4 w-[70%] min-w-150 mt-8">
-        <div class="sh-grid-item gap-2 group col-span-2">
+        <NuxtLink to="/about" class="sh-grid-item gap-2 group col-span-2">
           <span class="text-4xl text-white font-bold min-h-12">
             DDC
             <span
@@ -44,50 +44,62 @@
             >
           </span>
           <h3 class="text-black-400 text-2xl">關於數創</h3>
-        </div>
-        <div class="sh-grid-item gap-2 group">
+        </NuxtLink>
+        <a
+          href="https://github.com/tcfsh-ddc/tcfsh-ddc.github.io"
+          class="sh-grid-item gap-2 group"
+        >
           <PhCode
             :size="48"
             color="#ffffff"
             weight="duotone"
-            class="group-hover:rotate-45 transition-transform"
+            class="group-hover:rotate-12 transition-transform"
           />
           <h3 class="text-black-400 text-2xl">網站原始碼</h3>
-        </div>
-        <div class="sh-grid-item gap-2 group">
+        </a>
+        <button
+          class="sh-grid-item gap-2 group flex flex-col justify-start"
+          @click="emit('openPaintWindow')"
+        >
           <PhPalette
             :size="48"
             color="#FFFFFF"
             weight="duotone"
-            class="group-hover:rotate-45 transition-transform"
+            class="group-hover:rotate-12 transition-transform"
           />
-          <h3 class="text-black-400 text-2xl">認識電繪組</h3>
-        </div>
-        <div class="sh-grid-item group">
+          <h3 class="text-black-400 text-2xl text-left">認識電繪組</h3>
+        </button>
+        <button
+          class="sh-grid-item group flex flex-col justify-start gap-2"
+          @click="emit('openGameWindow')"
+        >
           <PhGameController
             :size="48"
             color="#FFFFFF"
             weight="duotone"
-            class="group-hover:rotate-45 transition-transform"
+            class="group-hover:rotate-12 transition-transform"
           />
-          <h3 class="text-black-400 text-2xl">認識遊戲組</h3>
-        </div>
-        <div class="sh-grid-item group">
+          <h3 class="text-black-400 text-2xl text-left">認識遊戲組</h3>
+        </button>
+        <button
+          class="sh-grid-item group flex flex-col justify-start gap-2"
+          @click="emit('openMusicWindow')"
+        >
           <PhPianoKeys
             :size="48"
             color="#ffffff"
             weight="duotone"
-            class="group-hover:rotate-45 transition-transform"
+            class="group-hover:rotate-12 transition-transform"
           />
-          <h3 class="text-black-400 text-2xl">認識音樂組</h3>
-        </div>
+          <h3 class="text-black-400 text-2xl text-left">認識音樂組</h3>
+        </button>
       </div>
 
       <p class="mt-2 text-black-700">
         本社網由第二十一屆副社長
         <a
           href="https://samhacker.xyz"
-          class="text-black-600 hover:text-black-500 transition-colors underline underline-offset-4"
+          class="text-black-600 hover:text-black-500 transition-all underline hover:underline-offset-6 underline-offset-4"
         >
           SamHacker</a
         >
@@ -104,6 +116,12 @@ import {
   PhGameController,
   PhPianoKeys,
 } from "@phosphor-icons/vue";
+
+const emit = defineEmits([
+  "openPaintWindow",
+  "openGameWindow",
+  "openMusicWindow",
+]);
 </script>
 
 <style scoped>

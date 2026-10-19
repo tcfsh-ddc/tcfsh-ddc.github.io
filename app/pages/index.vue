@@ -1,6 +1,9 @@
 <template>
   <div class="home-desktop relative">
-    <WindowHomeWelcome />
+    <WindowHomeWelcome
+      @open-game-window="switchGameOpen"
+      @open-paint-window="switchPaintOpen"
+    />
     <WindowHomeQA v-model:open="qaOpen" />
     <WindowHomePaint v-model:open="paintOpen" />
     <WindowHomeGame v-model:open="gameOpen" />
