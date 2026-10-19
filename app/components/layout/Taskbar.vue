@@ -1,14 +1,14 @@
 <template>
   <nav class="flex gap-2.5 bg-purple-dark rounded-b-frame-1 justify-between">
     <!-- 開始按鈕 -->
-    <a class="flex px-5 py-3.5 bg-purple" href="/">
+    <NuxtLink class="flex px-5 py-3.5 bg-purple" to="/">
       <img
         src="~/assets/images/ddc-logo.jpg"
         alt="數創logo"
         class="w-12 h-12"
       />
       <p class="sr-only">回首頁</p>
-    </a>
+    </NuxtLink>
 
     <!-- 導覽選項 -->
     <div class="flex p-0 gap-6 items-center justify-center" id="sh-nav-menu">
