@@ -1,23 +1,20 @@
-# Nuxt Minimal Starter
+# TCDDC Official Club Website
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+> Just a club website designed by [@SamHacker](https://github.com/510208), operating system styled.
+
+This is an operating system styled Vue website for TCDDC 21th. The source code is licensed under [GNU GPL v3.0](LICENSE), more license information was wroted below.
+
+> [!WARNING]
+> All resources and intellectual property rights saved in `./app/assets` belong to their original authors, please do not steal them.
 
 ## Setup
 
 Make sure to install dependencies:
 
 ```bash
-# npm
-npm install
-
-# pnpm
+git clone https://github.com/tcfsh-ddc/tcfsh-ddc.github.io.git
+cd "tcfsh-ddc.github.io"
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
 ## Development Server
@@ -25,17 +22,7 @@ bun install
 Start the development server on `http://localhost:3000`:
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
 ## Production
@@ -43,33 +30,13 @@ bun run dev
 Build the application for production:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
 pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
 Locally preview production build:
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
 pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
