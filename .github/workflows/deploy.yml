@@ -19,9 +19,10 @@ jobs:
       # Pick your own package manager and build script
       - run: pnpm install
       # Drop the env var below if your GitHub Pages is configured for a custom domain
-      - run: pnpm build --preset github_pages
+      - name: Build Nuxt App
+        run: pnpm build --preset github_pages
         env:
-          NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
+          NUXT_APP_BASE_URL: /
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
