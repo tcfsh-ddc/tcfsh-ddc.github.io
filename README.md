@@ -11,7 +11,7 @@ This is an operating system styled Vue website for TCDDC 21th. The source code i
 
 ## License
 
-<img width="1920" height="405" alt="license" src="https://github.com/user-attachments/assets/06542300-6c62-4f84-90ad-e6837484a3d8" />
+<img width="1920" height="405" alt="license" src="https://github.com/user-attachments/assets/fc74442f-cefe-45c2-86c9-73cdaf624641" />
 
 > [!CAUTION]
 > If you want to create again based on this project, please read this section in detail
@@ -29,7 +29,7 @@ The copyright of illustrations, images, videos, and media content created by com
 
 ## Setup
 
-<img width="1920" height="405" alt="setup" src="https://github.com/user-attachments/assets/64aea22d-e916-414a-8931-d27c7db42eb0" />
+<img width="1920" height="405" alt="setup" src="https://github.com/user-attachments/assets/002366ce-f9d6-44e1-a77a-bdd85bac3076" />
 
 Make sure to install dependencies:
 
