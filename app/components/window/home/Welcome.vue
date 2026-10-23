@@ -26,9 +26,16 @@
           <h1 class="text-black-200 text-4xl font-bold">
             歡迎光臨
             <br />
-            <span class="text-purple">數位</span
-            ><span class="text-blue">創作</span
-            ><span class="text-lime">研究社</span>
+            <span class="word-flip text-purple cursor-default">
+              <span class="word-original">數位</span>
+              <span class="word-english">Digital</span> </span
+            ><span class="word-flip text-blue cursor-default">
+              <span class="word-original">創作</span>
+              <span class="word-english">Design</span> </span
+            ><span class="word-flip text-lime cursor-default">
+              <span class="word-original">研究社</span>
+              <span class="word-english">Club</span>
+            </span>
             <span class="text-xl align-super text-black-400 font-extralight">
               串
             </span>
@@ -118,7 +125,7 @@
   </Window>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
   PhCode,
   PhPalette,
@@ -131,6 +138,122 @@ const emit = defineEmits([
   "openGameWindow",
   "openMusicWindow",
 ]);
+
+import { onMounted, onBeforeUnmount } from "vue";
+import { gsap } from "gsap";
+
+let animationContext: gsap.Context | undefined;
+let cleanups: (() => void)[] = [];
+
+onMounted(() => {
+  animationContext = gsap.context(() => {
+    const elements = document.querySelectorAll<HTMLElement>(".word-flip");
+
+    elements.forEach((element) => {
+      const original = element.querySelector<HTMLElement>(".word-original");
+      const english = element.querySelector<HTMLElement>(".word-english");
+
+      if (!original || !english) return;
+
+      const splitText = (target: HTMLElement) => {
+        const text = target.textContent ?? "";
+        const fragment = document.createDocumentFragment();
+
+        for (const character of text) {
+          const span = document.createElement("span");
+          span.className = "word-char";
+          span.textContent = character;
+          fragment.appendChild(span);
+        }
+
+        target.replaceChildren(fragment);
+      };
+
+      splitText(original);
+      splitText(english);
+
+      const originalChars =
+        original.querySelectorAll<HTMLElement>(".word-char");
+      const englishChars = english.querySelectorAll<HTMLElement>(".word-char");
+
+      // 量測原始文字與英文文字的實際排版寬度
+      const originalWidth = original.getBoundingClientRect().width;
+      const englishWidth = english.getBoundingClientRect().width;
+
+      gsap.set(element, {
+        width: originalWidth,
+      });
+
+      // 中文停留在視窗內；英文從下方等待進場
+      gsap.set(originalChars, {
+        yPercent: 0,
+        opacity: 1,
+      });
+
+      gsap.set(englishChars, {
+        yPercent: 120,
+        opacity: 0,
+      });
+
+      const timeline = gsap.timeline({
+        paused: true,
+        defaults: {
+          ease: "power3.inOut",
+        },
+      });
+
+      timeline
+        .to(
+          originalChars,
+          {
+            yPercent: -120,
+            opacity: 0,
+            duration: 0.32,
+            stagger: 0.035,
+          },
+          0,
+        )
+        .to(
+          englishChars,
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 0.38,
+            stagger: 0.04,
+          },
+          0.06,
+        )
+        .to(
+          element,
+          {
+            width: englishWidth,
+            duration: 0.45,
+            ease: "power2.inOut",
+          },
+          0,
+        );
+
+      const handleEnter = () => timeline.play();
+      const handleLeave = () => timeline.reverse();
+
+      element.addEventListener("mouseenter", handleEnter);
+      element.addEventListener("mouseleave", handleLeave);
+
+      cleanups.push(() => {
+        element.removeEventListener("mouseenter", handleEnter);
+        element.removeEventListener("mouseleave", handleLeave);
+        timeline.kill();
+      });
+    });
+  });
+});
+
+onBeforeUnmount(() => {
+  cleanups.forEach((cleanup) => cleanup());
+  cleanups = [];
+  animationContext?.revert();
+  animationContext = undefined;
+});
 </script>
 
 <style scoped>
@@ -151,5 +274,40 @@ const emit = defineEmits([
   background: var(--color-black-800);
   border-color: var(--color-black-700);
   transition: all 0.1s ease-in-out;
+}
+
+.word-flip {
+  display: inline-block;
+  position: relative;
+  height: 1.2em;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  line-height: 1.2;
+  width: max-content;
+  box-sizing: content-box;
+}
+
+.word-original {
+  display: block;
+  position: relative;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.word-english {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.word-char {
+  display: inline-block;
+  white-space: pre;
+  will-change: transform, opacity;
 }
 </style>
