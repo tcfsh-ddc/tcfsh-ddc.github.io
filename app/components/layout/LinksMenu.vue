@@ -14,7 +14,10 @@
         </a>
       </DropdownMenuItem>
       <DropdownMenuItem class="flex gap-4">
-        <a href="" class="flex w-full h-full items-center">
+        <a
+          href="https://www.facebook.com/tcfshDDC"
+          class="flex w-full h-full items-center"
+        >
           <SvgoFacebookRound class="!h-6 !w-6 mr-2" />
           <p>Facebook</p>
         </a>
@@ -29,9 +32,12 @@
         </a>
       </DropdownMenuItem>
       <DropdownMenuItem class="flex gap-4">
-        <a href="/about" class="flex w-full h-full items-center">
+        <a
+          href="https://github.com/tcfsh-ddc"
+          class="flex w-full h-full items-center"
+        >
           <SvgoGithub class="!h-6 !w-6 mr-2" />
-          <p>Instagram</p>
+          <p>GitHub</p>
         </a>
       </DropdownMenuItem>
     </DropdownMenuContent>
