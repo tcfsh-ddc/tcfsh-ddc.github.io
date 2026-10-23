@@ -14,7 +14,7 @@
     >
       <button
         @click="switchQaOpen"
-        class="flex flex-col gap-1 items-center justify-center"
+        class="flex flex-col gap-1 items-center justify-center cursor-pointer"
       >
         <SvgoMessage :filled="true" class="!size-10" />
         <span>問答</span>
@@ -22,7 +22,7 @@
 
       <button
         @click="switchPaintOpen"
-        class="flex flex-col gap-1 items-center justify-center"
+        class="flex flex-col gap-1 items-center justify-center cursor-pointer"
       >
         <SvgoFileKrita :filled="true" class="!size-10" />
         <span>電繪組.kra</span>
@@ -30,7 +30,7 @@
 
       <button
         @click="switchGameOpen"
-        class="flex flex-col gap-1 items-center justify-center"
+        class="flex flex-col gap-1 items-center justify-center cursor-pointer"
       >
         <SvgoFileUnity :filled="true" class="!size-10" />
         <span>遊戲組.cs</span>
