@@ -3,7 +3,7 @@
     <DropdownMenuContent
       v-bind="$attrs"
       :side-offset="sideOffset"
-      class="sh-dropdown-menu-content z-50 min-w-40 overflow-hidden rounded-xl border border-black-700 bg-black-800 p-1.5 text-black-50 shadow-xl outline-none transition-[opacity,transform] duration-150 ease-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 motion-reduce:transition-none"
+      class="sh-dropdown-menu-content z-50 min-w-40 overflow-hidden rounded-xl border border-black-700 bg-black-800 p-1 text-black-50 shadow-xl outline-none transition-[opacity,transform] duration-150 ease-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 motion-reduce:transition-none"
       :class="$attrs.class"
     >
       <slot />
