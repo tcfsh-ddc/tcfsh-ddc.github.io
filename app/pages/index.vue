@@ -1,6 +1,7 @@
 <template>
   <div class="home-desktop relative">
     <WindowHomeWelcome
+      v-model:open="welcomeOpen"
       @open-game-window="switchGameOpen"
       @open-paint-window="switchPaintOpen"
     />
@@ -40,21 +41,59 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch, onMounted, onUnmounted } from "vue";
 import "@/assets/css/markdown.css";
 
+const welcomeOpen = ref(false);
 const qaOpen = ref(false);
 const paintOpen = ref(false);
 const gameOpen = ref(false);
 
+// Nuxt 全域初次載入狀態
+const isInitialLoadComplete = useState<boolean>(
+  "sh-initial-load-complete",
+  () => false,
+);
+
+const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
+
+// 收到通知後開啟歡迎視窗
+function handleInitialLoadComplete() {
+  welcomeOpen.value = true;
+}
+
 function switchQaOpen() {
   qaOpen.value = !qaOpen.value;
 }
+
 function switchPaintOpen() {
   paintOpen.value = !paintOpen.value;
 }
+
 function switchGameOpen() {
   gameOpen.value = !gameOpen.value;
 }
+
+onMounted(() => {
+  // 先註冊事件，避免錯過通知
+  window.addEventListener(INITIAL_LOAD_EVENT, handleInitialLoadComplete);
+
+  // 如果全域狀態已經完成，立即開啟
+  if (isInitialLoadComplete.value) {
+    handleInitialLoadComplete();
+  }
+});
+
+// 監聽全域狀態更新
+watch(isInitialLoadComplete, (completed) => {
+  if (completed) {
+    handleInitialLoadComplete();
+  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener(INITIAL_LOAD_EVENT, handleInitialLoadComplete);
+});
 </script>
 
 <style>
