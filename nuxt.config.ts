@@ -8,6 +8,11 @@ export default defineNuxtConfig({
   css: ["@/assets/css/global.css"],
   vite: {
     plugins: [tailwindcss()],
+
+    build: {
+      // 超過此大小（單位：bytes）的資產才會變成獨立檔案，小於此大小則自動轉為 Base64 內聯
+      assetsInlineLimit: 9000,
+    },
   },
   svgo: {
     autoImportPath: "~/assets/icons/",
