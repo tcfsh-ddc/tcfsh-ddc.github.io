@@ -1,4 +1,6 @@
 <template>
+  <Loading />
+
   <div class="h-dvh w-screen bg-black p-0 md:p-6">
     <div
       class="bg-purple md:rounded-frame-0 outline-purple outline-2.5 h-full w-full flex flex-1 flex-col overflow-hidden p-1 md:p-2.5 gap-0"
