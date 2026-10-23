@@ -1,4 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
+import { base64Loader } from "./plugins/vite-image-to-base64";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -7,7 +8,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ["@/assets/css/global.css"],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), base64Loader],
 
     build: {
       // 超過此大小（單位：bytes）的資產才會變成獨立檔案，小於此大小則自動轉為 Base64 內聯
