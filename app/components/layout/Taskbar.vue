@@ -1,7 +1,10 @@
 <template>
   <nav
-    class="flex gap-2.5 bg-purple md:bg-purple-dark rounded-b-frame-1 justify-center md:justify-between"
+    class="flex gap-2.5 bg-purple md:bg-purple-dark rounded-b-frame-1 justify-between items-center px-4 md:px-0"
   >
+    <!-- 手機 - 頁面導覽 -->
+    <MobileMenu />
+
     <!-- 開始按鈕 -->
     <button
       class="flex cursor-pointer px-5 py-3.5 bg-purple"
@@ -49,6 +52,7 @@
 </template>
 
 <script setup lang="ts">
+import MobileMenu from "./MobileMenu.vue";
 defineEmits<{ home: [] }>();
 </script>
 
