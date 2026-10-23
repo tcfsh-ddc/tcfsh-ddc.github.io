@@ -23,18 +23,24 @@
           class="size-20 md:size-30 rounded-lg -mb-16 md:mb-0"
         />
         <div class="flex flex-col gap-1">
-          <h1 class="text-black-200 text-4xl font-bold">
+          <h1 ref="welcomeTitle" class="text-black-200 text-4xl font-bold">
             歡迎光臨
             <br />
-            <span class="word-flip text-purple cursor-default">
-              <span class="word-original">數位</span>
-              <span class="word-english">Digital</span> </span
+            <span class="word-flip text-purple">
+              <span class="word-track cursor-default">
+                <span class="word-line word-original">數位</span>
+                <span class="word-line word-english">Digital</span>
+              </span> </span
             ><span class="word-flip text-blue cursor-default">
-              <span class="word-original">創作</span>
-              <span class="word-english">Design</span> </span
+              <span class="word-track">
+                <span class="word-line word-original">創作</span>
+                <span class="word-line word-english">Design</span>
+              </span> </span
             ><span class="word-flip text-lime cursor-default">
-              <span class="word-original">研究社</span>
-              <span class="word-english">Club</span>
+              <span class="word-track">
+                <span class="word-line word-original">研究社</span>
+                <span class="word-line word-english">Club</span>
+              </span>
             </span>
             <span class="text-xl align-super text-black-400 font-extralight">
               串
@@ -139,15 +145,27 @@ const emit = defineEmits([
   "openMusicWindow",
 ]);
 
-import { onMounted, onBeforeUnmount } from "vue";
+// #region 標題動畫
+import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { gsap } from "gsap";
+import { SplitText } from "gsap/SplitText";
+
+gsap.registerPlugin(SplitText);
+
+const welcomeTitle = ref<HTMLElement | null>(null);
 
 let animationContext: gsap.Context | undefined;
-let cleanups: (() => void)[] = [];
+const cleanups: (() => void)[] = [];
 
-onMounted(() => {
+onMounted(async () => {
+  await nextTick();
+  await document.fonts.ready;
+
+  const root = welcomeTitle.value;
+  if (!root) return;
+
   animationContext = gsap.context(() => {
-    const elements = document.querySelectorAll<HTMLElement>(".word-flip");
+    const elements = root.querySelectorAll<HTMLElement>(".word-flip");
 
     elements.forEach((element) => {
       const original = element.querySelector<HTMLElement>(".word-original");
@@ -155,36 +173,29 @@ onMounted(() => {
 
       if (!original || !english) return;
 
-      const splitText = (target: HTMLElement) => {
-        const text = target.textContent ?? "";
-        const fragment = document.createDocumentFragment();
-
-        for (const character of text) {
-          const span = document.createElement("span");
-          span.className = "word-char";
-          span.textContent = character;
-          fragment.appendChild(span);
-        }
-
-        target.replaceChildren(fragment);
-      };
-
-      splitText(original);
-      splitText(english);
-
-      const originalChars =
-        original.querySelectorAll<HTMLElement>(".word-char");
-      const englishChars = english.querySelectorAll<HTMLElement>(".word-char");
-
-      // 量測原始文字與英文文字的實際排版寬度
+      // 在動畫初始化前量測文字寬度
       const originalWidth = original.getBoundingClientRect().width;
       const englishWidth = english.getBoundingClientRect().width;
+
+      // 使用 SplitText 將中英文分割成獨立字元
+      const originalSplit = SplitText.create(original, {
+        type: "chars",
+        charsClass: "word-char",
+      });
+
+      const englishSplit = SplitText.create(english, {
+        type: "chars",
+        charsClass: "word-char",
+      });
+
+      const originalChars = originalSplit.chars;
+      const englishChars = englishSplit.chars;
 
       gsap.set(element, {
         width: originalWidth,
       });
 
-      // 中文停留在視窗內；英文從下方等待進場
+      // 中文停留在原位，英文從下方等待進場
       gsap.set(originalChars, {
         yPercent: 0,
         opacity: 1,
@@ -197,41 +208,48 @@ onMounted(() => {
 
       const timeline = gsap.timeline({
         paused: true,
-        defaults: {
-          ease: "power3.inOut",
-        },
       });
 
-      timeline
-        .to(
-          originalChars,
-          {
-            yPercent: -120,
-            opacity: 0,
-            duration: 0.32,
-            stagger: 0.035,
+      // 中文逐字向上離場
+      timeline.to(
+        originalChars,
+        {
+          yPercent: -120,
+          opacity: 0,
+          duration: 0.35,
+          stagger: {
+            each: 0.045,
           },
-          0,
-        )
-        .to(
-          englishChars,
-          {
-            yPercent: 0,
-            opacity: 1,
-            duration: 0.38,
-            stagger: 0.04,
+          ease: "power3.inOut",
+        },
+        0,
+      );
+
+      // 英文逐字由下向上進場
+      timeline.to(
+        englishChars,
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.4,
+          stagger: {
+            each: 0.045,
           },
-          0.06,
-        )
-        .to(
-          element,
-          {
-            width: englishWidth,
-            duration: 0.45,
-            ease: "power2.inOut",
-          },
-          0,
-        );
+          ease: "power3.out",
+        },
+        0.08,
+      );
+
+      // 同步過渡文字容器的寬度
+      timeline.to(
+        element,
+        {
+          width: englishWidth,
+          duration: 0.45,
+          ease: "power2.inOut",
+        },
+        0,
+      );
 
       const handleEnter = () => timeline.play();
       const handleLeave = () => timeline.reverse();
@@ -242,18 +260,23 @@ onMounted(() => {
       cleanups.push(() => {
         element.removeEventListener("mouseenter", handleEnter);
         element.removeEventListener("mouseleave", handleLeave);
+
         timeline.kill();
+        originalSplit.revert();
+        englishSplit.revert();
       });
     });
-  });
+  }, root);
 });
 
 onBeforeUnmount(() => {
   cleanups.forEach((cleanup) => cleanup());
-  cleanups = [];
+  cleanups.length = 0;
+
   animationContext?.revert();
   animationContext = undefined;
 });
+// #endregion
 </script>
 
 <style scoped>
@@ -281,10 +304,9 @@ onBeforeUnmount(() => {
   position: relative;
   height: 1.2em;
   overflow: hidden;
-  white-space: nowrap;
   vertical-align: bottom;
+  white-space: nowrap;
   line-height: 1.2;
-  width: max-content;
   box-sizing: content-box;
 }
 
