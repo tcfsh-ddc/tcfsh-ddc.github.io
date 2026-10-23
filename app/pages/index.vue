@@ -10,7 +10,7 @@
 
     <div
       id="desktop-icons"
-      class="absolute left-8 top-6 grid grid-flow-col-dense gap-8 grid-rows-8 grid-cols-2"
+      class="absolute left-4 md:left-8 top-6 grid grid-flow-col-dense gap-8 grid-rows-8 grid-cols-2"
     >
       <button
         @click="switchQaOpen"
