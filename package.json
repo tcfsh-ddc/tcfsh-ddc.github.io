@@ -12,6 +12,7 @@
     "format:fix": "oxfmt --write .",
     "lint": "oxlint --type-aware --type-check",
     "lint:fix": "oxlint --type-aware --type-check --fix",
+    "analyze": "nuxt analyze",
     "nuxt": "npx nuxt"
   },
   "dependencies": {
