@@ -58,7 +58,7 @@
           <h3 class="text-black-400 text-2xl">網站原始碼</h3>
         </a>
         <button
-          class="sh-grid-item gap-2 group flex flex-col justify-start"
+          class="sh-grid-item gap-2 group flex flex-col justify-start cursor-pointer"
           @click="emit('openPaintWindow')"
         >
           <PhPalette
@@ -70,7 +70,7 @@
           <h3 class="text-black-400 text-2xl text-left">認識電繪組</h3>
         </button>
         <button
-          class="sh-grid-item group flex flex-col justify-start gap-2"
+          class="sh-grid-item group flex flex-col justify-start gap-2 cursor-pointer"
           @click="emit('openGameWindow')"
         >
           <PhGameController
@@ -82,7 +82,7 @@
           <h3 class="text-black-400 text-2xl text-left">認識遊戲組</h3>
         </button>
         <button
-          class="sh-grid-item group flex flex-col justify-start gap-2"
+          class="sh-grid-item group flex flex-col justify-start gap-2 cursor-not-allowed opacity-30"
           @click="emit('openMusicWindow')"
         >
           <PhPianoKeys
