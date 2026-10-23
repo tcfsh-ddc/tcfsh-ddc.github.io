@@ -20,6 +20,9 @@
       <p class="sr-only">回首頁</p>
     </button>
 
+    <!-- 手機 - 社群連結 -->
+    <LinksMenu />
+
     <!-- 導覽選項 -->
     <div
       class="hidden md:flex p-0 gap-6 items-center justify-center"
@@ -32,16 +35,16 @@
       </NuxtLink>
 
       <!-- 社幹頁面 -->
-      <NuxtLink class="flex p-0 gap-1" to="/members">
+      <!-- <NuxtLink class="flex p-0 gap-1" to="/members">
         <SvgoMembers :filled="true" class="!h-8 !w-8" />
         <p class="sr-only">幹部</p>
-      </NuxtLink>
+      </NuxtLink> -->
 
       <!-- 作品集頁面 -->
-      <NuxtLink class="flex p-0 gap-1" to="/works">
+      <!-- <NuxtLink class="flex p-0 gap-1" to="/works">
         <SvgoBook :filled="true" class="!h-8 !w-8" />
         <p class="sr-only">作品集</p>
-      </NuxtLink>
+      </NuxtLink> -->
     </div>
 
     <!-- 常駐程式列 -->
@@ -52,7 +55,9 @@
 </template>
 
 <script setup lang="ts">
+import LinksMenu from "./LinksMenu.vue";
 import MobileMenu from "./MobileMenu.vue";
+
 defineEmits<{ home: [] }>();
 </script>
 
