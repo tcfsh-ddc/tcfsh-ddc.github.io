@@ -3,14 +3,19 @@
     class="flex gap-2.5 bg-purple md:bg-purple-dark rounded-b-frame-1 justify-center md:justify-between"
   >
     <!-- 開始按鈕 -->
-    <NuxtLink class="flex px-5 py-3.5 bg-purple" to="/">
+    <button
+      class="flex cursor-pointer px-5 py-3.5 bg-purple"
+      type="button"
+      aria-label="回首頁"
+      @click="$emit('home')"
+    >
       <img
         src="~/assets/images/ddc-logo.jpg"
         alt="數創logo"
         class="size-10 md:size-12"
       />
       <p class="sr-only">回首頁</p>
-    </NuxtLink>
+    </button>
 
     <!-- 導覽選項 -->
     <div
@@ -43,6 +48,8 @@
   </nav>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineEmits<{ home: [] }>();
+</script>
 
 <style scoped></style>

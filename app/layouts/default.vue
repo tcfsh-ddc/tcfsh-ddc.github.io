@@ -8,18 +8,26 @@
         class="flex-1 min-h-0 flex flex-col bg-blue-dark rounded-frame-1 rounded-b-frame-1 md:rounded-b-none overflow-hidden p-1"
         id="desktop-frame"
       >
-        <WindowsContainer>
+        <WindowsContainer ref="windowsContainer">
           <slot />
         </WindowsContainer>
       </div>
 
       <!-- 工作列 -->
-      <div><LayoutTaskbar /></div>
+      <div><LayoutTaskbar @home="handleHome" /></div>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup lang="ts">
+const route = useRoute();
+const windowsContainer = ref<{ closeActiveWindow: () => boolean } | null>(null);
+
+async function handleHome() {
+  if (route.path === "/" && windowsContainer.value?.closeActiveWindow()) return;
+  await navigateTo("/");
+}
+</script>
 
 <style>
 #desktop-frame {

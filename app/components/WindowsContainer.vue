@@ -11,6 +11,10 @@ const containerElement = ref<HTMLElement | null>(null);
 const bounds = shallowRef({ width: 0, height: 0 });
 let resizeObserver: ResizeObserver | undefined;
 let topZIndex = 0;
+const windows = new Map<
+  symbol,
+  { close: () => void; isOpen: () => boolean; zIndex: () => number }
+>();
 
 function updateBounds() {
   const element = containerElement.value;
@@ -23,15 +27,38 @@ function updateBounds() {
   };
 }
 
-function bringToFront() {
+function bringToFront(_windowId: symbol) {
   topZIndex += 1;
   return topZIndex;
+}
+
+function registerWindow(
+  windowId: symbol,
+  window: { close: () => void; isOpen: () => boolean; zIndex: () => number },
+) {
+  windows.set(windowId, window);
+}
+
+function unregisterWindow(windowId: symbol) {
+  windows.delete(windowId);
+}
+
+function closeActiveWindow() {
+  const activeWindow = [...windows.values()]
+    .filter((window) => window.isOpen())
+    .sort((a, b) => b.zIndex() - a.zIndex())[0];
+  if (!activeWindow) return false;
+
+  activeWindow.close();
+  return true;
 }
 
 provide(windowsContainerKey, {
   element: readonly(containerElement),
   bounds: readonly(bounds),
   bringToFront,
+  registerWindow,
+  unregisterWindow,
 });
 
 onMounted(() => {
@@ -47,6 +74,7 @@ onBeforeUnmount(() => {
 defineExpose({
   element: containerElement,
   bounds,
+  closeActiveWindow,
 });
 </script>
 

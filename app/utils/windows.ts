@@ -8,7 +8,16 @@ export interface WindowBounds {
 export interface WindowsContainerContext {
   element: Readonly<Ref<HTMLElement | null>>;
   bounds: Readonly<Ref<WindowBounds>>;
-  bringToFront: () => number;
+  bringToFront: (windowId: symbol) => number;
+  registerWindow: (
+    windowId: symbol,
+    window: {
+      close: () => void;
+      isOpen: () => boolean;
+      zIndex: () => number;
+    },
+  ) => void;
+  unregisterWindow: (windowId: symbol) => void;
 }
 
 export const windowsContainerKey: InjectionKey<WindowsContainerContext> =

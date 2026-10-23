@@ -35,7 +35,7 @@
         </div>
 
         <button
-          v-if="maxable"
+          v-if="maxable && !isMobile"
           class="group absolute right-1 top-1 z-2 grid size-6 cursor-pointer place-items-center rounded-full bg-blue text-inherit transition-colors hover:bg-blue-dark"
           :class="{ 'right-8': showCloseButton }"
           type="button"
@@ -74,7 +74,7 @@
           />
         </button>
 
-        <template v-if="resizable && !isMaximized">
+        <template v-if="resizable && !isMaximized && !isMobile">
           <span
             v-for="handle in resizeHandles"
             :key="handle"
@@ -132,6 +132,9 @@ const emit = defineEmits<{
 
 const container = inject(windowsContainerKey, null);
 const windowElement = ref<HTMLElement | null>(null);
+const windowId = Symbol("window");
+const isMobile = ref(false);
+let mobileQuery: MediaQueryList | undefined;
 const controls = useWindowControls({
   initialX: props.initialX,
   initialY: props.initialY,
@@ -139,8 +142,8 @@ const controls = useWindowControls({
   initialHeight: props.initialHeight,
   minWidth: props.minWidth,
   minHeight: props.minHeight,
-  movable: toRef(props, "movable"),
-  resizable: toRef(props, "resizable"),
+  movable: computed(() => props.movable && !isMobile.value),
+  resizable: computed(() => props.resizable && !isMobile.value),
   bounds: () => {
     if (container) return container.bounds.value;
     return {
@@ -148,7 +151,7 @@ const controls = useWindowControls({
       height: windowElement.value?.parentElement?.clientHeight ?? 0,
     };
   },
-  bringToFront: () => container?.bringToFront() ?? 1,
+  bringToFront: () => container?.bringToFront(windowId) ?? 1,
   onMaximizeChange: (value) => emit("maximizeChange", value),
 });
 
@@ -197,7 +200,12 @@ function onResizePointerDown(event: PointerEvent, handle: ResizeHandle) {
 }
 
 watch(isOpen, (open) => {
-  if (open) nextTick(focusWindow);
+  if (open) {
+    nextTick(() => {
+      focusWindow();
+      if (isMobile.value && !isMaximized.value) maximize();
+    });
+  }
 });
 
 watch(
@@ -211,10 +219,21 @@ onMounted(() => {
     console.warn("<Window> should be placed inside <WindowsContainer>.");
   }
 
+  mobileQuery = window.matchMedia("(max-width: 767px)");
+  mobileQuery.addEventListener("change", updateMobileState);
+  updateMobileState();
+
+  container?.registerWindow(windowId, {
+    close: () => (isOpen.value = false),
+    isOpen: () => isOpen.value,
+    zIndex: () => Number(windowStyle.value.zIndex ?? 0),
+  });
   void initialize();
 });
 
 onBeforeUnmount(() => {
+  mobileQuery?.removeEventListener("change", updateMobileState);
+  container?.unregisterWindow(windowId);
   dispose();
 });
 
@@ -229,10 +248,9 @@ defineExpose({
 
 // 如果雙擊視窗，則最大化視窗
 function onDoubleClick() {
-  if (!props.allowDoubleMaxmize) {
+  if (!props.allowDoubleMaxmize || isMobile.value) {
     return;
   }
-  console.log("double click");
   // 如果視窗已經最大化，則恢復視窗大小
   if (isMaximized.value) {
     restore();
@@ -240,6 +258,15 @@ function onDoubleClick() {
   } else {
     maximize();
     return;
+  }
+}
+
+function updateMobileState() {
+  isMobile.value = mobileQuery?.matches ?? false;
+  if (isMobile.value && isOpen.value && !isMaximized.value) {
+    maximize();
+  } else if (!isMobile.value && isMaximized.value) {
+    restore();
   }
 }
 </script>
