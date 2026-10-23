@@ -26,22 +26,9 @@
           <h1 ref="welcomeTitle" class="text-black-200 text-4xl font-bold">
             歡迎光臨
             <br />
-            <span class="word-flip text-purple">
-              <span class="word-track cursor-default">
-                <span class="word-line word-original">數位</span>
-                <span class="word-line word-english">Digital</span>
-              </span> </span
-            ><span class="word-flip text-blue cursor-default">
-              <span class="word-track">
-                <span class="word-line word-original">創作</span>
-                <span class="word-line word-english">Design</span>
-              </span> </span
-            ><span class="word-flip text-lime cursor-default">
-              <span class="word-track">
-                <span class="word-line word-original">研究社</span>
-                <span class="word-line word-english">Club</span>
-              </span>
-            </span>
+            <span class="word-line word-original text-purple">數位</span>
+            <span class="word-line word-original text-lime">創作</span>
+            <span class="word-line word-original text-blue">研究社</span>
             <span class="text-xl align-super text-black-400 font-extralight">
               串
             </span>
@@ -144,139 +131,6 @@ const emit = defineEmits([
   "openGameWindow",
   "openMusicWindow",
 ]);
-
-// #region 標題動畫
-import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
-import { gsap } from "gsap";
-import { SplitText } from "gsap/SplitText";
-
-gsap.registerPlugin(SplitText);
-
-const welcomeTitle = ref<HTMLElement | null>(null);
-
-let animationContext: gsap.Context | undefined;
-const cleanups: (() => void)[] = [];
-
-onMounted(async () => {
-  await nextTick();
-  await document.fonts.ready;
-
-  const root = welcomeTitle.value;
-  if (!root) return;
-
-  animationContext = gsap.context(() => {
-    const elements = root.querySelectorAll<HTMLElement>(".word-flip");
-
-    elements.forEach((element) => {
-      const original = element.querySelector<HTMLElement>(".word-original");
-      const english = element.querySelector<HTMLElement>(".word-english");
-
-      if (!original || !english) return;
-
-      // 在動畫初始化前量測文字寬度
-      const originalWidth = original.getBoundingClientRect().width;
-      const englishWidth = english.getBoundingClientRect().width;
-
-      // 使用 SplitText 將中英文分割成獨立字元
-      const originalSplit = SplitText.create(original, {
-        type: "chars",
-        charsClass: "word-char",
-      });
-
-      const englishSplit = SplitText.create(english, {
-        type: "chars",
-        charsClass: "word-char",
-      });
-
-      const originalChars = originalSplit.chars;
-      const englishChars = englishSplit.chars;
-
-      gsap.set(element, {
-        width: originalWidth,
-      });
-
-      // 中文停留在原位，英文從下方等待進場
-      gsap.set(originalChars, {
-        yPercent: 0,
-        opacity: 1,
-      });
-
-      gsap.set(englishChars, {
-        yPercent: 120,
-        opacity: 0,
-      });
-
-      const timeline = gsap.timeline({
-        paused: true,
-      });
-
-      // 中文逐字向上離場
-      timeline.to(
-        originalChars,
-        {
-          yPercent: -120,
-          opacity: 0,
-          duration: 0.35,
-          stagger: {
-            each: 0.045,
-          },
-          ease: "power3.inOut",
-        },
-        0,
-      );
-
-      // 英文逐字由下向上進場
-      timeline.to(
-        englishChars,
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: 0.4,
-          stagger: {
-            each: 0.045,
-          },
-          ease: "power3.out",
-        },
-        0.08,
-      );
-
-      // 同步過渡文字容器的寬度
-      timeline.to(
-        element,
-        {
-          width: englishWidth,
-          duration: 0.45,
-          ease: "power2.inOut",
-        },
-        0,
-      );
-
-      const handleEnter = () => timeline.play();
-      const handleLeave = () => timeline.reverse();
-
-      element.addEventListener("mouseenter", handleEnter);
-      element.addEventListener("mouseleave", handleLeave);
-
-      cleanups.push(() => {
-        element.removeEventListener("mouseenter", handleEnter);
-        element.removeEventListener("mouseleave", handleLeave);
-
-        timeline.kill();
-        originalSplit.revert();
-        englishSplit.revert();
-      });
-    });
-  }, root);
-});
-
-onBeforeUnmount(() => {
-  cleanups.forEach((cleanup) => cleanup());
-  cleanups.length = 0;
-
-  animationContext?.revert();
-  animationContext = undefined;
-});
-// #endregion
 </script>
 
 <style scoped>
@@ -297,39 +151,5 @@ onBeforeUnmount(() => {
   background: var(--color-black-800);
   border-color: var(--color-black-700);
   transition: all 0.1s ease-in-out;
-}
-
-.word-flip {
-  display: inline-block;
-  position: relative;
-  height: 1.2em;
-  overflow: hidden;
-  vertical-align: bottom;
-  white-space: nowrap;
-  line-height: 1.2;
-  box-sizing: content-box;
-}
-
-.word-original {
-  display: block;
-  position: relative;
-  width: max-content;
-  white-space: nowrap;
-}
-
-.word-english {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: max-content;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.word-char {
-  display: inline-block;
-  white-space: pre;
-  will-change: transform, opacity;
 }
 </style>
