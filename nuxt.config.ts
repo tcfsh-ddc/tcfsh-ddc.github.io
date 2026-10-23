@@ -24,4 +24,10 @@ export default defineNuxtConfig({
       dirs: ["app/assets/fonts"],
     },
   },
+
+  ssr: false,
+
+  nitro: {
+    preset: "static",
+  },
 });
