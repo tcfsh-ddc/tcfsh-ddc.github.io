@@ -41,6 +41,8 @@
 </template>
 
 <script setup lang="ts">
+const hostname = `${useRequestURL().protocol}//${useRequestURL().host}`;
+
 useHead({
   title: "首頁 - 中一中數位創作研究社",
   meta: [
@@ -59,8 +61,13 @@ useSeoMeta({
     "嗨！歡迎來到數創的大家庭。如果你也對打造自己的作品有興趣，那就在這裡了解我們更多吧。",
   ogDescription:
     "嗨！歡迎來到數創的大家庭。如果你也對打造自己的作品有興趣，那就在這裡了解我們更多吧。",
-  ogImage: "https://tcfsh-ddc.github.io/opengraph/homepage-og.png",
+  ogImage: `${hostname}/opengraph/homepage-og.png`,
+  ogUrl: `${hostname}/`,
   twitterCard: "summary_large_image",
+  twitterTitle: "中一中數位創作研究社",
+  twitterDescription:
+    "嗨！歡迎來到數創的大家庭。如果你也對打造自己的作品有興趣，那就在這裡了解我們更多吧。",
+  twitterImage: `${hostname}/opengraph/homepage-og.png`,
 });
 
 import { ref, watch, onMounted, onUnmounted } from "vue";

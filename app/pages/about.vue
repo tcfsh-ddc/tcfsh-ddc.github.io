@@ -5,6 +5,8 @@
 </template>
 
 <script setup>
+const hostname = `${useRequestURL().protocol}//${useRequestURL().host}`;
+
 import Terminal from "~/components/window/about/Terminal.vue";
 
 useHead({
@@ -22,7 +24,12 @@ useSeoMeta({
   ogTitle: "關於我們 - 中一中數位創作研究社",
   description: "對，關於我們的介紹，我們是什麼？我們是什麼？我們是數創！",
   ogDescription: "對，關於我們的介紹，我們是什麼？我們是什麼？我們是數創！",
-  ogImage: "https://tcfsh-ddc.github.io/opengraph/about-og.png",
+  ogImage: `${hostname}/opengraph/about-og.png`,
+  ogUrl: `${hostname}/about`,
   twitterCard: "summary_large_image",
+  twitterTitle: "關於我們 - 中一中數位創作研究社",
+  twitterDescription:
+    "對，關於我們的介紹，我們是什麼？我們是什麼？我們是數創！",
+  twitterImage: `${hostname}/opengraph/about-og.png`,
 });
 </script>
