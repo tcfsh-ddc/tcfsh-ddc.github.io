@@ -105,7 +105,7 @@ export const terminalCommands: TerminalCommand[] = [
 
           return [
             {
-              color: entry.type === "directory" ? "#6CB6FF" : "inherit",
+              color: entry?.type === "directory" ? "#6CB6FF" : "inherit",
               content: `${index ? "  " : ""}${name}`,
             },
           ];
