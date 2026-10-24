@@ -41,6 +41,28 @@
 </template>
 
 <script setup lang="ts">
+useHead({
+  title: "首頁 - 中一中數位創作研究社",
+  meta: [
+    {
+      name: "description",
+      content:
+        "嗨！歡迎來到數創的大家庭。如果你也對打造自己的作品有興趣，那就在這裡了解我們更多吧。",
+    },
+  ],
+});
+
+useSeoMeta({
+  title: "中一中數位創作研究社",
+  ogTitle: "中一中數位創作研究社",
+  description:
+    "嗨！歡迎來到數創的大家庭。如果你也對打造自己的作品有興趣，那就在這裡了解我們更多吧。",
+  ogDescription:
+    "嗨！歡迎來到數創的大家庭。如果你也對打造自己的作品有興趣，那就在這裡了解我們更多吧。",
+  ogImage: "https://tcfsh-ddc.github.io/opengraph/homepage-og.png",
+  twitterCard: "summary_large_image",
+});
+
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import "@/assets/css/markdown.css";
 
