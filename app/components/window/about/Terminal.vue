@@ -58,14 +58,21 @@ const commands: TerminalCommand[] = [
 ];
 
 function handleGreeting(c: TerminalContext) {
+  c.print("");
+
   for (const line of bebo) {
-    c.print(line);
+    c.print([
+      {
+        content: "  ",
+      },
+      ...line,
+    ]);
   }
 
   c.print("\n\n");
 
   c.print([
-    { content: "  " },
+    { content: "      " },
     {
       content: "台中一中",
       color: "--color-black-400",
@@ -88,11 +95,14 @@ function handleGreeting(c: TerminalContext) {
     },
   ]);
   c.print([
-    { content: "  Version 21.0 without Linux 6.7", color: "--color-black-400" },
+    {
+      content: "      Version 21.0 without Linux 6.7",
+      color: "--color-black-400",
+    },
   ]);
   c.print([
     {
-      content: "  使用 ",
+      content: "      使用 ",
       color: "--color-black-400",
     },
     {
