@@ -26,4 +26,36 @@ export const ddcCommands: TerminalCommand[] = [
       );
     },
   },
+  {
+    name: "info",
+    description: "介紹我們社團",
+    onCalled: (c: TerminalContext) => {
+      c.print([
+        {
+          color: "inherit",
+          content:
+            "\n歡迎來到數創！\n\
+一中數創社是一個熱鬧的大家庭。在這裡你可以用雙手把腦海的想像化為現實、或在Unity中造出你的一方天地，甚至使用FL Studio來製作你所喜愛的音樂。\
+一切盡在數創，只要你願意加入\n\n",
+        },
+      ]);
+    },
+  },
+  {
+    name: "designer",
+    description: "介紹這個網頁的作者",
+    onCalled: (c: TerminalContext) => {
+      c.print([
+        {
+          color: "inherit",
+          content: "\n這網站是由數創第二十一屆的副社長",
+        },
+        { color: "--color-lime", content: " SamHacker " },
+        {
+          color: "inherit",
+          content: "所製作的\n\n",
+        },
+      ]);
+    },
+  },
 ];
