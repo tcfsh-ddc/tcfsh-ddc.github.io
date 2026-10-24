@@ -1,6 +1,5 @@
 <template>
   <Window
-    class=""
     :initial-x="0"
     :initial-y="0"
     :show-close-button="true"
@@ -12,7 +11,7 @@
     </template>
 
     <div class="bg-black-900 h-full w-full">
-      <Terminal class="h-full" />
+      <Terminal class="h-full p-2" />
     </div>
   </Window>
 </template>
