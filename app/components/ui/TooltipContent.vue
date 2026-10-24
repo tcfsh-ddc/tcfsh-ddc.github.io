@@ -25,41 +25,90 @@ withDefaults(defineProps<{ sideOffset?: number }>(), { sideOffset: 6 });
 </script>
 
 <style scoped>
-.sh-tooltip-content {
+:deep(.sh-tooltip-content) {
   transform-origin: var(--reka-tooltip-content-transform-origin);
   will-change: transform, opacity;
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.sh-tooltip-content[data-state="instant-open"],
-.sh-tooltip-content[data-state="delayed-open"] {
-  animation: tooltip-in 160ms cubic-bezier(0.16, 1, 0.3, 1);
+:deep(.sh-tooltip-content[data-state="delayed-open"][data-side="top"]) {
+  animation-name: slideDownAndFade;
+}
+:deep(.sh-tooltip-content[data-state="delayed-open"][data-side="right"]) {
+  animation-name: slideLeftAndFade;
+}
+:deep(.sh-tooltip-content[data-state="delayed-open"][data-side="bottom"]) {
+  animation-name: slideUpAndFade;
+}
+:deep(.sh-tooltip-content[data-state="delayed-open"][data-side="left"]) {
+  animation-name: slideRightAndFade;
 }
 
-.sh-tooltip-content[data-state="closed"] {
-  animation: tooltip-out 100ms ease-in;
+:deep(.sh-tooltip-content[data-state="closed"]) {
+  animation: tooltip-out 50ms ease-in;
+  animation-duration: 100ms;
 }
 
-@keyframes tooltip-in {
+@keyframes slideUpAndFade {
   from {
     opacity: 0;
-    transform: translate3d(var(--tooltip-x, 0), var(--tooltip-y, 0), 0)
-      scale(0.96);
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideRightAndFade {
+  from {
+    opacity: 0;
+    transform: translateX(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideDownAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideLeftAndFade {
+  from {
+    opacity: 0;
+    transform: translateX(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
 @keyframes tooltip-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
   to {
     opacity: 0;
     transform: scale(0.96);
   }
 }
 
-.sh-tooltip-content[data-side="bottom"] { --tooltip-y: -4px; }
-.sh-tooltip-content[data-side="top"] { --tooltip-y: 4px; }
-.sh-tooltip-content[data-side="left"] { --tooltip-x: 4px; }
-.sh-tooltip-content[data-side="right"] { --tooltip-x: -4px; }
-
 @media (prefers-reduced-motion: reduce) {
-  .sh-tooltip-content { animation: none !important; }
+  .sh-tooltip-content {
+    animation: none !important;
+  }
 }
 </style>
