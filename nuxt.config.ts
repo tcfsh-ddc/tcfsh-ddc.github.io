@@ -30,4 +30,14 @@ export default defineNuxtConfig({
   nitro: {
     preset: "static",
   },
+
+  app: {
+    head: {
+      title: "中一中數位創作研究社", // default fallback title
+      htmlAttrs: {
+        lang: "zh-TW",
+      },
+      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    },
+  },
 });
