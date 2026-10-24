@@ -60,16 +60,20 @@ const commands: TerminalCommand[] = [
 function handleGreeting(c: TerminalContext) {
   c.print("");
 
-  for (const line of bebo) {
-    c.print([
-      {
-        content: "  ",
-      },
-      ...line,
-    ]);
-  }
+  if (
+    !(import.meta.client && window.matchMedia("(max-width: 640px)").matches)
+  ) {
+    for (const line of bebo) {
+      c.print([
+        {
+          content: "  ",
+        },
+        ...line,
+      ]);
+    }
 
-  c.print("\n\n");
+    c.print("\n\n");
+  }
 
   c.print([
     { content: "      " },
