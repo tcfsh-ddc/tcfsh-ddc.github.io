@@ -23,6 +23,7 @@
 <script setup>
 import Terminal from "~/components/Terminal.vue";
 import { terminalCommands } from "@/utils/terminalCommands";
+import { ddcCommands } from "#imports";
 
 const commands = [...terminalCommands, ...ddcCommands];
 </script>

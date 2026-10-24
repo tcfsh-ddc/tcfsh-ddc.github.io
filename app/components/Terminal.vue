@@ -52,6 +52,14 @@ let historyDraft = "";
 let completionCandidates: string[] = [];
 let completionIndex = -1;
 
+function focusInput() {
+  inputElement.value?.focus();
+}
+
+onMounted(() => {
+  focusInput();
+});
+
 const { lines, input, running, context, resolveColor, executeCommand } =
   useTerminal(
     () => props.commands,
@@ -189,10 +197,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="terminal">
+  <div class="terminal" @click="focusInput">
     <div
       ref="terminalBody"
-      class="terminal__body"
+      class="terminal__body h-full"
       role="log"
       aria-live="polite"
       aria-label="Terminal output"
@@ -274,7 +282,6 @@ onMounted(async () => {
 }
 
 .terminal__body {
-  max-height: 460px;
   overflow: auto;
 }
 
