@@ -18,20 +18,13 @@
           'select-none': interaction !== null,
         }"
       >
-        <!-- Titlebar -->
+        <!-- #region Titlebar -->
         <div
           v-if="$slots.titlebar"
           class="relative flex shrink-0 px-4 py-1 items-center"
           @pointerdown="onPointerDown"
         >
           <slot name="titlebar" />
-        </div>
-
-        <div
-          class="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-xl bg-black-900 p-2"
-          @pointerdown="onPointerDown"
-        >
-          <slot />
         </div>
 
         <button
@@ -73,6 +66,17 @@
             class="text-black-50 opacity-0 group-hover:opacity-100"
           />
         </button>
+        <!-- #endregion -->
+
+        <!-- #region 內容 -->
+        <div
+          class="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-xl bg-black-900"
+          :class="contentPadding ? 'p-2' : ''"
+          @pointerdown="onPointerDown"
+        >
+          <slot />
+        </div>
+        <!-- #endregion -->
 
         <template v-if="resizable && !isMaximized && !isMobile">
           <span
@@ -108,6 +112,8 @@ interface Props {
   resizable?: boolean;
   showCloseButton?: boolean;
   allowDoubleMaxmize?: boolean;
+  contentPadding?: boolean;
+  defaultStatus?: "window" | "maxmium";
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -122,6 +128,8 @@ const props = withDefaults(defineProps<Props>(), {
   resizable: true,
   showCloseButton: false,
   allowDoubleMaxmize: true,
+  contentPadding: true,
+  defaultStatus: "window",
 });
 
 const isOpen = defineModel<boolean>("open", { default: true });
@@ -228,7 +236,9 @@ onMounted(() => {
     isOpen: () => isOpen.value,
     zIndex: () => Number(windowStyle.value.zIndex ?? 0),
   });
-  void initialize();
+  void initialize().then(() => {
+    if (props.defaultStatus === "maxmium") maximize();
+  });
 });
 
 onBeforeUnmount(() => {

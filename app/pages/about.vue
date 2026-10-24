@@ -1,10 +1,12 @@
 <template>
-  <div>
-    <!-- -->
+  <div class="text-white">
+    <Terminal />
   </div>
 </template>
 
 <script setup>
+import Terminal from "~/components/window/about/Terminal.vue";
+
 useHead({
   title: "關於我們 - 中一中數位創作研究社",
   meta: [
