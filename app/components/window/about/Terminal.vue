@@ -28,10 +28,93 @@
 import Terminal from "~/components/Terminal.vue";
 import { terminalCommands } from "@/utils/terminalCommands";
 import { ddcCommands } from "#imports";
+import { bebo } from "~/consts/bebo";
 
-const commands = [...terminalCommands, ...ddcCommands];
+const commands: TerminalCommand[] = [
+  ...terminalCommands,
+  ...ddcCommands,
+  {
+    name: "graph",
+    description: "畫一隻可愛的嗶啵，給定 `--text` 以顯示完整訊息",
+    onCalled(c, args) {
+      c.print("");
+
+      if (args[0] == "-t" || args[0] == "--text" || args[0] == "-T") {
+        handleGreeting(c);
+      } else {
+        for (const line of bebo) {
+          c.print([
+            {
+              content: "  ",
+            },
+            ...line,
+          ]);
+        }
+      }
+
+      c.print("");
+    },
+  },
+];
 
 function handleGreeting(c: TerminalContext) {
-  c.print("歡迎來到數創 - Kitty");
+  for (const line of bebo) {
+    c.print(line);
+  }
+
+  c.print("\n\n");
+
+  c.print([
+    { content: "  " },
+    {
+      content: "台中一中",
+      color: "--color-black-400",
+      class: "font-extrabold",
+    },
+    {
+      content: "數位",
+      color: "--color-purple",
+      class: "font-extrabold",
+    },
+    {
+      content: "創作",
+      color: "--color-lime",
+      class: "font-extrabold",
+    },
+    {
+      content: "研究社",
+      color: "--color-blue",
+      class: "font-extrabold",
+    },
+  ]);
+  c.print([
+    { content: "  Version 21.0 without Linux 6.7", color: "--color-black-400" },
+  ]);
+  c.print([
+    {
+      content: "  使用 ",
+      color: "--color-black-400",
+    },
+    {
+      content: "help",
+      color: "--color-black-50",
+      class: "underline underline-offset-4",
+    },
+    {
+      content: " 以了解所有可用指令，使用 ",
+      color: "--color-black-400",
+    },
+    {
+      content: "home",
+      color: "--color-black-50",
+      class: "underline underline-offset-4",
+    },
+    {
+      content: " 回到首頁",
+      color: "--color-black-400",
+    },
+  ]);
+
+  c.print("\n\n");
 }
 </script>
