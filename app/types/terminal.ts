@@ -1,6 +1,8 @@
 export interface TerminalSegment {
   /** CSS 顏色或 CSS 自訂屬性名稱，例如 #fff、--terminal-accent */
   color?: string;
+  css?: string | Record<string, string | number>;
+  class?: string | string[] | Record<string, boolean>;
   content: string;
 }
 

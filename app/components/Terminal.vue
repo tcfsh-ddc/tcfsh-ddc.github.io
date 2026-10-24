@@ -278,9 +278,14 @@ onMounted(async () => {
           <span
             v-for="(segment, index) in line.content"
             :key="index"
-            :style="{ color: resolveColor(segment.color) }"
-            >{{ segment.content }}</span
+            :class="segment.class"
+            :style="[
+              segment.css,
+              segment.color ? { color: resolveColor(segment.color) } : {},
+            ]"
           >
+            {{ segment.content }}
+          </span>
         </template>
       </div>
 
