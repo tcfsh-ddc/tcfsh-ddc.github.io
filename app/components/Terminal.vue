@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import "~/assets/css/terminal.css";
 
-import { nextTick, onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 
 import { useTerminal } from "~/composables/useTerminal";
-import type { TerminalCommand } from "~/types/terminal";
+import type {
+  TerminalCommand,
+  TerminalContext,
+  TerminalSegment,
+} from "~/types/terminal";
+
+type TerminalPrintContent = string | TerminalSegment[];
 
 const props = withDefaults(
   defineProps<{
@@ -25,6 +31,21 @@ const props = withDefaults(
     commands?: TerminalCommand[];
 
     /**
+     * 背景展示模式：隱藏輸入列，且不自動聚焦
+     */
+    background?: boolean;
+
+    /**
+     * 背景模式下循環輸出的文字
+     */
+    backgroundLines?: TerminalPrintContent[];
+
+    /**
+     * 背景模式的輸出間隔（毫秒）
+     */
+    backgroundInterval?: number;
+
+    /**
      * 終端機初始化完成後的回呼函式
      * 接收終端機上下文實例作為參數，可用於在元件掛載時自動執行特定初始化指令或輸出歡迎訊息
      * @param c 終端機上下文物件，提供畫面輸出與狀態管理方法
@@ -40,6 +61,9 @@ const props = withDefaults(
   {
     commandPrompt: "guest@tcddc:~$",
     commands: () => [],
+    background: false,
+    backgroundLines: () => [],
+    backgroundInterval: 650,
   },
 );
 
@@ -58,8 +82,37 @@ function focusInput() {
   inputElement.value?.focus();
 }
 
+let backgroundTimer: ReturnType<typeof setInterval> | undefined;
+let backgroundIndex = 0;
+
 onMounted(() => {
-  focusInput();
+  if (!props.background) {
+    focusInput();
+    return;
+  }
+
+  if (!props.backgroundLines.length) return;
+
+  function printNextLine() {
+    const line =
+      props.backgroundLines[backgroundIndex % props.backgroundLines.length];
+
+    if (line !== undefined) {
+      context.print(line);
+      backgroundIndex++;
+    }
+
+    // 避免長時間執行時累積過多輸出
+    if (lines.value.length > 80) {
+      lines.value.splice(0, lines.value.length - 80);
+    }
+  }
+
+  printNextLine();
+  backgroundTimer = setInterval(
+    printNextLine,
+    Math.max(100, props.backgroundInterval),
+  );
 });
 
 const { lines, input, running, context, resolveColor, executeCommand } =
@@ -68,6 +121,12 @@ const { lines, input, running, context, resolveColor, executeCommand } =
     () => props.commandPrompt,
     terminalBody,
   );
+
+onUnmounted(() => {
+  if (backgroundTimer) {
+    clearInterval(backgroundTimer);
+  }
+});
 
 const updateCursorOffset = async () => {
   await nextTick();
@@ -226,6 +285,7 @@ onMounted(async () => {
       </div>
 
       <form
+        v-if="!background"
         ref="inputRow"
         class="terminal__input-row"
         @submit.prevent="submitCommand"
