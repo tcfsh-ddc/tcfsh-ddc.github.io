@@ -116,10 +116,15 @@ function onKeydown(event: KeyboardEvent) {
       historyIndex = history.length;
     }
 
-    historyIndex = event.key === "ArrowUp"
-      ? Math.max(0, historyIndex - 1)
-      : Math.min(history.length, historyIndex + 1);
-    setInput(historyIndex === history.length ? historyDraft : history[historyIndex] ?? "");
+    historyIndex =
+      event.key === "ArrowUp"
+        ? Math.max(0, historyIndex - 1)
+        : Math.min(history.length, historyIndex + 1);
+    setInput(
+      historyIndex === history.length
+        ? historyDraft
+        : (history[historyIndex] ?? ""),
+    );
     return;
   }
 
@@ -135,9 +140,12 @@ function onKeydown(event: KeyboardEvent) {
       ...props.commands.map((command) => command.name),
       "help",
       "clear",
-    ].filter((name, index, names) =>
-      name.toLowerCase().startsWith(prefix) &&
-      names.findIndex((candidate) => candidate.toLowerCase() === name.toLowerCase()) === index,
+    ].filter(
+      (name, index, names) =>
+        name.toLowerCase().startsWith(prefix) &&
+        names.findIndex(
+          (candidate) => candidate.toLowerCase() === name.toLowerCase(),
+        ) === index,
     );
     completionIndex = -1;
   }
@@ -253,6 +261,16 @@ onMounted(async () => {
 .terminal {
   background: #000;
   font-family: monospace;
+}
+
+.terminal__body ::selection {
+  color: var(--color-black-800);
+  background-color: var(--color-black-50);
+}
+
+.terminal__body ::-moz-selection {
+  color: var(--color-black-800);
+  background-color: var(--color-black-50);
 }
 
 .terminal__body {
