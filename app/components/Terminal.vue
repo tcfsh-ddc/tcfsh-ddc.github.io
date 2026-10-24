@@ -6,8 +6,28 @@ import type { TerminalCommand } from "~/types/terminal";
 
 const props = withDefaults(
   defineProps<{
+    /**
+     * 終端機的指令提示符字串
+     * 用於設定命令列介面顯示的提示字元格式
+     * @default "guest@tcddc:~$"
+     * @example "guest@tcddc:~$"
+     */
     commandPrompt?: string;
+
+    /**
+     * 終端機支援的指令清單
+     * 包含所有可供使用者輸入並執行的命令定義物件集合
+     * @default []
+     * @example [{ name: "help", description: "顯示可用指令列表", onCalled: ... }]
+     */
     commands?: TerminalCommand[];
+
+    /**
+     * 終端機初始化完成後的回呼函式
+     * 接收終端機上下文實例作為參數，可用於在元件掛載時自動執行特定初始化指令或輸出歡迎訊息
+     * @param c 終端機上下文物件，提供畫面輸出與狀態管理方法
+     * @returns 執行結果可為空值或非同步 Promise 物件
+     */
     getIn?: TerminalCommand["onCalled"] extends (
       c: infer C,
       ...args: never[]
