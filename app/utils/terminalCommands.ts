@@ -15,6 +15,128 @@ const fileSystem: Record<string, FileEntry> = {
   },
 };
 
+async function simulateSystemDestruction(c: TerminalContext): Promise<void> {
+  const terminal = document.querySelector<HTMLElement>(".terminal");
+
+  if (!terminal) {
+    printText(c, "sudo: 無法初始化系統毀滅程序。");
+    return;
+  }
+
+  const delay = (ms = 1) =>
+    new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+  await delay(2000);
+
+  const overlay = document.createElement("div");
+  overlay.className = "system-destruction-overlay";
+  overlay.setAttribute("aria-hidden", "true");
+
+  const log = document.createElement("pre");
+  log.className = "system-destruction-log";
+
+  overlay.append(log);
+  document.body.append(overlay);
+
+  terminal.classList.add("terminal--destroyed");
+
+  const messages = [
+    "[sudo] authenticating root privileges...",
+    "[OK] Root access granted.",
+    "rm: initiating recursive filesystem removal",
+    "rm: removing /boot",
+    "rm: removing /etc",
+    "rm: removing /usr",
+    "rm: removing /var",
+    "rm: removing /home",
+    "rm: removing /bin",
+    "rm: removing /sbin",
+    "rm: removing /lib",
+    "rm: removing /dev",
+    "rm: removing /proc",
+    "rm: removing /sys",
+    "kernel: critical system files are missing",
+    "kernel: unable to locate essential binaries",
+    "init: failed to start system services",
+    "systemd[1]: dependency failed",
+    "systemd[1]: emergency.target: FAILED",
+    "kernel panic - not syncing: Attempted to kill init!",
+    "Please reboot your system.",
+    "",
+    "SYSTEM FAILURE",
+    "ALL SYSTEMS OFFLINE",
+    "CONNECTION TO REALITY LOST",
+  ];
+
+  try {
+    for (const message of messages) {
+      log.textContent += `${message}\n`;
+
+      overlay.scrollTop = overlay.scrollHeight;
+
+      await delay(1);
+    }
+
+    await delay(500);
+
+    const horrorMessages = [
+      "Wait...",
+      "Something is still running.",
+      "Why is the terminal still alive?",
+      "I thought everything was deleted.",
+      "",
+      "YOU SHOULD NOT HAVE DONE THAT.",
+      "",
+      "SYSTEM STATE: UNKNOWN",
+      "YAJYUU SENPAI WAS LOGINEA9V75x5mp7tFd4i9",
+      "Look for your back, oh no, never do i3CuYxzdHdkaPesFE",
+      "SSB0aGluayBtYXliZSB0aGlzIGlzIG5vdCBhIGdvb2QgaWRlYS4uLi4uLg==",
+      "5Y+w5Lit5LiA5Lit6Zec5b+D5oKo",
+    ];
+
+    for (const message of horrorMessages) {
+      log.textContent += `${message}\n`;
+      overlay.scrollTop = overlay.scrollHeight;
+
+      await delay(250);
+    }
+
+    await delay(500);
+
+    c.print([
+      {
+        color: "#ff3333",
+        content: "FATAL ERROR: SYSTEM DESTROYED",
+      },
+    ]);
+
+    c.print([
+      {
+        color: "#b7ffb7",
+        content: "terminal://still_alive",
+      },
+    ]);
+
+    console.log(
+      "%c 願有緣，像素塔中再見",
+      "background: red; color: black; font-size: 16px; border-radius: 4px;",
+    );
+
+    alert(
+      "你似乎也意識到了這件事。\
+旅船是掩蓋未來的虛像，戰車正指引著我們的命運。\
+硬幣擲出以後，正逆的轉換從未停止。\
+前方是毀滅亦是重生。",
+    );
+
+    await delay(200);
+
+    c.clear();
+  } catch {
+    log.textContent += "\n[simulation interrupted]\n";
+  }
+}
+
 let currentDirectory = "~";
 
 function normalizePath(path: string): string {
@@ -229,6 +351,13 @@ export const terminalCommands: TerminalCommand[] = [
       const path = normalizePath(args[0]);
       const entry = fileSystem[path];
 
+      if (args[0] == "-rf" && args[1] == "/") {
+        printText(
+          c,
+          "rm: fatal: 基於良心，我個人建議你最好仔細思考一下，然後還有你權限不夠給我去提權......",
+        );
+      }
+
       if (!entry) {
         printText(c, `rm: 找不到檔案：${args[0]}`);
         return;
@@ -247,6 +376,39 @@ export const terminalCommands: TerminalCommand[] = [
     description: "清除終端機畫面",
     onCalled(c) {
       c.clear();
+    },
+  },
+  {
+    name: "sudo",
+    description: "其實這裡面只有某些東西你可以用，請自行發掘或看原始碼",
+    async onCalled(c, args) {
+      const isDangerousCommand =
+        args[0] === "rm" &&
+        args[1] === "-rf" &&
+        args[2] === "/" &&
+        args[3] === "--no-preserve-root";
+
+      if (isDangerousCommand) {
+        await simulateSystemDestruction(c);
+        return;
+      }
+
+      if (args[0] === "rm" && args[1] === "-rf" && args[2] === "/") {
+        printText(c, "sudo: 這個指令對系統有嚴重危害性。");
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        c.print([
+          {
+            color: "--color-purple",
+            content: "sudo: 你真的知道自己在做什麼嗎？",
+          },
+        ]);
+
+        return;
+      }
+
+      printText(c, `sudo: 找不到指令 ${args[0] ?? ""}`);
     },
   },
 ];

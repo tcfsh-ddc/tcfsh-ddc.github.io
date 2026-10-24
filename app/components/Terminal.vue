@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import "~/assets/css/terminal.css";
+
 import { nextTick, onMounted, ref, watch } from "vue";
 
 import { useTerminal } from "~/composables/useTerminal";
@@ -264,96 +266,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.terminal {
-  background: #000;
-  font-family: monospace;
-}
-
-.terminal__body ::selection {
-  color: var(--color-black-800);
-  background-color: var(--color-black-50);
-}
-
-.terminal__body ::-moz-selection {
-  color: var(--color-black-800);
-  background-color: var(--color-black-50);
-}
-
-.terminal__body {
-  overflow: auto;
-}
-
-.terminal__line {
-  min-height: 1.5em;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-.terminal__prompt {
-  flex-shrink: 0;
-  white-space: pre;
-}
-
-.terminal__input-echo {
-  margin-left: 9px;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-.terminal__input-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.terminal__input {
-  flex: 1;
-  width: 0;
-  min-width: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  caret-color: transparent;
-}
-
-.terminal__input:disabled {
-  opacity: 0.6;
-}
-
-.terminal__cursor {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  flex-shrink: 0;
-  width: 8px;
-  height: 1.4em;
-  background: currentColor;
-  animation: terminal-blink 1s steps(2, start) infinite;
-}
-
-.terminal__measure {
-  position: absolute;
-  visibility: hidden;
-  white-space: pre;
-  font: inherit;
-}
-
-@keyframes terminal-blink {
-  to {
-    visibility: hidden;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .terminal__cursor {
-    animation: none;
-  }
-}
-</style>
