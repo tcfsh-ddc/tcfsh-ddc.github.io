@@ -15,15 +15,23 @@
     </template>
 
     <div class="bg-black-900 h-full w-full">
-      <Terminal :commands="commands" class="h-full p-2 text-base" />
+      <Terminal
+        :commands="commands"
+        :get-in="handleGreeting"
+        class="h-full p-2 text-base"
+      />
     </div>
   </Window>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Terminal from "~/components/Terminal.vue";
 import { terminalCommands } from "@/utils/terminalCommands";
 import { ddcCommands } from "#imports";
 
 const commands = [...terminalCommands, ...ddcCommands];
+
+function handleGreeting(c: TerminalContext) {
+  c.print("歡迎來到數創 - Kitty");
+}
 </script>
