@@ -46,6 +46,11 @@ const inputElement = ref<HTMLInputElement | null>(null);
 const inputRow = ref<HTMLElement | null>(null);
 const inputMeasure = ref<HTMLElement | null>(null);
 const cursorOffset = ref(0);
+const commandHistory = ref<string[]>([]);
+let historyIndex = -1;
+let historyDraft = "";
+let completionCandidates: string[] = [];
+let completionIndex = -1;
 
 const { lines, input, running, context, resolveColor, executeCommand } =
   useTerminal(
@@ -67,6 +72,91 @@ const updateCursorOffset = async () => {
   cursorOffset.value =
     inputLeft - rowLeft + inputMeasure.value.getBoundingClientRect().width;
 };
+
+function resetCompletion() {
+  completionCandidates = [];
+  completionIndex = -1;
+}
+
+function setInput(value: string) {
+  input.value = value;
+  void nextTick(() => {
+    const element = inputElement.value;
+    if (!element) return;
+    element.setSelectionRange(value.length, value.length);
+    void updateCursorOffset();
+  });
+}
+
+function onInput() {
+  historyIndex = -1;
+  historyDraft = "";
+  resetCompletion();
+  void updateCursorOffset();
+}
+
+function onKeydown(event: KeyboardEvent) {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    setInput("");
+    historyIndex = -1;
+    historyDraft = "";
+    resetCompletion();
+    return;
+  }
+
+  if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+    const history = commandHistory.value;
+    if (!history.length) return;
+    event.preventDefault();
+    resetCompletion();
+
+    if (historyIndex === -1) {
+      historyDraft = input.value;
+      historyIndex = history.length;
+    }
+
+    historyIndex = event.key === "ArrowUp"
+      ? Math.max(0, historyIndex - 1)
+      : Math.min(history.length, historyIndex + 1);
+    setInput(historyIndex === history.length ? historyDraft : history[historyIndex] ?? "");
+    return;
+  }
+
+  if (event.key !== "Tab") return;
+  event.preventDefault();
+
+  const commandText = input.value;
+  if (/\s/.test(commandText)) return;
+
+  if (!completionCandidates.length) {
+    const prefix = commandText.toLowerCase();
+    completionCandidates = [
+      ...props.commands.map((command) => command.name),
+      "help",
+      "clear",
+    ].filter((name, index, names) =>
+      name.toLowerCase().startsWith(prefix) &&
+      names.findIndex((candidate) => candidate.toLowerCase() === name.toLowerCase()) === index,
+    );
+    completionIndex = -1;
+  }
+
+  if (!completionCandidates.length) return;
+  completionIndex = (completionIndex + 1) % completionCandidates.length;
+  setInput(completionCandidates[completionIndex] ?? "");
+}
+
+function submitCommand() {
+  const command = input.value.trim();
+  if (command && !running.value) {
+    commandHistory.value.push(command);
+    historyIndex = -1;
+    historyDraft = "";
+  }
+  resetCompletion();
+  void executeCommand(input.value);
+}
 
 watch(input, updateCursorOffset);
 
@@ -120,7 +210,7 @@ onMounted(async () => {
       <form
         ref="inputRow"
         class="terminal__input-row"
-        @submit.prevent="executeCommand(input)"
+        @submit.prevent="submitCommand"
       >
         <label class="terminal__prompt" for="terminal-command">
           {{ commandPrompt }}
@@ -136,7 +226,8 @@ onMounted(async () => {
           autocapitalize="off"
           spellcheck="false"
           :disabled="running"
-          @input="updateCursorOffset"
+          @input="onInput"
+          @keydown="onKeydown"
           @keyup="updateCursorOffset"
           @click="updateCursorOffset"
           aria-label="Enter a terminal command"
@@ -214,6 +305,7 @@ onMounted(async () => {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  pointer-events: none;
   flex-shrink: 0;
   width: 8px;
   height: 1.4em;
