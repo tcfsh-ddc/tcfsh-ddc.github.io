@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-const hostname = `${useRequestURL().protocol}//${useRequestURL().host}`;
+const hostname = import.meta.env.VITE_SITE_URL || "https://tcfsh-ddc.github.io";
 
 import Terminal from "~/components/window/about/Terminal.vue";
 

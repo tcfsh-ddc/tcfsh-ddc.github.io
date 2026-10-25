@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-const hostname = `${useRequestURL().protocol}//${useRequestURL().host}`;
+const hostname = import.meta.env.VITE_SITE_URL || "https://tcfsh-ddc.github.io";
 
 useHead({
   title: "首頁 - 中一中數位創作研究社",
