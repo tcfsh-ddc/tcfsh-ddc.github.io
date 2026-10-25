@@ -10,10 +10,10 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss(), base64Loader],
 
-    build: {
-      // 超過此大小（單位：bytes）的資產才會變成獨立檔案，小於此大小則自動轉為 Base64 內聯
-      assetsInlineLimit: 9000,
-    },
+    // build: {
+    //   // 超過此大小（單位：bytes）的資產才會變成獨立檔案，小於此大小則自動轉為 Base64 內聯
+    //   assetsInlineLimit: 9000,
+    // },
   },
   svgo: {
     autoImportPath: "~/assets/icons/",
@@ -25,19 +25,16 @@ export default defineNuxtConfig({
     },
   },
 
-  ssr: false,
-
-  nitro: {
-    preset: "static",
-  },
-
   app: {
     head: {
       title: "中一中數位創作研究社", // default fallback title
       htmlAttrs: {
         lang: "zh-TW",
       },
-      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+      link: [
+        { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+        // { rel: "stylesheet", href: "https://font.emtech.cc/css/GlowSansTCCom" }, // font.emtech.cc
+      ],
     },
   },
 });
