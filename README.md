@@ -2,6 +2,14 @@
 
 # TCDDC Official Club Website
 
+<center>
+<a href="https://www.figma.com/community/file/1695062241410061525"><img width="200" height="80" alt="design" src="https://github.com/user-attachments/assets/60d9f014-26df-406c-aeb7-826998a42738" /></a>
+<a href="https://www.instagram.com/tcfsh.ddc/"><img width="200" height="80" alt="ig" src="https://github.com/user-attachments/assets/4980ea3c-81f3-489e-b208-05496e6f664f" /></a>
+<a href="https://github.com/tcfsh-ddc/tcfsh-ddc.github.io#license"><img width="200" height="80" alt="license" src="https://github.com/user-attachments/assets/7fe5fee1-7b60-40a0-b446-a23ae90381d3" /></a>
+</center>
+
+　　
+
 > Just a club website designed by [@SamHacker](https://github.com/510208), operating system styled.
 
 This is an operating system styled Vue website for TCDDC 21th. The source code is licensed under [GNU GPL v3.0](LICENSE), more license information was wroted below.
@@ -62,3 +70,24 @@ pnpm preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Credits
+
+<img width="1920" height="405" alt="credits" src="https://github.com/user-attachments/assets/8d3b12b6-657c-4216-865b-524752a358cc" />
+
+Oh ya, thanks to these developers and their awesome projects, this website won't work successful without them!
+
+- [Vue.js](https://vuejs.org/) and [Nuxt.js](https://nuxt.com/) for simplize my code
+- [GSAP](https://gsap.com), for the animations window uses
+- [TailwindCSS](https://tailwindcss.com/)
+- [highlight.js](https://highlightjs.org/), for the code highlighting in "遊戲組"
+- [Phosphor Icon](https://phosphoricons.com/), [Pxlkit](https://pxlkit.xyz/icons) for their free and beautiful icons
+- [https://pixeliconlibrary.com/](https://pixeliconlibrary.com/) for their pixel-styled icons
+- [Oxc tools](https://oxc.rs/) for their rapidly code linting and formatting
+- [Reka UI](https://reka-ui.com/) for their styless UI components that we can simply design them
+- [emfont](https://font.emtech.cc) for their font source
+
+In the other hand, we must give respect to these people who attended in this project
+
+- [yemogu._.810](https://www.instagram.com/yemogu._.810/), out president of DDC 21th, for lots of assets
+- [SamHacker, also known as Misaka Itosana](https://github.com/510208), our vice president of DDC 21th, for almost all of this website and design
