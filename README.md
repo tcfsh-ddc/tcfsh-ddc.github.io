@@ -2,10 +2,14 @@
 
 # TCDDC Official Club Website
 
+
+
+
+
 <center>
-<a href="https://www.figma.com/community/file/1695062241410061525"><img width="200" height="80" alt="design" src="https://github.com/user-attachments/assets/60d9f014-26df-406c-aeb7-826998a42738" /></a>
-<a href="https://www.instagram.com/tcfsh.ddc/"><img width="200" height="80" alt="ig" src="https://github.com/user-attachments/assets/4980ea3c-81f3-489e-b208-05496e6f664f" /></a>
-<a href="https://github.com/tcfsh-ddc/tcfsh-ddc.github.io#license"><img width="200" height="80" alt="license" src="https://github.com/user-attachments/assets/7fe5fee1-7b60-40a0-b446-a23ae90381d3" /></a>
+<a href="https://www.figma.com/community/file/1695062241410061525"><img width="250" alt="design" src="https://github.com/user-attachments/assets/517548de-78d6-4d1b-9f56-914e99cf7104" /></a>
+<a href="https://www.instagram.com/tcfsh.ddc/"><img width="250" alt="ig" src="https://github.com/user-attachments/assets/9328c732-46bc-4977-9daf-20c34aa146e3" /></a>
+<a href="https://github.com/tcfsh-ddc/tcfsh-ddc.github.io#license"><img width="250" alt="license" src="https://github.com/user-attachments/assets/18b0cd4b-47e0-45b8-8c8f-d8d67e74fd1a" /></a>
 </center>
 
 　　
