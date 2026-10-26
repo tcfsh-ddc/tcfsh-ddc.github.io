@@ -22,6 +22,14 @@
 </template>
 
 <script setup lang="ts">
+import desktopBg from "~/assets/images/desktop-bg.png";
+
+useHead({
+  link: [
+    { rel: "preload", href: desktopBg, as: "image", fetchpriority: "high" },
+  ],
+});
+
 const route = useRoute();
 const windowsContainer = ref<{ closeActiveWindow: () => boolean } | null>(null);
 
