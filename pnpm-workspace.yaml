@@ -1,3 +1,5 @@
 allowBuilds:
+  es5-ext: true
   esbuild: true
   pnpm: true
+  ttf2woff2: true
