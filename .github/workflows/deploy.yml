@@ -23,8 +23,8 @@ jobs:
         run: pnpm build --preset github_pages
         env:
           NUXT_APP_BASE_URL: /
-      - name: Subset Fonts
-        run: pnpm font-preprocess
+      # - name: Subset Fonts
+      #   run: pnpm font-preprocess
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5.0.0
         with:
