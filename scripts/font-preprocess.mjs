@@ -14,14 +14,10 @@ import fontSpider from "font-spider";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
 const presetIndex = args.indexOf("--preset");
-const preset = presetIndex === -1
-  ? process.env.NUXT_PRESET
-  : args[presetIndex + 1];
+const preset =
+  presetIndex === -1 ? process.env.NUXT_PRESET : args[presetIndex + 1];
 const githubPages = preset === "github_pages";
-const publicDir = path.join(
-  root,
-  githubPages ? ".output/public" : "dist",
-);
+const publicDir = path.join(root, githubPages ? ".output/public" : "dist");
 const outputDir = githubPages
   ? path.join(publicDir, "_nuxt", "fonts")
   : path.join(publicDir, "fonts");
@@ -62,34 +58,64 @@ try {
 
   const weights = [200, 400, 700];
   let fontFiles;
+
   if (githubPages) {
+    const fontDir = path.join(publicDir, "_nuxt", "fonts");
     const cssFiles = await collectFiles(publicDir, new Set([".css"]));
+    const fontNames = (await readdir(fontDir)).filter((file) =>
+      file.toLowerCase().endsWith(".ttf"),
+    );
+
     const cssEntries = await Promise.all(
       cssFiles.map(async (file) => ({
         file,
         content: await readFile(file, "utf8"),
       })),
     );
+
     fontFiles = weights.map((weight) => {
-      for (const { file, content } of cssEntries) {
+      const matches = new Set();
+
+      for (const { file: cssFile, content } of cssEntries) {
         for (const [rule] of content.matchAll(/@font-face\s*\{[^}]*\}/g)) {
           if (
-            /font-family:\s*["']?GlowSans["']?/i.test(rule) &&
-            new RegExp(`font-weight:\\s*${weight}(?:\\D|$)`).test(rule)
+            !/font-family:\s*["']?GlowSans["']?/i.test(rule) ||
+            !new RegExp(`font-weight:\\s*${weight}(?:\\D|$)`).test(rule)
           ) {
-            const url = rule.match(/url\(["']?([^"')]+)/)?.[1];
-            if (url && !/^(?:data:|https?:)/i.test(url)) {
-              return {
-                weight,
-                file: path.resolve(path.dirname(file), decodeURIComponent(url)),
-              };
+            continue;
+          }
+
+          const url = rule.match(/url\(["']?([^"')]+)/)?.[1];
+
+          if (!url || /^(?:data:|https?:)/i.test(url)) {
+            continue;
+          }
+
+          const resolved = path.resolve(
+            path.dirname(cssFile),
+            decodeURIComponent(url.split("?")[0].split("#")[0]),
+          );
+
+          if (path.dirname(resolved) === fontDir) {
+            const name = path.basename(resolved);
+
+            if (fontNames.includes(name)) {
+              matches.add(resolved);
             }
           }
         }
       }
-      throw new Error(
-        `Could not find the built GlowSans ${weight} font in ${publicDir} CSS`,
-      );
+
+      if (matches.size !== 1) {
+        throw new Error(
+          `Expected exactly one GlowSans ${weight} font in ${fontDir}, found ${matches.size}: ${[...matches].join(", ")}`,
+        );
+      }
+
+      return {
+        weight,
+        file: [...matches][0],
+      };
     });
   } else {
     fontFiles = weights.map((weight) => ({
@@ -97,6 +123,7 @@ try {
       file: path.join(outputDir, `GlowSans-${weight}.ttf`),
     }));
   }
+
   await mkdir(sourceDir, { recursive: true });
   const faces = fontFiles.map(({ weight, file }) => {
     const fileName = `GlowSans-${weight}${path.extname(file)}`;
@@ -105,10 +132,7 @@ try {
 
   for (const { weight, file } of fontFiles) {
     const fileName = `GlowSans-${weight}${path.extname(file)}`;
-    await copyFile(
-      file,
-      path.join(sourceDir, fileName),
-    );
+    await copyFile(file, path.join(sourceDir, fileName));
   }
 
   await mkdir(tempDir, { recursive: true });
@@ -131,10 +155,7 @@ try {
 
   for (const { weight, file } of fontFiles) {
     const fileName = `GlowSans-${weight}${path.extname(file)}`;
-    await writeFile(
-      file,
-      await readFile(path.join(sourceDir, fileName)),
-    );
+    await writeFile(file, await readFile(path.join(sourceDir, fileName)));
   }
   console.info(
     `Font preprocessing complete: ${text.size} unique characters scanned.`,
