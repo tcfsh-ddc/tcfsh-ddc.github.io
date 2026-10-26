@@ -12,8 +12,19 @@ import { fileURLToPath } from "node:url";
 import fontSpider from "font-spider";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const publicDir = path.join(root, "dist");
-const outputDir = path.join(publicDir, "fonts");
+const args = process.argv.slice(2);
+const presetIndex = args.indexOf("--preset");
+const preset = presetIndex === -1
+  ? process.env.NUXT_PRESET
+  : args[presetIndex + 1];
+const githubPages = preset === "github_pages";
+const publicDir = path.join(
+  root,
+  githubPages ? ".output/public" : "dist",
+);
+const outputDir = githubPages
+  ? path.join(publicDir, "_nuxt", "fonts")
+  : path.join(publicDir, "fonts");
 const tempDir = await mkdtemp(path.join(root, ".font-preprocess-"));
 const sourceDir = path.join(tempDir, "fonts");
 
@@ -31,6 +42,7 @@ async function collectFiles(dir, extensions) {
 }
 
 try {
+  await readdir(publicDir);
   const staticFiles = await collectFiles(
     publicDir,
     new Set([".html", ".js", ".css"]),
@@ -49,16 +61,52 @@ try {
   }
 
   const weights = [200, 400, 700];
+  let fontFiles;
+  if (githubPages) {
+    const cssFiles = await collectFiles(publicDir, new Set([".css"]));
+    const cssEntries = await Promise.all(
+      cssFiles.map(async (file) => ({
+        file,
+        content: await readFile(file, "utf8"),
+      })),
+    );
+    fontFiles = weights.map((weight) => {
+      for (const { file, content } of cssEntries) {
+        for (const [rule] of content.matchAll(/@font-face\s*\{[^}]*\}/g)) {
+          if (
+            /font-family:\s*["']?GlowSans["']?/i.test(rule) &&
+            new RegExp(`font-weight:\\s*${weight}(?:\\D|$)`).test(rule)
+          ) {
+            const url = rule.match(/url\(["']?([^"')]+)/)?.[1];
+            if (url && !/^(?:data:|https?:)/i.test(url)) {
+              return {
+                weight,
+                file: path.resolve(path.dirname(file), decodeURIComponent(url)),
+              };
+            }
+          }
+        }
+      }
+      throw new Error(
+        `Could not find the built GlowSans ${weight} font in ${publicDir} CSS`,
+      );
+    });
+  } else {
+    fontFiles = weights.map((weight) => ({
+      weight,
+      file: path.join(outputDir, `GlowSans-${weight}.ttf`),
+    }));
+  }
   await mkdir(sourceDir, { recursive: true });
-  const faces = weights.map((weight) => {
-    const fileName = `GlowSans-${weight}.ttf`;
-    return `@font-face { font-family: "GlowSans"; font-style: normal; font-weight: ${weight}; src: url("fonts/${fileName}") format("truetype"); }`;
+  const faces = fontFiles.map(({ weight, file }) => {
+    const fileName = `GlowSans-${weight}${path.extname(file)}`;
+    return `@font-face { font-family: "GlowSans"; font-style: normal; font-weight: ${weight}; src: url("fonts/${fileName}") format("${path.extname(file) === ".otf" ? "opentype" : "truetype"}"); }`;
   });
 
-  for (const weight of weights) {
-    const fileName = `GlowSans-${weight}.ttf`;
+  for (const { weight, file } of fontFiles) {
+    const fileName = `GlowSans-${weight}${path.extname(file)}`;
     await copyFile(
-      path.join(outputDir, fileName),
+      file,
       path.join(sourceDir, fileName),
     );
   }
@@ -81,10 +129,10 @@ try {
   );
   await fontSpider.compressor(webFonts, { backup: false });
 
-  for (const weight of weights) {
-    const fileName = `GlowSans-${weight}.ttf`;
+  for (const { weight, file } of fontFiles) {
+    const fileName = `GlowSans-${weight}${path.extname(file)}`;
     await writeFile(
-      path.join(outputDir, fileName),
+      file,
       await readFile(path.join(sourceDir, fileName)),
     );
   }
