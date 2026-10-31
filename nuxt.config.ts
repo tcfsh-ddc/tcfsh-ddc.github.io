@@ -18,12 +18,12 @@ export default defineNuxtConfig({
   svgo: {
     autoImportPath: "~/assets/icons/",
   },
-  fonts: {
-    defaults: { weights: ["200", "400", "700"], styles: ["normal"] },
-    local: {
-      dirs: ["app/assets/fonts"],
-    },
-  },
+  // fonts: {
+  //   defaults: { weights: ["200", "400", "700"], styles: ["normal"] },
+  //   local: {
+  //     dirs: ["app/assets/fonts"],
+  //   },
+  // },
 
   app: {
     head: {
@@ -33,7 +33,7 @@ export default defineNuxtConfig({
       },
       link: [
         { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-        // { rel: "stylesheet", href: "https://font.emtech.cc/css/GlowSansTCCom" }, // font.emtech.cc
+        { rel: "stylesheet", href: "https://font.emtech.cc/css/GlowSansTCCom" }, // font.emtech.cc
       ],
     },
   },
