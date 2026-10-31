@@ -23,7 +23,9 @@
         </h2>
 
         <div class="card-meta flex min-w-0 items-center gap-2 text-sm">
-          <span class="category-tag text-sm"> #{{ tagLabels[item.tag] }} </span>
+          <span class="category-tag text-sm shadow">
+            #{{ tagLabels[item.tag] }}
+          </span>
 
           <span class="card-handle" :title="item.slug"> @{{ item.slug }} </span>
         </div>
