@@ -18,7 +18,7 @@
         class="flex flex-col gap-1 items-center justify-center cursor-pointer"
       >
         <SvgoMessage :filled="true" class="!size-10" />
-        <span>問答</span>
+        <span>社團Q＆A</span>
       </button>
 
       <button
@@ -41,32 +41,29 @@
 </template>
 
 <script setup lang="ts">
+import { siteConfig, pageTitle } from "@/config/site";
 const hostname = import.meta.env.VITE_SITE_URL || "https://tcfsh-ddc.github.io";
 
 useHead({
-  title: "首頁 - 中一中數位創作研究社",
+  title: pageTitle("首頁"),
   meta: [
     {
       name: "description",
-      content:
-        "嗨！歡迎來到數創的大家庭。如果你也對打造自己的作品有興趣，那就在這裡了解我們更多吧。",
+      content: siteConfig.description,
     },
   ],
 });
 
 useSeoMeta({
-  title: "中一中數位創作研究社",
-  ogTitle: "中一中數位創作研究社",
-  description:
-    "嗨！歡迎來到數創的大家庭。如果你也對打造自己的作品有興趣，那就在這裡了解我們更多吧。",
-  ogDescription:
-    "嗨！歡迎來到數創的大家庭。如果你也對打造自己的作品有興趣，那就在這裡了解我們更多吧。",
+  title: siteConfig.name,
+  ogTitle: siteConfig.name,
+  description: siteConfig.description,
+  ogDescription: siteConfig.description,
   ogImage: `${hostname}/opengraph/homepage-og.png`,
   ogUrl: `${hostname}/`,
   twitterCard: "summary_large_image",
-  twitterTitle: "中一中數位創作研究社",
-  twitterDescription:
-    "嗨！歡迎來到數創的大家庭。如果你也對打造自己的作品有興趣，那就在這裡了解我們更多吧。",
+  twitterTitle: siteConfig.name,
+  twitterDescription: siteConfig.description,
   twitterImage: `${hostname}/opengraph/homepage-og.png`,
 });
 

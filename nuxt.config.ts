@@ -1,5 +1,6 @@
 import tailwindcss from "@tailwindcss/vite";
 import { base64Loader } from "./plugins/vite-image-to-base64";
+import { siteConfig } from "./app/config/site";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -27,7 +28,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: "中一中數位創作研究社", // default fallback title
+      title: siteConfig.name, // default fallback title
       htmlAttrs: {
         lang: "zh-TW",
       },

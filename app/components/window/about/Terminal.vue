@@ -29,6 +29,7 @@ import Terminal from "~/components/Terminal.vue";
 import { terminalCommands } from "@/utils/terminalCommands";
 import { ddcCommands } from "#imports";
 import { bebo } from "~/consts/bebo";
+import { siteConfig } from "~/config/site";
 
 const commands: TerminalCommand[] = [
   ...terminalCommands,
@@ -100,7 +101,7 @@ function handleGreeting(c: TerminalContext) {
   ]);
   c.print([
     {
-      content: "      Version 21.0 without Linux 6.7",
+      content: `      Version ${siteConfig.sessionNum}.0 without Linux 6.7`,
       color: "--color-black-400",
     },
   ]);

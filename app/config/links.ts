@@ -1,43 +1,38 @@
-export interface LinkList {
-  type:
-    | "website" // 社網
-    | "link-in-bio" // 連結列表
-    | "github"
-    | "facebook"
-    | "instagram"
-    | "threads"
-    | "discord";
-  url: string;
-}
-
-export interface Links {
-  name: string;
-  image: string;
-  description: string;
-  slug: string;
-  tag:
-    | "club" // 友社
-    | "personal" // 個人
-    | "organization" // 聯合組織的數據
-    | "activity"; // 活動官方帳號
-  links: LinkList[];
-  color: string; // 顏色（CSS色碼或關鍵字等）
-}
-
-// 親愛的接手這網站的學弟，友善告訴你
-// 如果你不會寫前端的話上面別動，出事了別找我QAQ
+// 你們有跟其他社團或活動交流的話可以在這邊加上他們的介紹
+// 不會改問GPT
 
 export const links: Links[] = [
   {
-    name: "中一中電研社",
-    image: "https://tcirc.tw/images/apple-touch-icon.png",
-    description: "臺中一中電腦資訊研習社",
-    slug: "tcirc",
+    name: "中一中電研社", // 連結名稱
+    image: "https://tcirc.tw/images/apple-touch-icon.png", // 對方的圖示
+    description: "臺中一中電腦資訊研習社", // 他們的介紹
+    slug: "tcirc", // hashtag，就是＠xxx那個
+
+    // 社團類型
+    //  你們有以下幾種可以選
+    //  也可以自己去改程式自己加
+    // - club是社團
+    // - personal是個人，
+    //   社員或者哪個個人，是人就可以
+    //   但要跟我們社團有關係
+    // - organization是組織
+    //   例如中電會那種
+    //   反正如果你們有去加那種東西你們就知道了
+    // - activity是活動
+    //   我相信你們活動肯定會
+    //   開一個新的IG帳號什麼的宣傳對吧
     tag: "club",
+
+    // 他們的連結
     links: [
       {
+        // 類型
+        //  有以下幾種可以選，一樣可以自己加
+        //   - website：網站
+        //   - link-in-bio：連結頁面，Linktree那種的
+        //   - github、facebook、instagram、threads、discord，就對應的東西不用問吧
         type: "website",
-        url: "https://tcirc.tw/",
+        url: "https://tcirc.tw/", // 連結，https或http要有
       },
       {
         type: "instagram",
@@ -48,6 +43,8 @@ export const links: Links[] = [
         url: "https://github.com/tcirc",
       },
     ],
+    // HEX色碼格式的顏色
+    // 通常是選他們的主題色比較好看
     color: "#12233F",
   },
   {
@@ -84,3 +81,31 @@ export const links: Links[] = [
     color: "#FFFFFF",
   },
 ];
+
+// 親愛的學弟底下別亂動，出事了我可不保證你們聯絡的到我
+
+export interface LinkList {
+  type:
+    | "website" // 社網
+    | "link-in-bio" // 連結列表
+    | "github"
+    | "facebook"
+    | "instagram"
+    | "threads"
+    | "discord";
+  url: string;
+}
+
+export interface Links {
+  name: string;
+  image: string;
+  description: string;
+  slug: string;
+  tag:
+    | "club" // 友社
+    | "personal" // 個人
+    | "organization" // 聯合組織的數據
+    | "activity"; // 活動官方帳號
+  links: LinkList[];
+  color: string; // 顏色（CSS色碼或關鍵字等）
+}

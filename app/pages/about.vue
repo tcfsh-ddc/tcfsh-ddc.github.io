@@ -8,28 +8,28 @@
 const hostname = import.meta.env.VITE_SITE_URL || "https://tcfsh-ddc.github.io";
 
 import Terminal from "~/components/window/about/Terminal.vue";
+import { siteConfig, pageTitle } from "@/config/site";
 
 useHead({
-  title: "關於我們 - 中一中數位創作研究社",
+  title: pageTitle("關於我們"),
   meta: [
     {
       name: "description",
-      content: "對，關於我們的介紹，我們是什麼？我們是什麼？我們是數創！",
+      content: siteConfig.aboutDescription,
     },
   ],
 });
 
 useSeoMeta({
-  title: "關於我們 - 中一中數位創作研究社",
-  ogTitle: "關於我們 - 中一中數位創作研究社",
-  description: "對，關於我們的介紹，我們是什麼？我們是什麼？我們是數創！",
-  ogDescription: "對，關於我們的介紹，我們是什麼？我們是什麼？我們是數創！",
+  title: pageTitle("關於我們"),
+  ogTitle: pageTitle("關於我們"),
+  description: siteConfig.aboutDescription,
+  ogDescription: siteConfig.aboutDescription,
   ogImage: `${hostname}/opengraph/about-og.png`,
   ogUrl: `${hostname}/about`,
   twitterCard: "summary_large_image",
-  twitterTitle: "關於我們 - 中一中數位創作研究社",
-  twitterDescription:
-    "對，關於我們的介紹，我們是什麼？我們是什麼？我們是數創！",
+  twitterTitle: pageTitle("關於我們"),
+  twitterDescription: siteConfig.aboutDescription,
   twitterImage: `${hostname}/opengraph/about-og.png`,
 });
 </script>
