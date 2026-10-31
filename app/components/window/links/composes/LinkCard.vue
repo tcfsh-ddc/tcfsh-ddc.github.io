@@ -1,7 +1,7 @@
 <template>
-  <div class="link-card">
+  <div class="link-card flex flex-col lg:flex-row">
     <div
-      class="card-mark"
+      class="card-mark min-h-24 lg:min-h-none"
       :class="`card-mark--${item.tag}`"
       :style="{
         'background-color': item.color,
@@ -12,7 +12,7 @@
       <img
         :src="item.image"
         :alt="`${item.name}的${item.tag === 'personal' ? '頭像' : '圖示'}`"
-        class="mx-3"
+        class="mx-3 h-full w-auto lg:h-auto aspect-square"
       />
     </div>
 
@@ -120,7 +120,6 @@ const linkIcons = {
 
 <style scoped>
 .link-card {
-  display: flex;
   min-width: 0;
   min-height: 170px;
   overflow: hidden;

@@ -14,7 +14,9 @@
       <p class="text-base font-semibold text-black-50">友情連結 - DDCBase</p>
     </template>
 
-    <div class="links-view flex h-full min-h-0 w-full gap-3 p-2">
+    <div
+      class="links-view flex flex-col md:flex-row max-h-full h-full min-h-0 w-full gap-3 p-2"
+    >
       <LinksSidebar
         :filtered-links="filteredLinks"
         v-model:active-filter="activeFilter"

@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="links-sidebar flex shrink-0 flex-col"
+    class="links-sidebar flex shrink-0 flex-col h-fit lg:h-full"
     aria-label="連結搜尋與分類"
   >
     <p class="sidebar-heading text-lg font-semibold">謝謝你們喜歡數創</p>
