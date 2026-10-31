@@ -11,7 +11,7 @@ const fileSystem: Record<string, FileEntry> = {
   "~/Downloads": { type: "directory" },
   "~/README.txt": {
     type: "file",
-    content: "Welcome to the simulated Linux terminal!",
+    content: "恭喜你找到了，不過這裡沒東西www",
   },
 };
 
