@@ -24,6 +24,9 @@ export interface Links {
   color: string; // 顏色（CSS色碼或關鍵字等）
 }
 
+// 親愛的接手這網站的學弟，友善告訴你
+// 如果你不會寫前端的話上面別動，出事了別找我QAQ
+
 export const links: Links[] = [
   {
     name: "中一中電研社",
