@@ -34,11 +34,11 @@
         <p class="sr-only">關於</p>
       </NuxtLink>
 
-      <!-- 社幹頁面 -->
-      <!-- <NuxtLink class="flex p-0 gap-1" to="/members">
+      <!-- 連結頁面 -->
+      <NuxtLink class="flex p-0 gap-1" to="/links">
         <SvgoMembers :filled="true" class="!h-8 !w-8" />
-        <p class="sr-only">幹部</p>
-      </NuxtLink> -->
+        <p class="sr-only">友情連結</p>
+      </NuxtLink>
 
       <!-- 作品集頁面 -->
       <!-- <NuxtLink class="flex p-0 gap-1" to="/works">
