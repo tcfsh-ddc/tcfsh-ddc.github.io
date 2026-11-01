@@ -1,10 +1,15 @@
 // 你們有跟其他社團或活動交流的話可以在這邊加上他們的介紹
 // 不會改問GPT
 
+import tcircLogo from "~/assets/links/tcirc.png";
+import syshMakerLogo from "~/assets/links/syshmaker.jpg";
+import scaictLogo from "~/assets/links/scaict.png";
+import yemoguLogo from "~/assets/links/yemogu810.png";
+
 export const links: Links[] = [
   {
     name: "中一中電研社", // 連結名稱
-    image: "https://tcirc.tw/images/apple-touch-icon.png", // 對方的圖示
+    image: tcircLogo, // 對方的圖示
     description: "臺中一中電腦資訊研習社", // 他們的介紹
     slug: "tcirc", // hashtag，就是＠xxx那個
 
@@ -48,8 +53,53 @@ export const links: Links[] = [
     color: "#12233F",
   },
   {
+    name: "西苑未來工程創客社 8th", // 連結名稱
+    image: syshMakerLogo, // 對方的圖示
+    description: "西苑未來工程創客社 8th", // 他們的介紹
+    slug: "sysh_maker_8th", // hashtag，就是＠xxx那個
+
+    // 社團類型
+    //  你們有以下幾種可以選
+    //  也可以自己去改程式自己加
+    // - club是社團
+    // - personal是個人，
+    //   社員或者哪個個人，是人就可以
+    //   但要跟我們社團有關係
+    // - organization是組織
+    //   例如中電會那種
+    //   反正如果你們有去加那種東西你們就知道了
+    // - activity是活動
+    //   我相信你們活動肯定會
+    //   開一個新的IG帳號什麼的宣傳對吧
+    tag: "club",
+
+    // 他們的連結
+    links: [
+      {
+        // 類型
+        //  有以下幾種可以選，一樣可以自己加
+        //   - website：網站
+        //   - link-in-bio：連結頁面，Linktree那種的
+        //   - github、facebook、instagram、threads、discord，就對應的東西不用問吧
+        type: "website",
+        url: "https://syshmaker.macaly.app/", // 連結，https或http要有
+      },
+      {
+        type: "instagram",
+        url: "https://www.instagram.com/sysh_maker_8th/",
+      },
+      {
+        type: "threads",
+        url: "https://www.threads.com/@sysh_maker_8th",
+      },
+    ],
+    // HEX色碼格式的顏色
+    // 通常是選他們的主題色比較好看
+    color: "#030404",
+  },
+  {
     name: "中部電資社團聯合會議",
-    image: "https://scaict.org/src/img/logo.svg",
+    image: scaictLogo,
     description:
       "成立於2021年，由一群熱愛資訊科技和社團活動的高中職生所組成，希望整合中部資訊科技資源，推廣資訊課程。",
     slug: "scaict",
@@ -61,7 +111,7 @@ export const links: Links[] = [
     name: "SamHacker",
     image:
       "https://gravatar.com/avatar/f7598bd8d4aba38d7219341f81a162fc842376b3b556b1995cbb97271d9e2915",
-    description: "嗨你好我個人認為義大利麵應該拌四十二號混凝土",
+    description: "某不具名高中廢物",
     slug: "samhacker",
     tag: "personal",
     links: [
@@ -79,6 +129,40 @@ export const links: Links[] = [
       },
     ],
     color: "#FFFFFF",
+  },
+  {
+    name: "野蘑菇",
+    image: yemoguLogo,
+    description: "數創21th社長蘑菇大人🛐🛐🛐",
+    slug: "yemogu._.810",
+    tag: "personal",
+    links: [
+      {
+        type: "instagram",
+        url: "https://www.instagram.com/yemogu._.810/",
+      },
+      {
+        type: "threads",
+        url: "https://www.threads.net/@samhacker.xyz",
+      },
+    ],
+    color: "#eb887f",
+  },
+  {
+    name: "腦子有動研究所",
+    image: undefined,
+    description:
+      "《台中最大七校九社創客科學電研聯合交流》 \
+      主辦學校：西苑高中、台中高工、台中女中、豐原高中、台中二中、文華高中、台中一中",
+    slug: "use_your_brain.01",
+    tag: "activity",
+    links: [
+      {
+        type: "instagram",
+        url: "https://www.instagram.com/use_your_brain.01/",
+      },
+    ],
+    color: "#000",
   },
 ];
 
@@ -98,7 +182,7 @@ export interface LinkList {
 
 export interface Links {
   name: string;
-  image: string;
+  image: string | undefined;
   description: string;
   slug: string;
   tag:
