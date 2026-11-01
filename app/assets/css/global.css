@@ -27,6 +27,12 @@
     "GlowSansTCCom", "GlowSans", "Noto Sans TC", sans-serif;
 }
 
+@import "tailwindcss";
+
+@custom-variant ex-short (@media (min-height: 400px));
+@custom-variant short (@media (min-height: 768px));
+@custom-variant tall (@media (min-height: 900px));
+
 p {
   @apply text-lg;
 }

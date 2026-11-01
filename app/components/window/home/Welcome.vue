@@ -17,7 +17,10 @@
       ref="welcomeIntro"
       class="flex flex-col justify-center items-center h-full w-full gap-2 py-4"
     >
-      <div ref="welcomeIntroContent" class="flex flex-col md:flex-row gap-4 items-end">
+      <div
+        ref="welcomeIntroContent"
+        class="flex flex-col md:flex-row gap-4 items-end"
+      >
         <img
           src="~/assets/images/ddc-logo.jpg"
           class="size-20 md:size-30 rounded-lg -mb-16 md:mb-0"
@@ -33,7 +36,7 @@
               串
             </span>
           </h1>
-          <p class="text-black-400">
+          <p class="text-black-400 ex-short:block hidden">
             歡迎你來到DDC OS！快快探索這個蘊藏了各種跟數創有關資訊的網站吧
           </p>
         </div>
@@ -41,7 +44,7 @@
 
       <div
         ref="welcomeGrid"
-        class="grid grid-cols-2 md:grid-cols-3 gap-4 w-[95%] md:w-[70%] md:min-w-150 mt-8"
+        class="hidden short:grid grid-cols-2 md:grid-cols-3 gap-4 w-[95%] md:w-[70%] md:min-w-150 mt-8"
       >
         <NuxtLink
           to="/about"
@@ -54,11 +57,7 @@
             class="text-4xl text-white font-bold min-h-12 tracking-normal"
           >
             DDC
-            <span
-              ref="welcomeDdcDot"
-              class="inline-block text-purple"
-              >.</span
-            >
+            <span ref="welcomeDdcDot" class="inline-block text-purple">.</span>
           </span>
           <h3 class="text-black-400 text-2xl">關於數創</h3>
         </NuxtLink>
@@ -68,11 +67,7 @@
           @pointerleave="animateGridItem($event, false)"
           class="sh-grid-item gap-2 group unstyled"
         >
-          <PhCode
-            :size="48"
-            color="#ffffff"
-            weight="duotone"
-          />
+          <PhCode :size="48" color="#ffffff" weight="duotone" />
           <h3 class="text-black-400 text-2xl">網站原始碼</h3>
         </a>
         <button
@@ -81,11 +76,7 @@
           class="sh-grid-item gap-2 group flex flex-col justify-start cursor-pointer"
           @click="emit('openPaintWindow')"
         >
-          <PhPalette
-            :size="48"
-            color="#FFFFFF"
-            weight="duotone"
-          />
+          <PhPalette :size="48" color="#FFFFFF" weight="duotone" />
           <h3 class="text-black-400 text-2xl text-left">認識電繪組</h3>
         </button>
         <button
@@ -94,11 +85,7 @@
           class="sh-grid-item group flex flex-col justify-start gap-2 cursor-pointer"
           @click="emit('openGameWindow')"
         >
-          <PhGameController
-            :size="48"
-            color="#FFFFFF"
-            weight="duotone"
-          />
+          <PhGameController :size="48" color="#FFFFFF" weight="duotone" />
           <h3 class="text-black-400 text-2xl text-left">認識遊戲組</h3>
         </button>
         <button
@@ -107,11 +94,7 @@
           class="sh-grid-item group flex flex-col justify-start gap-2 cursor-not-allowed opacity-30"
           @click="emit('openMusicWindow')"
         >
-          <PhPianoKeys
-            :size="48"
-            color="#ffffff"
-            weight="duotone"
-          />
+          <PhPianoKeys :size="48" color="#ffffff" weight="duotone" />
           <h3 class="text-black-400 text-2xl text-left">認識音樂組</h3>
         </button>
       </div>
@@ -165,30 +148,41 @@ async function animateWelcome() {
   if (!intro || !grid || !credit || !welcomeIntro.value?.isConnected) return;
 
   hasAnimated = true;
-  gsap.fromTo(intro, { autoAlpha: 0, y: 18 }, {
-    autoAlpha: 1,
-    y: 0,
-    duration: 0.45,
-    ease: "power2.out",
-    clearProps: "all",
-  });
-  gsap.fromTo(grid.querySelectorAll(".sh-grid-item"), { autoAlpha: 0, y: 22, scale: 0.96 }, {
-    autoAlpha: 1,
-    y: 0,
-    scale: 1,
-    duration: 0.4,
-    stagger: 0.08,
-    delay: 0.18,
-    ease: "back.out(1.3)",
-    clearProps: "all",
-  });
-  gsap.fromTo(credit, { autoAlpha: 0 }, {
-    autoAlpha: 1,
-    duration: 0.35,
-    delay: 0.65,
-    clearProps: "all",
-  });
-
+  gsap.fromTo(
+    intro,
+    { autoAlpha: 0, y: 18 },
+    {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.45,
+      ease: "power2.out",
+      clearProps: "all",
+    },
+  );
+  gsap.fromTo(
+    grid.querySelectorAll(".sh-grid-item"),
+    { autoAlpha: 0, y: 22, scale: 0.96 },
+    {
+      autoAlpha: 1,
+      y: 0,
+      scale: 1,
+      duration: 0.4,
+      stagger: 0.08,
+      delay: 0.18,
+      ease: "back.out(1.3)",
+      clearProps: "all",
+    },
+  );
+  gsap.fromTo(
+    credit,
+    { autoAlpha: 0 },
+    {
+      autoAlpha: 1,
+      duration: 0.35,
+      delay: 0.65,
+      clearProps: "all",
+    },
+  );
 }
 
 function animateGridItem(event: PointerEvent, isHovered: boolean) {
@@ -279,5 +273,4 @@ const emit = defineEmits([
   border-width: 1px;
   padding: 16px;
 }
-
 </style>
