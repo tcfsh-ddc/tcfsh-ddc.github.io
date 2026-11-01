@@ -85,10 +85,12 @@ import FacebookIcon from "~/assets/icons/facebook-round.svg";
 import ThreadsIcon from "~/assets/icons/threads.svg";
 import GithubIcon from "~/assets/icons/github.svg";
 
-import TooltipProvider from "../ui/TooltipProvider.vue";
-import Tooltip from "../ui/Tooltip.vue";
-import TooltipTrigger from "../ui/TooltipTrigger.vue";
-import TooltipContent from "../ui/TooltipContent.vue";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 import LinksMenu from "./LinksMenu.vue";
 import MobileMenu from "./MobileMenu.vue";

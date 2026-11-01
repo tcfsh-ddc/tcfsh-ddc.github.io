@@ -79,10 +79,12 @@ import {
   PhThreadsLogo,
   PhGithubLogo,
 } from "@phosphor-icons/vue";
-import TooltipProvider from "~/components/ui/TooltipProvider.vue";
-import Tooltip from "~/components/ui/Tooltip.vue";
-import TooltipContent from "~/components/ui/TooltipContent.vue";
-import TooltipTrigger from "~/components/ui/TooltipTrigger.vue";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 
 import type { LinkList, Links } from "~/config/links";
 

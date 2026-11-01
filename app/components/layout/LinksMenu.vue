@@ -45,9 +45,11 @@
 </template>
 
 <script setup>
-import DropdownMenu from "../ui/DropdownMenu.vue";
-import DropdownMenuTrigger from "../ui/DropdownMenuTrigger.vue";
-import DropdownMenuContent from "../ui/DropdownMenuContent.vue";
-import DropdownMenuItem from "../ui/DropdownMenuItem.vue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { PhChat } from "@phosphor-icons/vue";
 </script>
