@@ -7,9 +7,9 @@
     <img ref="loadingImg" :src="loadingImage" alt="載入動畫" />
 
     <div ref="dotsContainer" class="flex gap-4 items-center justify-center">
-      <div class="size-3 bg-purple rounded-full" id="sh-loading-dot-1" />
-      <div class="size-3 bg-lime rounded-full" id="sh-loading-dot-2" />
-      <div class="size-3 bg-blue rounded-full" id="sh-loading-dot-3" />
+      <div ref="loadingDot1" class="size-3 bg-purple rounded-full" />
+      <div ref="loadingDot2" class="size-3 bg-lime rounded-full" />
+      <div ref="loadingDot3" class="size-3 bg-blue rounded-full" />
     </div>
 
     <div
@@ -31,6 +31,9 @@ const loaderContainer = ref(null);
 const loadingImg = ref(null);
 const dotsContainer = ref(null);
 const tipsContainer = ref(null);
+const loadingDot1 = ref(null);
+const loadingDot2 = ref(null);
+const loadingDot3 = ref(null);
 
 // Nuxt 全域狀態：記錄初次載入動畫是否完成
 const isInitialLoadComplete = useState("sh-initial-load-complete", () => false);
@@ -55,11 +58,14 @@ const handlePageLoad = () => {
 };
 
 onMounted(() => {
+  const loadingDots = [loadingDot1.value, loadingDot2.value, loadingDot3.value];
+  if (loadingDots.some((dot) => !dot)) return;
+
   // 建立載入動畫
   mainTimeline = gsap.timeline();
 
   mainTimeline.to(
-    ["#sh-loading-dot-1", "#sh-loading-dot-2", "#sh-loading-dot-3"],
+    loadingDots,
     {
       y: -12,
       duration: 0.4,
@@ -85,7 +91,17 @@ onMounted(() => {
 });
 
 const finishLoading = () => {
-  if (hasStartedExit || hasFinished || !mainTimeline) return;
+  const loadingDots = [loadingDot1.value, loadingDot2.value, loadingDot3.value];
+  if (
+    hasStartedExit ||
+    hasFinished ||
+    !mainTimeline ||
+    !loaderContainer.value ||
+    !loadingImg.value ||
+    !dotsContainer.value ||
+    !tipsContainer.value ||
+    loadingDots.some((dot) => !dot)
+  ) return;
 
   hasStartedExit = true;
 
@@ -127,7 +143,7 @@ const finishLoading = () => {
 
   // 圓點回到原位
   exitTimeline.to(
-    ["#sh-loading-dot-1", "#sh-loading-dot-2", "#sh-loading-dot-3"],
+    loadingDots,
     {
       y: 0,
       duration: 0.2,
@@ -138,7 +154,7 @@ const finishLoading = () => {
 
   // 左側圓點退出
   exitTimeline.to(
-    "#sh-loading-dot-1",
+    loadingDot1.value,
     {
       x: -40,
       opacity: 0,
@@ -150,7 +166,7 @@ const finishLoading = () => {
 
   // 右側圓點退出
   exitTimeline.to(
-    "#sh-loading-dot-3",
+    loadingDot3.value,
     {
       x: 40,
       opacity: 0,
@@ -162,7 +178,7 @@ const finishLoading = () => {
 
   // 中間圓點淡出
   exitTimeline.to(
-    "#sh-loading-dot-2",
+    loadingDot2.value,
     {
       opacity: 0,
       duration: 0.4,

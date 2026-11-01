@@ -33,75 +33,77 @@
       </div>
     </template>
 
-    <TabsRoot
-      v-model="activeTab"
-      default-value="code"
-      activation-mode="automatic"
-      class="flex min-h-0 min-w-0 flex-1 flex-col gap-2"
-    >
-      <div class="flex shrink-0 items-center justify-between gap-3">
-        <div
-          class="flex items-center gap-2.5 rounded bg-black-800 p-1 text-black-50"
-          aria-label="編輯器工具列"
-        >
-          <button
-            v-for="tool in tools"
-            :key="tool.label"
-            type="button"
-            class="grid size-[18px] place-items-center rounded-sm transition-colors hover:bg-black-700"
-            :aria-label="tool.label"
-            :title="tool.label"
+    <div ref="gameContent" class="flex min-h-0 min-w-0 flex-1">
+      <TabsRoot
+        v-model="activeTab"
+        default-value="code"
+        activation-mode="automatic"
+        class="flex min-h-0 min-w-0 flex-1 flex-col gap-2"
+      >
+        <div class="flex shrink-0 items-center justify-between gap-3">
+          <div
+            class="flex items-center gap-2.5 rounded bg-black-800 p-1 text-black-50"
+            aria-label="編輯器工具列"
           >
-            <component :is="tool.icon" :size="18" weight="thin" />
-          </button>
+            <button
+              v-for="tool in tools"
+              :key="tool.label"
+              type="button"
+              class="grid size-[18px] place-items-center rounded-sm transition-colors hover:bg-black-700"
+              :aria-label="tool.label"
+              :title="tool.label"
+            >
+              <component :is="tool.icon" :size="18" weight="thin" />
+            </button>
+          </div>
+
+          <TabsList
+            class="flex min-w-0 items-center gap-2.5 overflow-x-auto"
+            aria-label="介紹檔案"
+          >
+            <TabsTrigger
+              value="code"
+              :class="tabClass"
+              class="flex gap-0 justify-center items-center"
+            >
+              <span class="@md:block hidden">introduction</span>.cs
+            </TabsTrigger>
+            <TabsTrigger
+              value="markdown"
+              :class="tabClass"
+              class="flex gap-0 justify-center items-center"
+            >
+              <span class="@md:block hidden">introduction</span>.md
+            </TabsTrigger>
+          </TabsList>
         </div>
 
-        <TabsList
-          class="flex min-w-0 items-center gap-2.5 overflow-x-auto"
-          aria-label="介紹檔案"
+        <TabsContent
+          value="code"
+          class="min-h-0 min-w-0 flex-1 overflow-auto font-extralight leading-5 text-white outline-none"
+          aria-label="遊戲組介紹程式碼"
         >
-          <TabsTrigger
-            value="code"
-            :class="tabClass"
-            class="flex gap-0 justify-center items-center"
-          >
-            <span class="@md:block hidden">introduction</span>.cs
-          </TabsTrigger>
-          <TabsTrigger
-            value="markdown"
-            :class="tabClass"
-            class="flex gap-0 justify-center items-center"
-          >
-            <span class="@md:block hidden">introduction</span>.md
-          </TabsTrigger>
-        </TabsList>
-      </div>
+          <div class="grid w-max min-w-full grid-cols-[auto_1fr] gap-2.5">
+            <ol class="select-none text-right text-black-400" aria-hidden="true">
+              <li v-for="(_, index) in codeLines" :key="index">
+                {{ index + 1 }}
+              </li>
+            </ol>
+            <pre
+              class="m-0 whitespace-pre font-inherit leading-5"
+            ><code v-if="highlightedCode" class="hljs block font-inherit" v-html="highlightedCode"></code><code v-else class="block font-inherit">{{ sourceCode }}</code></pre>
+          </div>
+        </TabsContent>
 
-      <TabsContent
-        value="code"
-        class="min-h-0 min-w-0 flex-1 overflow-auto font-extralight leading-5 text-white outline-none"
-        aria-label="遊戲組介紹程式碼"
-      >
-        <div class="grid w-max min-w-full grid-cols-[auto_1fr] gap-2.5">
-          <ol class="select-none text-right text-black-400" aria-hidden="true">
-            <li v-for="(_, index) in codeLines" :key="index">
-              {{ index + 1 }}
-            </li>
-          </ol>
-          <pre
-            class="m-0 whitespace-pre font-inherit leading-5"
-          ><code v-if="highlightedCode" class="hljs block font-inherit" v-html="highlightedCode"></code><code v-else class="block font-inherit">{{ sourceCode }}</code></pre>
-        </div>
-      </TabsContent>
-
-      <TabsContent
-        value="markdown"
-        class="min-h-0 min-w-0 flex-1 overflow-auto rounded bg-white p-3 text-black-950 outline-none"
-        aria-label="遊戲組 Markdown 介紹"
-      >
-        <Markdown>{{ MdGame }}</Markdown>
-      </TabsContent>
-    </TabsRoot>
+        <TabsContent
+          value="markdown"
+          class="min-h-0 min-w-0 flex-1 overflow-auto rounded bg-white p-3 text-black-950 outline-none"
+          aria-label="遊戲組 Markdown 介紹"
+        >
+          <Markdown>{{ MdGame }}</Markdown>
+        </TabsContent>
+      </TabsRoot>
+    </div>
   </Window>
 </template>
 
@@ -118,6 +120,7 @@ import csharp from "highlight.js/lib/languages/csharp";
 import { TabsContent, TabsList, TabsRoot, TabsTrigger } from "reka-ui";
 import MdGame from "@/content/divisions/game.md?raw";
 import { gsap } from "gsap";
+import { nextTick, ref, watch } from "vue";
 
 const activeTab = ref("code");
 
@@ -177,27 +180,50 @@ const codeLines = [
 ];
 const sourceCode = codeLines.join("\n");
 const highlightedCode = ref("");
-const initialLoadComplete = useState("sh-initial-load-complete", () => false);
-const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
+const gameContent = ref<HTMLElement | null>(null);
 
-function animateGame() {
-  gsap.fromTo(
-    ".game-window [aria-label='編輯器工具列'], .game-window [aria-label='介紹檔案']",
-    { autoAlpha: 0, y: -10 },
-    { autoAlpha: 1, y: 0, duration: 0.35, stagger: 0.1, ease: "power2.out", clearProps: "all" },
+async function animateGame() {
+  await nextTick();
+  const root = gameContent.value;
+  if (!root) return;
+
+  const headerTargets = root.querySelectorAll(
+    "[aria-label='編輯器工具列'], [aria-label='介紹檔案']",
   );
+  const codeTarget = root.querySelector("[aria-label='遊戲組介紹程式碼']");
+
+  if (headerTargets.length) {
+    gsap.fromTo(
+      headerTargets,
+      { autoAlpha: 0, y: -10 },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.35,
+        stagger: 0.1,
+        ease: "power2.out",
+        clearProps: "all",
+      },
+    );
+  }
+  if (!codeTarget) return;
   gsap.fromTo(
-    ".game-window [aria-label='遊戲組介紹程式碼']",
+    codeTarget,
     { autoAlpha: 0, y: 12 },
-    { autoAlpha: 1, y: 0, duration: 0.4, delay: 0.18, ease: "power2.out", clearProps: "all" },
+    {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.4,
+      delay: 0.18,
+      ease: "power2.out",
+      clearProps: "all",
+    },
   );
 }
 
-onMounted(() => {
-  window.addEventListener(INITIAL_LOAD_EVENT, animateGame);
-  if (initialLoadComplete.value) animateGame();
+watch(open, (isOpen) => {
+  if (isOpen) void animateGame();
 });
-onUnmounted(() => window.removeEventListener(INITIAL_LOAD_EVENT, animateGame));
 
 onMounted(() => {
   hljs.registerLanguage("csharp", csharp);

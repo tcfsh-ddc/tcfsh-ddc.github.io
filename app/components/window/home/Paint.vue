@@ -28,6 +28,7 @@
     </template>
 
     <div
+      ref="paintContent"
       class="flex flex-col-reverse @md:flex-row min-h-0 min-w-0 gap-3 h-full w-full"
     >
       <!-- 功能列 -->
@@ -83,31 +84,53 @@ import {
 } from "@phosphor-icons/vue";
 import MdPaint from "@/content/divisions/paint.md?raw";
 import { gsap } from "gsap";
+import { nextTick, ref, watch } from "vue";
 
 const open = defineModel<boolean>("open", {
   default: false,
 });
 
 const menuItems = ["檔案", "編輯", "筆刷", "工具", "關於"];
-const initialLoadComplete = useState("sh-initial-load-complete", () => false);
-const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
+const paintContent = ref<HTMLElement | null>(null);
 
-function animatePaint() {
+async function animatePaint() {
+  await nextTick();
+  const root = paintContent.value;
+  if (!root) return;
+
+  const tools = root.querySelectorAll("[aria-hidden='true']");
+  const canvas = root.querySelector(".bg-white");
+
+  if (tools.length) {
+    gsap.fromTo(
+      tools,
+      { autoAlpha: 0, x: -12 },
+      {
+        autoAlpha: 1,
+        x: 0,
+        duration: 0.35,
+        stagger: 0.04,
+        ease: "power2.out",
+        clearProps: "all",
+      },
+    );
+  }
+  if (!canvas) return;
   gsap.fromTo(
-    ".demo-window--notes [aria-hidden='true']",
-    { autoAlpha: 0, x: -12 },
-    { autoAlpha: 1, x: 0, duration: 0.35, stagger: 0.04, ease: "power2.out", clearProps: "all" },
-  );
-  gsap.fromTo(
-    ".demo-window--notes .bg-white",
+    canvas,
     { autoAlpha: 0, scale: 0.96 },
-    { autoAlpha: 1, scale: 1, duration: 0.45, delay: 0.15, ease: "power2.out", clearProps: "all" },
+    {
+      autoAlpha: 1,
+      scale: 1,
+      duration: 0.45,
+      delay: 0.15,
+      ease: "power2.out",
+      clearProps: "all",
+    },
   );
 }
 
-onMounted(() => {
-  window.addEventListener(INITIAL_LOAD_EVENT, animatePaint);
-  if (initialLoadComplete.value) animatePaint();
+watch(open, (isOpen) => {
+  if (isOpen) void animatePaint();
 });
-onUnmounted(() => window.removeEventListener(INITIAL_LOAD_EVENT, animatePaint));
 </script>

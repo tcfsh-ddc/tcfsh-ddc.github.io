@@ -14,7 +14,7 @@
       <p class="text-black-50">Q&A - 台中一中數位創作研究社</p>
     </template>
 
-    <div class="flex min-h-0 min-w-0 flex-1 flex-col">
+    <div ref="qaContent" class="flex min-h-0 min-w-0 flex-1 flex-col">
       <AccordionRoot
         default-value="item-1"
         type="single"
@@ -69,18 +69,22 @@ import {
 import { PhPlus } from "@phosphor-icons/vue";
 import { qaConfig } from "@/config/qa";
 import { gsap } from "gsap";
+import { nextTick, ref, watch } from "vue";
 
 const open = defineModel<boolean>("open", {
   default: false,
 });
 
 const accordionItems = qaConfig;
-const initialLoadComplete = useState("sh-initial-load-complete", () => false);
-const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
+const qaContent = ref<HTMLElement | null>(null);
 
-function animateQa() {
+async function animateQa() {
+  await nextTick();
+  const triggers = qaContent.value?.querySelectorAll(".qa-trigger");
+  if (!triggers?.length) return;
+
   gsap.fromTo(
-    ".qa-trigger",
+    triggers,
     { autoAlpha: 0, x: -14 },
     {
       autoAlpha: 1,
@@ -93,11 +97,9 @@ function animateQa() {
   );
 }
 
-onMounted(() => {
-  window.addEventListener(INITIAL_LOAD_EVENT, animateQa);
-  if (initialLoadComplete.value) animateQa();
+watch(open, (isOpen) => {
+  if (isOpen) void animateQa();
 });
-onUnmounted(() => window.removeEventListener(INITIAL_LOAD_EVENT, animateQa));
 </script>
 
 <style scoped>

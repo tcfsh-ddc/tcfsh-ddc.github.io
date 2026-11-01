@@ -1,6 +1,5 @@
 <template>
   <Window
-    class=""
     :initial-x="250"
     :initial-y="100"
     :initial-width="880"
@@ -15,9 +14,10 @@
     </template>
 
     <div
+      ref="welcomeIntro"
       class="flex flex-col justify-center items-center h-full w-full gap-2 py-4"
     >
-      <div data-welcome-intro class="flex flex-col md:flex-row gap-4 items-end">
+      <div ref="welcomeIntroContent" class="flex flex-col md:flex-row gap-4 items-end">
         <img
           src="~/assets/images/ddc-logo.jpg"
           class="size-20 md:size-30 rounded-lg -mb-16 md:mb-0"
@@ -40,19 +40,23 @@
       </div>
 
       <div
-        data-welcome-grid
+        ref="welcomeGrid"
         class="grid grid-cols-2 md:grid-cols-3 gap-4 w-[95%] md:w-[70%] md:min-w-150 mt-8"
       >
         <NuxtLink
           to="/about"
+          @pointerenter="animateGridItem($event, true)"
+          @pointerleave="animateGridItem($event, false)"
           class="sh-grid-item gap-2 group col-span-2 unstyled"
         >
           <span
-            class="text-4xl text-white font-bold min-h-12 tracking-normal group-hover:tracking-widest transition-all"
+            ref="welcomeDdcLabel"
+            class="text-4xl text-white font-bold min-h-12 tracking-normal"
           >
             DDC
             <span
-              class="inline-block text-purple translate-x-0 group-hover:translate-x-4 transition-transform duration-300"
+              ref="welcomeDdcDot"
+              class="inline-block text-purple"
               >.</span
             >
           </span>
@@ -60,17 +64,20 @@
         </NuxtLink>
         <a
           href="https://github.com/tcfsh-ddc/tcfsh-ddc.github.io"
+          @pointerenter="animateGridItem($event, true)"
+          @pointerleave="animateGridItem($event, false)"
           class="sh-grid-item gap-2 group unstyled"
         >
           <PhCode
             :size="48"
             color="#ffffff"
             weight="duotone"
-            class="group-hover:rotate-12 transition-transform"
           />
           <h3 class="text-black-400 text-2xl">網站原始碼</h3>
         </a>
         <button
+          @pointerenter="animateGridItem($event, true)"
+          @pointerleave="animateGridItem($event, false)"
           class="sh-grid-item gap-2 group flex flex-col justify-start cursor-pointer"
           @click="emit('openPaintWindow')"
         >
@@ -78,11 +85,12 @@
             :size="48"
             color="#FFFFFF"
             weight="duotone"
-            class="group-hover:rotate-12 transition-transform"
           />
           <h3 class="text-black-400 text-2xl text-left">認識電繪組</h3>
         </button>
         <button
+          @pointerenter="animateGridItem($event, true)"
+          @pointerleave="animateGridItem($event, false)"
           class="sh-grid-item group flex flex-col justify-start gap-2 cursor-pointer"
           @click="emit('openGameWindow')"
         >
@@ -90,11 +98,12 @@
             :size="48"
             color="#FFFFFF"
             weight="duotone"
-            class="group-hover:rotate-12 transition-transform"
           />
           <h3 class="text-black-400 text-2xl text-left">認識遊戲組</h3>
         </button>
         <button
+          @pointerenter="animateGridItem($event, true)"
+          @pointerleave="animateGridItem($event, false)"
           class="sh-grid-item group flex flex-col justify-start gap-2 cursor-not-allowed opacity-30"
           @click="emit('openMusicWindow')"
         >
@@ -102,17 +111,19 @@
             :size="48"
             color="#ffffff"
             weight="duotone"
-            class="group-hover:rotate-12 transition-transform"
           />
           <h3 class="text-black-400 text-2xl text-left">認識音樂組</h3>
         </button>
       </div>
 
-      <p data-welcome-credit class="mt-2 text-black-700">
+      <p ref="welcomeCredit" class="mt-2 text-black-700">
         本社網由第二十一屆副社長
         <a
+          ref="welcomeCreditLink"
           href="https://samhacker.xyz"
-          class="text-black-600 hover:text-black-500 transition-all underline hover:underline-offset-6 underline-offset-4"
+          @pointerenter="animateCreditLink(true)"
+          @pointerleave="animateCreditLink(false)"
+          class="text-black-600 underline underline-offset-4"
         >
           SamHacker</a
         >
@@ -130,42 +141,124 @@ import {
   PhPianoKeys,
 } from "@phosphor-icons/vue";
 import { gsap } from "gsap";
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 
 const initialLoadComplete = useState("sh-initial-load-complete", () => false);
 const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
+const welcomeIntro = ref<HTMLElement | null>(null);
+const welcomeIntroContent = ref<HTMLElement | null>(null);
+const welcomeGrid = ref<HTMLElement | null>(null);
+const welcomeCredit = ref<HTMLElement | null>(null);
+const welcomeDdcLabel = ref<HTMLElement | null>(null);
+const welcomeDdcDot = ref<HTMLElement | null>(null);
+const welcomeCreditLink = ref<HTMLElement | null>(null);
+let hasAnimated = false;
 
-function animateWelcome() {
-  gsap.fromTo(
-    "[data-welcome-intro]",
-    { autoAlpha: 0, y: 18 },
-    { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out", clearProps: "all" },
-  );
-  gsap.fromTo(
-    "[data-welcome-grid] .sh-grid-item",
-    { autoAlpha: 0, y: 22, scale: 0.96 },
-    {
-      autoAlpha: 1,
-      y: 0,
-      scale: 1,
-      duration: 0.4,
-      stagger: 0.08,
-      delay: 0.18,
-      ease: "back.out(1.3)",
-      clearProps: "all",
-    },
-  );
-  gsap.fromTo(
-    "[data-welcome-credit]",
-    { autoAlpha: 0 },
-    { autoAlpha: 1, duration: 0.35, delay: 0.65, clearProps: "all" },
-  );
+async function animateWelcome() {
+  if (hasAnimated || !initialLoadComplete.value) return;
+
+  await nextTick();
+
+  const intro = welcomeIntroContent.value;
+  const grid = welcomeGrid.value;
+  const credit = welcomeCredit.value;
+  if (!intro || !grid || !credit || !welcomeIntro.value?.isConnected) return;
+
+  hasAnimated = true;
+  gsap.fromTo(intro, { autoAlpha: 0, y: 18 }, {
+    autoAlpha: 1,
+    y: 0,
+    duration: 0.45,
+    ease: "power2.out",
+    clearProps: "all",
+  });
+  gsap.fromTo(grid.querySelectorAll(".sh-grid-item"), { autoAlpha: 0, y: 22, scale: 0.96 }, {
+    autoAlpha: 1,
+    y: 0,
+    scale: 1,
+    duration: 0.4,
+    stagger: 0.08,
+    delay: 0.18,
+    ease: "back.out(1.3)",
+    clearProps: "all",
+  });
+  gsap.fromTo(credit, { autoAlpha: 0 }, {
+    autoAlpha: 1,
+    duration: 0.35,
+    delay: 0.65,
+    clearProps: "all",
+  });
+
+}
+
+function animateGridItem(event: PointerEvent, isHovered: boolean) {
+  const item = event.currentTarget;
+  if (!(item instanceof HTMLElement)) return;
+
+  gsap.to(item, {
+    backgroundColor: isHovered
+      ? "var(--color-black-800)"
+      : "var(--color-black-900)",
+    borderColor: isHovered
+      ? "var(--color-black-700)"
+      : "var(--color-black-800)",
+    duration: 0.1,
+    overwrite: true,
+  });
+
+  if (item === welcomeGrid.value?.firstElementChild) {
+    gsap.to(welcomeDdcLabel.value, {
+      letterSpacing: isHovered ? "0.1em" : "0em",
+      duration: 0.2,
+      overwrite: true,
+    });
+    gsap.to(welcomeDdcDot.value, {
+      x: isHovered ? 16 : 0,
+      duration: 0.2,
+      ease: "power2.out",
+      overwrite: true,
+    });
+    return;
+  }
+
+  const icon = item.querySelector("svg");
+  if (!icon) return;
+
+  gsap.to(icon, {
+    rotation: isHovered ? 12 : 0,
+    duration: 0.2,
+    ease: "power2.out",
+    overwrite: true,
+  });
+}
+
+function animateCreditLink(isHovered: boolean) {
+  gsap.to(welcomeCreditLink.value, {
+    color: isHovered ? "var(--color-black-500)" : "var(--color-black-600)",
+    textUnderlineOffset: isHovered ? "6px" : "4px",
+    duration: 0.2,
+    overwrite: true,
+  });
 }
 
 onMounted(() => {
   window.addEventListener(INITIAL_LOAD_EVENT, animateWelcome);
-  if (initialLoadComplete.value) animateWelcome();
+  void animateWelcome();
 });
-onUnmounted(() => window.removeEventListener(INITIAL_LOAD_EVENT, animateWelcome));
+onUnmounted(() => {
+  window.removeEventListener(INITIAL_LOAD_EVENT, animateWelcome);
+  gsap.killTweensOf([
+    welcomeDdcLabel.value,
+    welcomeDdcDot.value,
+    welcomeCreditLink.value,
+  ]);
+  if (welcomeGrid.value) {
+    gsap.killTweensOf(welcomeGrid.value.querySelectorAll("svg"));
+  }
+});
+watch(initialLoadComplete, (completed) => {
+  if (completed) void animateWelcome();
+});
 
 const emit = defineEmits([
   "openPaintWindow",
@@ -185,12 +278,6 @@ const emit = defineEmits([
   border-color: var(--color-black-800);
   border-width: 1px;
   padding: 16px;
-  transition: all 0.1s ease-in-out;
 }
 
-.sh-grid-item:hover {
-  background: var(--color-black-800);
-  border-color: var(--color-black-700);
-  transition: all 0.1s ease-in-out;
-}
 </style>
