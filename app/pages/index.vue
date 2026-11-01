@@ -1,5 +1,5 @@
 <template>
-  <div class="home-desktop relative">
+  <div class="home-desktop relative h-full">
     <WindowHomeWelcome
       v-model:open="welcomeOpen"
       @open-game-window="switchGameOpen"
