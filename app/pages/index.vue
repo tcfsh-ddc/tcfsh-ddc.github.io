@@ -68,6 +68,7 @@ useSeoMeta({
 });
 
 import { ref, watch, onMounted, onUnmounted } from "vue";
+import { gsap } from "gsap";
 import "@/assets/css/markdown.css";
 
 const welcomeOpen = ref(false);
@@ -108,6 +109,20 @@ onMounted(() => {
   if (isInitialLoadComplete.value) {
     handleInitialLoadComplete();
   }
+
+  gsap.fromTo(
+    "#desktop-icons button",
+    { autoAlpha: 0, y: 12 },
+    {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.35,
+      stagger: 0.07,
+      delay: 0.12,
+      ease: "power2.out",
+      clearProps: "opacity,visibility,transform",
+    },
+  );
 });
 
 // 監聽全域狀態更新
