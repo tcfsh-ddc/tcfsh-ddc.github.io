@@ -101,15 +101,7 @@ function switchGameOpen() {
   gameOpen.value = !gameOpen.value;
 }
 
-onMounted(() => {
-  // 先註冊事件，避免錯過通知
-  window.addEventListener(INITIAL_LOAD_EVENT, handleInitialLoadComplete);
-
-  // 如果全域狀態已經完成，立即開啟
-  if (isInitialLoadComplete.value) {
-    handleInitialLoadComplete();
-  }
-
+const animateDesktopIcons = () =>
   gsap.fromTo(
     "#desktop-icons button",
     { autoAlpha: 0, y: 12 },
@@ -123,6 +115,18 @@ onMounted(() => {
       clearProps: "opacity,visibility,transform",
     },
   );
+
+onMounted(() => {
+  // 先註冊事件，避免錯過通知
+  window.addEventListener(INITIAL_LOAD_EVENT, handleInitialLoadComplete);
+
+  // 如果全域狀態已經完成，立即開啟
+  if (isInitialLoadComplete.value) {
+    handleInitialLoadComplete();
+  }
+
+  window.addEventListener(INITIAL_LOAD_EVENT, animateDesktopIcons);
+  if (isInitialLoadComplete.value) animateDesktopIcons();
 });
 
 // 監聽全域狀態更新
@@ -134,6 +138,7 @@ watch(isInitialLoadComplete, (completed) => {
 
 onUnmounted(() => {
   window.removeEventListener(INITIAL_LOAD_EVENT, handleInitialLoadComplete);
+  window.removeEventListener(INITIAL_LOAD_EVENT, animateDesktopIcons);
 });
 </script>
 

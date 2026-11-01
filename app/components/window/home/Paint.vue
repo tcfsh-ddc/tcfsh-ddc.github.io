@@ -89,8 +89,10 @@ const open = defineModel<boolean>("open", {
 });
 
 const menuItems = ["檔案", "編輯", "筆刷", "工具", "關於"];
+const initialLoadComplete = useState("sh-initial-load-complete", () => false);
+const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
 
-onMounted(() => {
+function animatePaint() {
   gsap.fromTo(
     ".demo-window--notes [aria-hidden='true']",
     { autoAlpha: 0, x: -12 },
@@ -101,5 +103,11 @@ onMounted(() => {
     { autoAlpha: 0, scale: 0.96 },
     { autoAlpha: 1, scale: 1, duration: 0.45, delay: 0.15, ease: "power2.out", clearProps: "all" },
   );
+}
+
+onMounted(() => {
+  window.addEventListener(INITIAL_LOAD_EVENT, animatePaint);
+  if (initialLoadComplete.value) animatePaint();
 });
+onUnmounted(() => window.removeEventListener(INITIAL_LOAD_EVENT, animatePaint));
 </script>

@@ -75,8 +75,10 @@ const open = defineModel<boolean>("open", {
 });
 
 const accordionItems = qaConfig;
+const initialLoadComplete = useState("sh-initial-load-complete", () => false);
+const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
 
-onMounted(() => {
+function animateQa() {
   gsap.fromTo(
     ".qa-trigger",
     { autoAlpha: 0, x: -14 },
@@ -89,7 +91,13 @@ onMounted(() => {
       clearProps: "all",
     },
   );
+}
+
+onMounted(() => {
+  window.addEventListener(INITIAL_LOAD_EVENT, animateQa);
+  if (initialLoadComplete.value) animateQa();
 });
+onUnmounted(() => window.removeEventListener(INITIAL_LOAD_EVENT, animateQa));
 </script>
 
 <style scoped>

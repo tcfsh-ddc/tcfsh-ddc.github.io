@@ -131,7 +131,10 @@ import {
 } from "@phosphor-icons/vue";
 import { gsap } from "gsap";
 
-onMounted(() => {
+const initialLoadComplete = useState("sh-initial-load-complete", () => false);
+const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
+
+function animateWelcome() {
   gsap.fromTo(
     "[data-welcome-intro]",
     { autoAlpha: 0, y: 18 },
@@ -156,7 +159,13 @@ onMounted(() => {
     { autoAlpha: 0 },
     { autoAlpha: 1, duration: 0.35, delay: 0.65, clearProps: "all" },
   );
+}
+
+onMounted(() => {
+  window.addEventListener(INITIAL_LOAD_EVENT, animateWelcome);
+  if (initialLoadComplete.value) animateWelcome();
 });
+onUnmounted(() => window.removeEventListener(INITIAL_LOAD_EVENT, animateWelcome));
 
 const emit = defineEmits([
   "openPaintWindow",

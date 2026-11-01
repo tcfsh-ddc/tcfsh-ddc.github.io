@@ -177,8 +177,10 @@ const codeLines = [
 ];
 const sourceCode = codeLines.join("\n");
 const highlightedCode = ref("");
+const initialLoadComplete = useState("sh-initial-load-complete", () => false);
+const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
 
-onMounted(() => {
+function animateGame() {
   gsap.fromTo(
     ".game-window [aria-label='編輯器工具列'], .game-window [aria-label='介紹檔案']",
     { autoAlpha: 0, y: -10 },
@@ -189,7 +191,13 @@ onMounted(() => {
     { autoAlpha: 0, y: 12 },
     { autoAlpha: 1, y: 0, duration: 0.4, delay: 0.18, ease: "power2.out", clearProps: "all" },
   );
+}
+
+onMounted(() => {
+  window.addEventListener(INITIAL_LOAD_EVENT, animateGame);
+  if (initialLoadComplete.value) animateGame();
 });
+onUnmounted(() => window.removeEventListener(INITIAL_LOAD_EVENT, animateGame));
 
 onMounted(() => {
   hljs.registerLanguage("csharp", csharp);
