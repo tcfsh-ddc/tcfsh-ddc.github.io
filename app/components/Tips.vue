@@ -3,7 +3,8 @@
     <p
       v-if="tip"
       @click="handleChangeTip()"
-      class="text-black-300 cursor-pointer select-none"
+      class="text-black-300 select-none"
+      :class="allowChangeTip ? 'cursor-pointer' : ''"
     >
       {{ tip }}
     </p>

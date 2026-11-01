@@ -17,7 +17,7 @@
       style="clip-path: inset(0 0 0 0)"
       class="absolute left-1/2 -translate-x-1/2 bottom-16 max-w-full overflow-hidden whitespace-nowrap text-black-50"
     >
-      <Tips />
+      <Tips :allow-change-tip="false" />
     </div>
   </div>
 </template>
