@@ -119,8 +119,7 @@ const diagnosticLines: (string | TerminalSegment[])[] = [
       </p>
 
       <p class="max-w-lg text-sm leading-7 text-black-300">
-        An unexpected error has occurred. The system is attempting to collect
-        diagnostic information.
+        嗶啵！出問題了......如果你覺得自己是無辜的是網站有問題，請聯絡我們！
       </p>
 
       <NuxtLink
@@ -130,6 +129,13 @@ const diagnosticLines: (string | TerminalSegment[])[] = [
         <PhArrowUUpLeft :size="24" />
         Go back home
       </NuxtLink>
+
+      <div
+        ref="tipsContainer"
+        class="absolute left-1/2 -translate-x-1/2 bottom-16 max-w-full overflow-hidden whitespace-nowrap text-black-50"
+      >
+        <Tips />
+      </div>
     </main>
   </div>
 </template>

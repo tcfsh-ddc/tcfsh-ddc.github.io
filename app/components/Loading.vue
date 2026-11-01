@@ -11,6 +11,14 @@
       <div class="size-3 bg-lime rounded-full" id="sh-loading-dot-2" />
       <div class="size-3 bg-blue rounded-full" id="sh-loading-dot-3" />
     </div>
+
+    <div
+      ref="tipsContainer"
+      style="clip-path: inset(0 0 0 0)"
+      class="absolute left-1/2 -translate-x-1/2 bottom-16 max-w-full overflow-hidden whitespace-nowrap text-black-50"
+    >
+      <Tips />
+    </div>
   </div>
 </template>
 
@@ -22,6 +30,7 @@ import loadingImage from "~/assets/images/loading.webp?base64";
 const loaderContainer = ref(null);
 const loadingImg = ref(null);
 const dotsContainer = ref(null);
+const tipsContainer = ref(null);
 
 // Nuxt 全域狀態：記錄初次載入動畫是否完成
 const isInitialLoadComplete = useState("sh-initial-load-complete", () => false);
@@ -104,6 +113,17 @@ const finishLoading = () => {
       );
     },
   });
+
+  exitTimeline.to(
+    tipsContainer.value,
+    {
+      clipPath: "inset(0 50% 0 50%)",
+      opacity: 0,
+      duration: 0.6,
+      ease: "power2.inOut",
+    },
+    0,
+  );
 
   // 圓點回到原位
   exitTimeline.to(

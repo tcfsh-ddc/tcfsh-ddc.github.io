@@ -30,6 +30,7 @@ import { terminalCommands } from "@/utils/terminalCommands";
 import { ddcCommands } from "#imports";
 import { bebo } from "~/consts/bebo";
 import { siteConfig } from "~/config/site";
+import { getRandomTip } from "~/config/tips";
 
 const commands: TerminalCommand[] = [
   ...terminalCommands,
@@ -53,6 +54,15 @@ const commands: TerminalCommand[] = [
         }
       }
 
+      c.print("");
+    },
+  },
+  {
+    name: "tip",
+    description: "顯示一則隨機的 Tip",
+    onCalled(c, args) {
+      c.print("");
+      c.print(getRandomTip());
       c.print("");
     },
   },
@@ -129,6 +139,7 @@ function handleGreeting(c: TerminalContext) {
       color: "--color-black-400",
     },
   ]);
+  c.print([{ content: "\n      " }, { content: getRandomTip() }]);
 
   c.print("\n\n");
 }
