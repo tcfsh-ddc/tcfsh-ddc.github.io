@@ -9,6 +9,8 @@
           <SvgoAbout :filled="true" class="!h-6 !w-6 mr-2" />
           <p>關於</p>
         </NuxtLink>
+      </DropdownMenuItem>
+      <DropdownMenuItem>
         <NuxtLink to="/links" class="flex w-full h-full items-center unstyled">
           <SvgoMembers :filled="true" class="!h-6 !w-6 mr-2" />
           <p>友社連結</p>
