@@ -235,16 +235,16 @@
 
     /* #region 圖片樣式 */
     & img {
-      @apply my-6 rounded-lg;
+      @apply my-6 rounded-lg w-40;
     }
     /* #endregion */
 
     /* #region 圖片置中 */
-    & img {
+    /* & img {
       display: block;
       margin-left: auto;
       margin-right: auto;
-    }
+    } */
     /* #endregion */
 
     /* #region 音頻和視頻樣式 */
