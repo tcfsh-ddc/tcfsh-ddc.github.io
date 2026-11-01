@@ -50,8 +50,8 @@ export function useWindowControls(options: Options) {
   let activeTween: ReturnType<(typeof import("gsap"))["gsap"]["to"]> | undefined;
 
   const windowStyle = computed<CSSProperties>(() => ({
-    width: `${rect.width}px`,
-    height: `${rect.height}px`,
+    width: isMaximized.value ? "100%" : `${rect.width}px`,
+    height: isMaximized.value ? "100%" : `${rect.height}px`,
     transform: `translate3d(${rect.x}px, ${rect.y}px, 0)`,
     zIndex: zIndex.value,
   }));
@@ -185,11 +185,10 @@ export function useWindowControls(options: Options) {
   function maximize() {
     if (isMaximized.value) return;
 
-    const bounds = options.bounds();
     restoredRect.value = { ...rect };
     isMaximized.value = true;
     options.onMaximizeChange(true);
-    animateTo({ x: 0, y: 0, width: bounds.width, height: bounds.height });
+    animateTo({ x: 0, y: 0, width: rect.width, height: rect.height });
   }
 
   function restore() {

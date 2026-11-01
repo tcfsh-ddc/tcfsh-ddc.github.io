@@ -275,8 +275,6 @@ function updateMobileState() {
   isMobile.value = mobileQuery?.matches ?? false;
   if (isMobile.value && isOpen.value && !isMaximized.value) {
     maximize();
-  } else if (!isMobile.value && isMaximized.value) {
-    restore();
   }
 }
 </script>
