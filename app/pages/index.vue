@@ -173,6 +173,6 @@ onUnmounted(() => {
 <style>
 #desktop-icons button span {
   color: white;
-  text-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  text-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.6);
 }
 </style>
