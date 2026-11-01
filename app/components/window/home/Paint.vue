@@ -82,10 +82,24 @@ import {
   PhDotsThree,
 } from "@phosphor-icons/vue";
 import MdPaint from "@/content/divisions/paint.md?raw";
+import { gsap } from "gsap";
 
 const open = defineModel<boolean>("open", {
   default: false,
 });
 
 const menuItems = ["檔案", "編輯", "筆刷", "工具", "關於"];
+
+onMounted(() => {
+  gsap.fromTo(
+    ".demo-window--notes [aria-hidden='true']",
+    { autoAlpha: 0, x: -12 },
+    { autoAlpha: 1, x: 0, duration: 0.35, stagger: 0.04, ease: "power2.out", clearProps: "all" },
+  );
+  gsap.fromTo(
+    ".demo-window--notes .bg-white",
+    { autoAlpha: 0, scale: 0.96 },
+    { autoAlpha: 1, scale: 1, duration: 0.45, delay: 0.15, ease: "power2.out", clearProps: "all" },
+  );
+});
 </script>

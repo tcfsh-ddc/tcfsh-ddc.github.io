@@ -17,7 +17,7 @@
     <div
       class="flex flex-col justify-center items-center h-full w-full gap-2 py-4"
     >
-      <div class="flex flex-col md:flex-row gap-4 items-end">
+      <div data-welcome-intro class="flex flex-col md:flex-row gap-4 items-end">
         <img
           src="~/assets/images/ddc-logo.jpg"
           class="size-20 md:size-30 rounded-lg -mb-16 md:mb-0"
@@ -40,6 +40,7 @@
       </div>
 
       <div
+        data-welcome-grid
         class="grid grid-cols-2 md:grid-cols-3 gap-4 w-[95%] md:w-[70%] md:min-w-150 mt-8"
       >
         <NuxtLink
@@ -107,7 +108,7 @@
         </button>
       </div>
 
-      <p class="mt-2 text-black-700">
+      <p data-welcome-credit class="mt-2 text-black-700">
         本社網由第二十一屆副社長
         <a
           href="https://samhacker.xyz"
@@ -128,6 +129,34 @@ import {
   PhGameController,
   PhPianoKeys,
 } from "@phosphor-icons/vue";
+import { gsap } from "gsap";
+
+onMounted(() => {
+  gsap.fromTo(
+    "[data-welcome-intro]",
+    { autoAlpha: 0, y: 18 },
+    { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out", clearProps: "all" },
+  );
+  gsap.fromTo(
+    "[data-welcome-grid] .sh-grid-item",
+    { autoAlpha: 0, y: 22, scale: 0.96 },
+    {
+      autoAlpha: 1,
+      y: 0,
+      scale: 1,
+      duration: 0.4,
+      stagger: 0.08,
+      delay: 0.18,
+      ease: "back.out(1.3)",
+      clearProps: "all",
+    },
+  );
+  gsap.fromTo(
+    "[data-welcome-credit]",
+    { autoAlpha: 0 },
+    { autoAlpha: 1, duration: 0.35, delay: 0.65, clearProps: "all" },
+  );
+});
 
 const emit = defineEmits([
   "openPaintWindow",

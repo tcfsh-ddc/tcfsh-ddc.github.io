@@ -117,6 +117,7 @@ import hljs from "highlight.js/lib/core";
 import csharp from "highlight.js/lib/languages/csharp";
 import { TabsContent, TabsList, TabsRoot, TabsTrigger } from "reka-ui";
 import MdGame from "@/content/divisions/game.md?raw";
+import { gsap } from "gsap";
 
 const activeTab = ref("code");
 
@@ -176,6 +177,19 @@ const codeLines = [
 ];
 const sourceCode = codeLines.join("\n");
 const highlightedCode = ref("");
+
+onMounted(() => {
+  gsap.fromTo(
+    ".game-window [aria-label='編輯器工具列'], .game-window [aria-label='介紹檔案']",
+    { autoAlpha: 0, y: -10 },
+    { autoAlpha: 1, y: 0, duration: 0.35, stagger: 0.1, ease: "power2.out", clearProps: "all" },
+  );
+  gsap.fromTo(
+    ".game-window [aria-label='遊戲組介紹程式碼']",
+    { autoAlpha: 0, y: 12 },
+    { autoAlpha: 1, y: 0, duration: 0.4, delay: 0.18, ease: "power2.out", clearProps: "all" },
+  );
+});
 
 onMounted(() => {
   hljs.registerLanguage("csharp", csharp);

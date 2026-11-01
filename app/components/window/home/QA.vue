@@ -68,12 +68,28 @@ import {
 } from "reka-ui";
 import { PhPlus } from "@phosphor-icons/vue";
 import { qaConfig } from "@/config/qa";
+import { gsap } from "gsap";
 
 const open = defineModel<boolean>("open", {
   default: false,
 });
 
 const accordionItems = qaConfig;
+
+onMounted(() => {
+  gsap.fromTo(
+    ".qa-trigger",
+    { autoAlpha: 0, x: -14 },
+    {
+      autoAlpha: 1,
+      x: 0,
+      duration: 0.3,
+      stagger: 0.06,
+      ease: "power2.out",
+      clearProps: "all",
+    },
+  );
+});
 </script>
 
 <style scoped>
