@@ -77,11 +77,16 @@ const paintOpen = ref(false);
 const gameOpen = ref(false);
 
 // Nuxt 全域初次載入狀態
+const isInitialLoadPreprocessed = useState(
+  "sh-initial-load-preprocessed",
+  () => false,
+);
 const isInitialLoadComplete = useState<boolean>(
   "sh-initial-load-complete",
   () => false,
 );
 
+const INITIAL_LOADED_PREPROCESS = "sh:initial-load-preprocess";
 const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
 
 // 收到通知後開啟歡迎視窗
@@ -101,32 +106,52 @@ function switchGameOpen() {
   gameOpen.value = !gameOpen.value;
 }
 
-const animateDesktopIcons = () =>
-  gsap.fromTo(
-    "#desktop-icons button",
-    { autoAlpha: 0, y: 12 },
-    {
-      autoAlpha: 1,
-      y: 0,
-      duration: 0.35,
-      stagger: 0.07,
-      delay: 0.12,
-      ease: "power2.out",
-      clearProps: "opacity,visibility,transform",
-    },
-  );
+// 初始化桌面圖示動畫狀態
+const initializeDesktopIcons = () => {
+  const icons = gsap.utils.toArray<HTMLElement>("#desktop-icons button");
+
+  gsap.set(icons, {
+    autoAlpha: 0,
+    y: 12,
+  });
+};
+
+// 播放桌面圖示進場動畫
+const animateDesktopIcons = () => {
+  const icons = gsap.utils.toArray<HTMLElement>("#desktop-icons button");
+
+  gsap.to(icons, {
+    autoAlpha: 1,
+    y: 0,
+    duration: 0.8,
+    stagger: 0.2,
+    delay: 0.12,
+    ease: "power2.out",
+    clearProps: "opacity,visibility,transform",
+  });
+};
 
 onMounted(() => {
-  // 先註冊事件，避免錯過通知
+  window.addEventListener(INITIAL_LOADED_PREPROCESS, initializeDesktopIcons);
+
   window.addEventListener(INITIAL_LOAD_EVENT, handleInitialLoadComplete);
 
-  // 如果全域狀態已經完成，立即開啟
-  if (isInitialLoadComplete.value) {
-    handleInitialLoadComplete();
+  window.addEventListener(INITIAL_LOAD_EVENT, animateDesktopIcons);
+
+  // 補償錯過 PREPROCESS 事件
+  if (isInitialLoadPreprocessed.value) {
+    initializeDesktopIcons();
   }
 
-  window.addEventListener(INITIAL_LOAD_EVENT, animateDesktopIcons);
-  if (isInitialLoadComplete.value) animateDesktopIcons();
+  // 補償錯過 COMPLETE 事件
+  if (isInitialLoadComplete.value) {
+    if (!isInitialLoadPreprocessed.value) {
+      initializeDesktopIcons();
+    }
+
+    handleInitialLoadComplete();
+    animateDesktopIcons();
+  }
 });
 
 // 監聽全域狀態更新
@@ -137,7 +162,10 @@ watch(isInitialLoadComplete, (completed) => {
 });
 
 onUnmounted(() => {
+  window.removeEventListener(INITIAL_LOADED_PREPROCESS, initializeDesktopIcons);
+
   window.removeEventListener(INITIAL_LOAD_EVENT, handleInitialLoadComplete);
+
   window.removeEventListener(INITIAL_LOAD_EVENT, animateDesktopIcons);
 });
 </script>

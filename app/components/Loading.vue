@@ -36,8 +36,13 @@ const loadingDot2 = ref(null);
 const loadingDot3 = ref(null);
 
 // Nuxt 全域狀態：記錄初次載入動畫是否完成
+const isInitialLoadPreprocessed = useState(
+  "sh-initial-load-preprocessed",
+  () => false,
+);
 const isInitialLoadComplete = useState("sh-initial-load-complete", () => false);
 
+const INITIAL_LOADED_PREPROCESS = "sh:initial-load-preprocess";
 const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
 
 let mainTimeline;
@@ -50,7 +55,15 @@ let hasFinished = false;
 const handlePageLoad = () => {
   if (loadTimer || hasStartedExit || hasFinished) return;
 
-  // 網頁完全載入後延遲一秒
+  isInitialLoadPreprocessed.value = true;
+  window.dispatchEvent(
+    new CustomEvent(INITIAL_LOADED_PREPROCESS, {
+      detail: {
+        type: "initial-load-complete",
+      },
+    }),
+  );
+
   loadTimer = window.setTimeout(() => {
     loadTimer = undefined;
     finishLoading();
@@ -64,21 +77,18 @@ onMounted(() => {
   // 建立載入動畫
   mainTimeline = gsap.timeline();
 
-  mainTimeline.to(
-    loadingDots,
-    {
-      y: -12,
-      duration: 0.4,
+  mainTimeline.to(loadingDots, {
+    y: -12,
+    duration: 0.4,
+    repeat: -1,
+    yoyo: true,
+    stagger: {
+      each: 0.15,
       repeat: -1,
       yoyo: true,
-      stagger: {
-        each: 0.15,
-        repeat: -1,
-        yoyo: true,
-      },
-      ease: "power1.inOut",
     },
-  );
+    ease: "power1.inOut",
+  });
 
   // 防止元件掛載前，load 事件就已經觸發
   if (document.readyState === "complete") {
@@ -101,7 +111,8 @@ const finishLoading = () => {
     !dotsContainer.value ||
     !tipsContainer.value ||
     loadingDots.some((dot) => !dot)
-  ) return;
+  )
+    return;
 
   hasStartedExit = true;
 
