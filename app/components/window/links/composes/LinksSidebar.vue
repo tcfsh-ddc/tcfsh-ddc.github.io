@@ -52,8 +52,10 @@
         </span>
       </button>
     </nav>
-
-    <p class="sidebar-total text-sm">{{ props.filteredLinks.length }} 個連結</p>
+    <p class="sidebar-total text-sm">
+      {{ props.filteredLinks.length }} 個連結<br />歡迎友社來
+      <a href="https://www.instagram.com/tcfsh.ddc/">拉連結</a>
+    </p>
   </aside>
 </template>
 
