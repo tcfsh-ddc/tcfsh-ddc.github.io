@@ -5,9 +5,12 @@ import { siteConfig } from "./app/config/site";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: ["nuxt-svgo", "@nuxt/fonts", "@comark/nuxt", "oxc-nuxt"],
-  // components: [
-  //   { path: "~/components", pathPrefix: false },
-  // ],
+  components: [
+    {
+      path: "~/components",
+      extensions: ["vue"],
+    },
+  ],
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   css: ["@/assets/css/global.css"],

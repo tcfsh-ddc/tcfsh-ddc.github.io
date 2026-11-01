@@ -94,7 +94,6 @@ function numToChinese(num: number) {
 
   if (num === 0) return "零";
 
-  let numStr = num.toString();
   let chnStr = "";
   let unitPos = 0;
   let needZero = false;

@@ -13,7 +13,6 @@ export default defineNuxtPlugin(() => {
       if (index < text.length) {
         document.title += text[index];
         index++;
-        console.log(text[index]);
 
         typingTimer = setTimeout(type, speed);
       } else {
