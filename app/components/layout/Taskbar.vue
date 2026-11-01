@@ -29,19 +29,19 @@
       id="sh-nav-menu"
     >
       <!-- 關於頁面 -->
-      <NuxtLink class="flex p-0 gap-1" to="/about">
+      <NuxtLink class="flex p-0 gap-1 unstyled" to="/about">
         <SvgoAbout :filled="true" class="!h-8 !w-8" />
         <p class="sr-only">關於</p>
       </NuxtLink>
 
       <!-- 連結頁面 -->
-      <NuxtLink class="flex p-0 gap-1" to="/links">
+      <NuxtLink class="flex p-0 gap-1 unstyled" to="/links">
         <SvgoMembers :filled="true" class="!h-8 !w-8" />
         <p class="sr-only">友情連結</p>
       </NuxtLink>
 
       <!-- 作品集頁面 -->
-      <!-- <NuxtLink class="flex p-0 gap-1" to="/works">
+      <!-- <NuxtLink class="flex p-0 gap-1 unstyled" to="/works">
         <SvgoBook :filled="true" class="!h-8 !w-8" />
         <p class="sr-only">作品集</p>
       </NuxtLink> -->
@@ -65,7 +65,7 @@
               :href="item.link"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex w-full h-full items-center"
+              class="flex w-full h-full items-center unstyled"
             >
               <component class="!size-7" :is="item.icon" />
             </a>

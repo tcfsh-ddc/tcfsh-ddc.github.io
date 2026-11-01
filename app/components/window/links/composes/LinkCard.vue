@@ -12,6 +12,7 @@
       <img
         :src="item.image"
         :alt="`${item.name}的${item.tag === 'personal' ? '頭像' : '圖示'}`"
+        v-if="item.image != undefined"
         class="mx-3 h-full w-auto lg:h-auto aspect-square"
       />
     </div>
@@ -46,6 +47,7 @@
                 :href="link.url"
                 :aria-label="`${item.name}：${linkLabels[link.type]}`"
                 :title="`${linkLabels[link.type]} · ${link.url}`"
+                class="unstyled"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -72,13 +74,9 @@ import {
   PhDiscordLogo,
   PhFacebookLogo,
   PhGlobeHemisphereWest,
-  PhGraduationCap,
   PhInstagramLogo,
   PhLinkSimple,
-  PhSpeakerHigh,
   PhThreadsLogo,
-  PhUserCircle,
-  PhUsersThree,
   PhGithubLogo,
 } from "@phosphor-icons/vue";
 import TooltipProvider from "~/components/ui/TooltipProvider.vue";

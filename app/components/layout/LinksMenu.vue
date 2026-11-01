@@ -7,7 +7,7 @@
       <DropdownMenuItem class="flex gap-4">
         <a
           href="https://www.instagram.com/tcfsh.ddc"
-          class="flex w-full h-full items-center"
+          class="flex w-full h-full items-center unstyled"
         >
           <SvgoInstagram class="!h-6 !w-6 mr-2" />
           <p>Instagram</p>
@@ -16,7 +16,7 @@
       <DropdownMenuItem class="flex gap-4">
         <a
           href="https://www.facebook.com/tcfshDDC"
-          class="flex w-full h-full items-center"
+          class="flex w-full h-full items-center unstyled"
         >
           <SvgoFacebookRound class="!h-6 !w-6 mr-2" />
           <p>Facebook</p>
@@ -25,7 +25,7 @@
       <DropdownMenuItem class="flex gap-4">
         <a
           href="https://www.threads.com/@tcfsh.ddc"
-          class="flex w-full h-full items-center"
+          class="flex w-full h-full items-center unstyled"
         >
           <SvgoThreads class="!h-6 !w-6 mr-2" />
           <p>Threads</p>
@@ -34,7 +34,7 @@
       <DropdownMenuItem class="flex gap-4">
         <a
           href="https://github.com/tcfsh-ddc"
-          class="flex w-full h-full items-center"
+          class="flex w-full h-full items-center unstyled"
         >
           <SvgoGithub class="!h-6 !w-6 mr-2" />
           <p>GitHub</p>

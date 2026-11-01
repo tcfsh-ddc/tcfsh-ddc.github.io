@@ -124,7 +124,7 @@ const diagnosticLines: (string | TerminalSegment[])[] = [
       </p>
 
       <NuxtLink
-        class="mt-4 flex items-center gap-2 text-xl text-black-200 transition-all hover:gap-6 hover:text-purple"
+        class="mt-4 flex items-center gap-2 text-xl text-black-200 transition-all hover:gap-6 hover:text-purple unstyled"
         to="/"
       >
         <PhArrowUUpLeft :size="24" />

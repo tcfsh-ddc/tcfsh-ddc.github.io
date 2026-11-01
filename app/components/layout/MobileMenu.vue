@@ -5,9 +5,13 @@
     </DropdownMenuTrigger>
     <DropdownMenuContent align="start">
       <DropdownMenuItem>
-        <NuxtLink to="/about" class="flex w-full h-full items-center">
+        <NuxtLink to="/about" class="flex w-full h-full items-center unstyled">
           <SvgoAbout :filled="true" class="!h-6 !w-6 mr-2" />
           <p>關於</p>
+        </NuxtLink>
+        <NuxtLink to="/links" class="flex w-full h-full items-center unstyled">
+          <SvgoMembers :filled="true" class="!h-6 !w-6 mr-2" />
+          <p>友社連結</p>
         </NuxtLink>
       </DropdownMenuItem>
     </DropdownMenuContent>

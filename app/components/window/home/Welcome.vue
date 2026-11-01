@@ -42,7 +42,10 @@
       <div
         class="grid grid-cols-2 md:grid-cols-3 gap-4 w-[95%] md:w-[70%] md:min-w-150 mt-8"
       >
-        <NuxtLink to="/about" class="sh-grid-item gap-2 group col-span-2">
+        <NuxtLink
+          to="/about"
+          class="sh-grid-item gap-2 group col-span-2 unstyled"
+        >
           <span
             class="text-4xl text-white font-bold min-h-12 tracking-normal group-hover:tracking-widest transition-all"
           >
@@ -56,7 +59,7 @@
         </NuxtLink>
         <a
           href="https://github.com/tcfsh-ddc/tcfsh-ddc.github.io"
-          class="sh-grid-item gap-2 group"
+          class="sh-grid-item gap-2 group unstyled"
         >
           <PhCode
             :size="48"

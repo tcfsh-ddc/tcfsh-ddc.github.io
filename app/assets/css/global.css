@@ -31,6 +31,10 @@ p {
   @apply text-lg;
 }
 
+a:not(.unstyled) {
+  @apply transition-all underline hover:underline-offset-6 underline-offset-4;
+}
+
 /* 全局自訂卷軸 */
 * {
   scrollbar-width: thin;
