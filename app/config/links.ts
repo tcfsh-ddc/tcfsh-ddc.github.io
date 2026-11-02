@@ -5,6 +5,7 @@ import tcircLogo from "~/assets/links/tcirc.png";
 import syshMakerLogo from "~/assets/links/syshmaker.jpg";
 import scaictLogo from "~/assets/links/scaict.png";
 import yemoguLogo from "~/assets/links/yemogu810.png";
+import yxmagazineLogo from "~/assets/links/yingxiangmagazine.jpg";
 
 export const links: Links[] = [
   {
@@ -160,6 +161,20 @@ export const links: Links[] = [
       {
         type: "instagram",
         url: "https://www.instagram.com/use_your_brain.01/",
+      },
+    ],
+    color: "#000",
+  },
+  {
+    name: "映像刊",
+    image: yxmagazineLogo,
+    description: "《映像刊》",
+    slug: "yingxiangmagazine",
+    tag: "activity",
+    links: [
+      {
+        type: "instagram",
+        url: "https://www.instagram.com/yingxiangmagazine",
       },
     ],
     color: "#000",
