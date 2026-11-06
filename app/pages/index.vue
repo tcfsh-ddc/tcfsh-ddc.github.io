@@ -42,7 +42,7 @@
         @click="switchGamePlayOpen"
         class="flex flex-col gap-1 items-center justify-center cursor-pointer"
       >
-        <SvgoFileUnity :filled="true" class="!size-10" />
+        <img :src="GamePlayIcon" class="!size-10" />
         <span>社博遊戲.exe</span>
       </button>
     </div>
@@ -51,6 +51,7 @@
 
 <script setup lang="ts">
 import { siteConfig, pageTitle } from "@/config/site";
+import GamePlayIcon from "@/assets/icons/game_play.png";
 const hostname = import.meta.env.VITE_SITE_URL || "https://tcfsh-ddc.github.io";
 
 useHead({
