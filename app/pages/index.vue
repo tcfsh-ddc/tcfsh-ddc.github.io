@@ -54,6 +54,10 @@ import { siteConfig, pageTitle } from "@/config/site";
 import GamePlayIcon from "@/assets/icons/game_play.png";
 const hostname = import.meta.env.VITE_SITE_URL || "https://tcfsh-ddc.github.io";
 
+const WindowHomeGamePlay = defineAsyncComponent(
+  () => import("@/components/window/home/GamePlay.vue"),
+);
+
 useHead({
   title: pageTitle("首頁"),
   meta: [
@@ -77,7 +81,7 @@ useSeoMeta({
   twitterImage: `${hostname}/opengraph/homepage-og.png`,
 });
 
-import { ref, watch, onMounted, onUnmounted } from "vue";
+import { ref, watch, onMounted, onUnmounted, defineAsyncComponent } from "vue";
 import { gsap } from "gsap";
 import "@/assets/css/markdown.css";
 
