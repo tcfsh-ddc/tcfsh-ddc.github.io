@@ -2,6 +2,7 @@
   <!-- Loading Animation -->
   <div
     ref="loaderContainer"
+    v-if="isProd"
     class="w-dvw h-dvh z-999 bg-black-950 flex flex-col gap-6 items-center justify-center absolute"
   >
     <img ref="loadingImg" :src="loadingImage" alt="載入動畫" />
@@ -34,6 +35,8 @@ const tipsContainer = ref(null);
 const loadingDot1 = ref(null);
 const loadingDot2 = ref(null);
 const loadingDot3 = ref(null);
+
+const isProd = !import.meta.dev;
 
 // Nuxt 全域狀態：記錄初次載入動畫是否完成
 const isInitialLoadPreprocessed = useState(
@@ -71,10 +74,18 @@ const handlePageLoad = () => {
 };
 
 onMounted(() => {
+  // 開發模式：直接完成初始載入
+  if (import.meta.dev) {
+    console.log("[Loading] Development mode, skipping animation");
+
+    completeInitialLoad();
+    return;
+  }
+
   const loadingDots = [loadingDot1.value, loadingDot2.value, loadingDot3.value];
+
   if (loadingDots.some((dot) => !dot)) return;
 
-  // 建立載入動畫
   mainTimeline = gsap.timeline();
 
   mainTimeline.to(loadingDots, {
@@ -90,7 +101,6 @@ onMounted(() => {
     ease: "power1.inOut",
   });
 
-  // 防止元件掛載前，load 事件就已經觸發
   if (document.readyState === "complete") {
     handlePageLoad();
   } else {
@@ -125,19 +135,7 @@ const finishLoading = () => {
         loaderContainer.value.style.display = "none";
       }
 
-      hasFinished = true;
-
-      // 1. 更新 Nuxt 全域狀態
-      isInitialLoadComplete.value = true;
-
-      // 2. 廣播全域事件
-      window.dispatchEvent(
-        new CustomEvent(INITIAL_LOAD_EVENT, {
-          detail: {
-            type: "initial-load-complete",
-          },
-        }),
-      );
+      completeInitialLoad();
     },
   });
 
@@ -235,6 +233,33 @@ const finishLoading = () => {
   exitTimeline.set(loaderContainer.value, {
     display: "none",
   });
+};
+
+const completeInitialLoad = () => {
+  if (hasFinished) return;
+
+  hasFinished = true;
+
+  isInitialLoadPreprocessed.value = true;
+  isInitialLoadComplete.value = true;
+
+  window.dispatchEvent(
+    new CustomEvent(INITIAL_LOADED_PREPROCESS, {
+      detail: {
+        type: "initial-load-complete",
+      },
+    }),
+  );
+
+  window.dispatchEvent(
+    new CustomEvent(INITIAL_LOAD_EVENT, {
+      detail: {
+        type: "initial-load-complete",
+      },
+    }),
+  );
+
+  console.log("[Loading] Initial load completed");
 };
 
 onUnmounted(() => {
