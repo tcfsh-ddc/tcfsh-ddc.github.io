@@ -19,6 +19,43 @@
         v-if="open"
         class="game-launch-frame size-full flex flex-col gap-2 items-center justify-center relative"
       >
+        <!-- Mobile Warning -->
+        <div
+          class="fixed inset-0 z-[999] w-dvw h-dvh bg-black-950/90 backdrop-blur-sm flex flex-col gap-2 items-center justify-center px-1"
+          v-if="showMobileWarning"
+        >
+          <div class="icon-morph-container">
+            <PhDesktop
+              ref="desktopIcon"
+              :size="64"
+              weight="duotone"
+              class="text-rose-300"
+            />
+            <PhDeviceMobile
+              ref="mobileIcon"
+              :size="64"
+              weight="duotone"
+              class="text-rose-300"
+            />
+          </div>
+
+          <h1 class="text-rose-400 text-4xl font-bold">行動裝置表現不佳</h1>
+
+          <p class="text-rose-200 text-center px-4">
+            本遊戲並未在行動裝置上進行過測試，因此建議您在電腦上進行遊戲體驗。
+            如果仍需在行動裝置上遊玩，請按底下按鈕
+          </p>
+
+          <button
+            class="px-4 flex gap-1 items-center py-2 rounded-lg bg-rose-400 text-black-950 hover:bg-rose-300 transition-colors"
+            @click="dismissWarning"
+          >
+            <PhX :size="24" weight="thin" />
+            仍要繼續瀏覽
+          </button>
+        </div>
+
+        <!-- Main Game Window -->
         <iframe
           src="/game/index.html"
           title="社博遊戲"
@@ -66,15 +103,102 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
+import { PhDesktop, PhDeviceMobile, PhX } from "@phosphor-icons/vue";
+import { gsap } from "gsap";
+import { MorphSVGPlugin } from "gsap/MorphSVGPlugin";
+gsap.registerPlugin(MorphSVGPlugin);
 
 const open = ref(false);
 
+const desktopIcon = ref(null);
+const mobileIcon = ref(null);
+let morphTimeline = null;
+
+const showMobileWarning = ref(false);
+
+function isMobile() {
+  const ua = navigator.userAgent;
+  // 檢查常見的行動裝置關鍵字
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    ua,
+  );
+}
+
+const dismissWarning = () => {
+  showMobileWarning.value = false;
+};
+
 onMounted(() => {
-  // open.value = true;
+  if (window.innerWidth < 600 || isMobile()) {
+    showMobileWarning.value = true;
+  }
+});
+
+watch(open, async (isOpen) => {
+  // 清除舊動畫
+  morphTimeline?.kill();
+  morphTimeline = null;
+
+  if (!isOpen) return;
+
+  // 等待 Vue 建立 SVG DOM
+  await nextTick();
+
+  const desktopSvg = desktopIcon.value?.$el;
+  const mobileSvg = mobileIcon.value?.$el;
+
+  if (!desktopSvg || !mobileSvg) {
+    console.warn("[GamePlay] SVG not found");
+    return;
+  }
+
+  const desktopPaths = [...desktopSvg.querySelectorAll("path")];
+
+  const mobilePaths = [...mobileSvg.querySelectorAll("path")];
+
+  console.log("[GamePlay] Desktop:", desktopPaths);
+  console.log("[GamePlay] Mobile:", mobilePaths);
+
+  if (desktopPaths.length !== 2 || mobilePaths.length !== 2) {
+    console.warn("[GamePlay] Unexpected SVG structure");
+    return;
+  }
+
+  // 隱藏目標 SVG，但保留其 Path 作為 Morph 參考
+  gsap.set(mobileSvg, {
+    autoAlpha: 0,
+  });
+
+  // 建立動畫 Timeline
+  morphTimeline = gsap.timeline({
+    repeat: -1,
+    repeatDelay: 0.5,
+    yoyo: true,
+  });
+
+  desktopPaths.forEach((path, index) => {
+    morphTimeline.to(
+      path,
+      {
+        duration: 1.2,
+        morphSVG: {
+          shape: mobilePaths[index],
+          type: "rotational",
+        },
+        ease: "power2.inOut",
+      },
+      0,
+    );
+  });
+
+  console.log("[GamePlay] Morph animation started");
 });
 
 onUnmounted(() => {
+  morphTimeline?.kill();
+  morphTimeline = null;
+
   open.value = false;
 });
 </script>
@@ -96,5 +220,18 @@ onUnmounted(() => {
   min-height: 0;
   border: none;
   overflow: hidden;
+}
+
+.icon-morph-container {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.icon-morph-container > :deep(svg) {
+  position: absolute;
+  inset: 0;
+  width: 64px;
+  height: 64px;
 }
 </style>
