@@ -1,7 +1,7 @@
 <template>
   <Loading />
 
-  <ViewportWarning />
+  <ViewportWarning v-if="isProd" />
 
   <div class="h-dvh w-screen bg-black p-0 md:p-6">
     <div
@@ -26,6 +26,8 @@
 <script setup lang="ts">
 import desktopBg from "~/assets/images/desktop-bg.png";
 import ViewportWarning from "~/components/ViewportWarning.vue";
+
+const isProd = !import.meta.dev;
 
 useHead({
   link: [
