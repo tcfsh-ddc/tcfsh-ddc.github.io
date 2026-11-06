@@ -8,6 +8,7 @@
     <WindowHomeQA v-model:open="qaOpen" />
     <WindowHomePaint v-model:open="paintOpen" />
     <WindowHomeGame v-model:open="gameOpen" />
+    <WindowHomeGamePlay v-model:open="gamePlayOpen" />
 
     <div
       id="desktop-icons"
@@ -35,6 +36,14 @@
       >
         <SvgoFileUnity :filled="true" class="!size-10" />
         <span>遊戲組.cs</span>
+      </button>
+
+      <button
+        @click="switchGamePlayOpen"
+        class="flex flex-col gap-1 items-center justify-center cursor-pointer"
+      >
+        <SvgoFileUnity :filled="true" class="!size-10" />
+        <span>社博遊戲.exe</span>
       </button>
     </div>
   </div>
@@ -75,6 +84,7 @@ const welcomeOpen = ref(false);
 const qaOpen = ref(false);
 const paintOpen = ref(false);
 const gameOpen = ref(false);
+const gamePlayOpen = ref(false);
 
 // Nuxt 全域初次載入狀態
 const isInitialLoadPreprocessed = useState(
@@ -104,6 +114,10 @@ function switchPaintOpen() {
 
 function switchGameOpen() {
   gameOpen.value = !gameOpen.value;
+}
+
+function switchGamePlayOpen() {
+  gamePlayOpen.value = !gamePlayOpen.value;
 }
 
 // 初始化桌面圖示動畫狀態
