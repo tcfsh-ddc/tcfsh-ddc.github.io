@@ -79,6 +79,8 @@ let completionCandidates: string[] = [];
 let completionIndex = -1;
 
 function focusInput() {
+  if (window.getSelection()?.isCollapsed === false) return;
+
   inputElement.value?.focus();
 }
 

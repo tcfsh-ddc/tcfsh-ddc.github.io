@@ -63,6 +63,7 @@
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
+  user-select: none;
   flex-shrink: 0;
   width: 8px;
   height: 1.4em;
@@ -119,7 +120,7 @@
 
 @keyframes terminal-blink {
   to {
-    visibility: hidden;
+    opacity: 0;
   }
 }
 
