@@ -8,14 +8,16 @@
       class="bg-purple md:rounded-frame-0 outline-purple outline-2.5 h-full w-full flex flex-1 flex-col overflow-hidden p-1 md:p-2.5 gap-0"
     >
       <!-- 畫面內容 -->
-      <div
-        class="flex-1 min-h-0 flex flex-col bg-blue-dark rounded-frame-1 rounded-b-frame-1 md:rounded-b-none overflow-hidden p-1"
-        id="desktop-frame"
-      >
-        <WindowsContainer ref="windowsContainer">
-          <slot />
-        </WindowsContainer>
-      </div>
+      <ContextMenuWrapper>
+        <div
+          class="flex-1 min-h-0 flex flex-col bg-blue-dark rounded-frame-1 rounded-b-frame-1 md:rounded-b-none overflow-hidden p-1"
+          id="desktop-frame"
+        >
+          <WindowsContainer ref="windowsContainer">
+            <slot />
+          </WindowsContainer>
+        </div>
+      </ContextMenuWrapper>
 
       <!-- 工作列 -->
       <div><LayoutTaskbar @home="handleHome" /></div>
@@ -26,6 +28,7 @@
 <script setup lang="ts">
 import desktopBg from "~/assets/images/desktop-bg.png";
 import ViewportWarning from "~/components/ViewportWarning.vue";
+import ContextMenuWrapper from "~/components/layout/ContextMenuWrapper.vue";
 
 useHead({
   link: [
