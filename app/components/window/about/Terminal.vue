@@ -9,6 +9,7 @@
     :movable="false"
     :resizable="false"
     default-status="maxmium"
+    class="sh-terminal-window"
   >
     <template #titlebar>
       <p class="text-black-50">關於數創 - Kitty</p>

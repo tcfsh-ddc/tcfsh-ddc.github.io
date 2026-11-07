@@ -3,7 +3,8 @@
     <section
       v-if="isOpen"
       ref="windowElement"
-      class="absolute left-0 top-0 will-change-transform"
+      class="absolute left-0 top-0 will-change-transform sh-single-window"
+      :class="props.class"
       :style="windowStyle"
       @pointermove="onPointerMove"
       @pointerup="endInteraction"
@@ -114,6 +115,7 @@ interface Props {
   allowDoubleMaxmize?: boolean;
   contentPadding?: boolean;
   defaultStatus?: "window" | "maxmium";
+  class?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -278,3 +280,11 @@ function updateMobileState() {
   }
 }
 </script>
+
+<style scoped>
+.sh-single-window:not(.sh-terminal-window) *::selection {
+  background-color: var(--color-purple);
+  color: var(--color-black-50);
+  text-decoration: underline rgba(255, 255, 255, 0.5) 1px;
+}
+</style>
