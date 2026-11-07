@@ -33,7 +33,16 @@ interface Options {
   onMaximizeChange: (isMaximized: boolean) => void;
 }
 
-const resizeHandles: ResizeHandle[] = ["n", "ne", "e", "se", "s", "sw", "w", "nw"];
+const resizeHandles: ResizeHandle[] = [
+  "n",
+  "ne",
+  "e",
+  "se",
+  "s",
+  "sw",
+  "w",
+  "nw",
+];
 
 export function useWindowControls(options: Options) {
   const rect = reactive<WindowRect>({
@@ -47,11 +56,13 @@ export function useWindowControls(options: Options) {
   const interaction = ref<Interaction | null>(null);
   const zIndex = ref(1);
   let gsapInstance: (typeof import("gsap"))["gsap"] | undefined;
-  let activeTween: ReturnType<(typeof import("gsap"))["gsap"]["to"]> | undefined;
+  let activeTween:
+    | ReturnType<(typeof import("gsap"))["gsap"]["to"]>
+    | undefined;
 
   const windowStyle = computed<CSSProperties>(() => ({
-    width: isMaximized.value ? "100%" : `${rect.width}px`,
-    height: isMaximized.value ? "100%" : `${rect.height}px`,
+    width: `${rect.width}px`,
+    height: `${rect.height}px`,
     transform: `translate3d(${rect.x}px, ${rect.y}px, 0)`,
     zIndex: zIndex.value,
   }));
@@ -64,8 +75,16 @@ export function useWindowControls(options: Options) {
     const bounds = options.bounds();
     if (bounds.width <= 0 || bounds.height <= 0) return { ...source };
 
-    const width = clamp(source.width, Math.min(options.minWidth, bounds.width), bounds.width);
-    const height = clamp(source.height, Math.min(options.minHeight, bounds.height), bounds.height);
+    const width = clamp(
+      source.width,
+      Math.min(options.minWidth, bounds.width),
+      bounds.width,
+    );
+    const height = clamp(
+      source.height,
+      Math.min(options.minHeight, bounds.height),
+      bounds.height,
+    );
 
     return {
       x: clamp(source.x, 0, bounds.width - width),
@@ -110,9 +129,14 @@ export function useWindowControls(options: Options) {
     event.preventDefault();
   }
 
-  function startResize(event: PointerEvent, handle: ResizeHandle, element: HTMLElement) {
+  function startResize(
+    event: PointerEvent,
+    handle: ResizeHandle,
+    element: HTMLElement,
+  ) {
     focusWindow();
-    if (!options.resizable.value || isMaximized.value || event.button !== 0) return;
+    if (!options.resizable.value || isMaximized.value || event.button !== 0)
+      return;
 
     interaction.value = {
       type: "resize",
@@ -149,16 +173,24 @@ export function useWindowControls(options: Options) {
     let right = start.x + start.width;
     let bottom = start.y + start.height;
 
-    if (handle.includes("e")) right = clamp(right + deltaX, left + minWidth, bounds.width);
-    if (handle.includes("s")) bottom = clamp(bottom + deltaY, top + minHeight, bounds.height);
+    if (handle.includes("e"))
+      right = clamp(right + deltaX, left + minWidth, bounds.width);
+    if (handle.includes("s"))
+      bottom = clamp(bottom + deltaY, top + minHeight, bounds.height);
     if (handle.includes("w")) left = clamp(left + deltaX, 0, right - minWidth);
     if (handle.includes("n")) top = clamp(top + deltaY, 0, bottom - minHeight);
 
-    Object.assign(rect, { x: left, y: top, width: right - left, height: bottom - top });
+    Object.assign(rect, {
+      x: left,
+      y: top,
+      width: right - left,
+      height: bottom - top,
+    });
   }
 
   function endInteraction(event: PointerEvent) {
-    if (interaction.value?.pointerId === event.pointerId) interaction.value = null;
+    if (interaction.value?.pointerId === event.pointerId)
+      interaction.value = null;
   }
 
   function animateTo(target: WindowRect) {
@@ -171,7 +203,7 @@ export function useWindowControls(options: Options) {
     const state = { ...rect };
     activeTween = gsapInstance.to(state, {
       ...target,
-      duration: 0.35,
+      duration: 0.15,
       ease: "power3.inOut",
       overwrite: true,
       onUpdate: () => Object.assign(rect, state),
@@ -188,7 +220,13 @@ export function useWindowControls(options: Options) {
     restoredRect.value = { ...rect };
     isMaximized.value = true;
     options.onMaximizeChange(true);
-    animateTo({ x: 0, y: 0, width: rect.width, height: rect.height });
+    const bounds = options.bounds();
+    animateTo({
+      x: 0,
+      y: 0,
+      width: bounds.width > 0 ? bounds.width : rect.width,
+      height: bounds.height > 0 ? bounds.height : rect.height,
+    });
   }
 
   function restore() {
@@ -201,7 +239,6 @@ export function useWindowControls(options: Options) {
 
   function toggleMaximized() {
     focusWindow();
-    isMaximized.value ? restore() : maximize();
   }
 
   function updateBounds(bounds: WindowBounds) {
@@ -209,7 +246,12 @@ export function useWindowControls(options: Options) {
 
     if (isMaximized.value) {
       activeTween?.kill();
-      Object.assign(rect, { x: 0, y: 0, width: bounds.width, height: bounds.height });
+      Object.assign(rect, {
+        x: 0,
+        y: 0,
+        width: bounds.width,
+        height: bounds.height,
+      });
       return;
     }
 
@@ -242,7 +284,7 @@ export function useWindowControls(options: Options) {
       {
         autoAlpha: 1,
         y: 0,
-        duration: 0.3,
+        duration: 0.2,
         ease: "power3.out",
         clearProps: "opacity,visibility,transform",
         onComplete: done,
@@ -262,7 +304,7 @@ export function useWindowControls(options: Options) {
     gsap.to(surface, {
       autoAlpha: 0,
       y: 20,
-      duration: 0.22,
+      duration: 0.2,
       ease: "power2.in",
       onComplete: () => {
         gsap.set(surface, { clearProps: "opacity,visibility,transform" });
