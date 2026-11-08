@@ -38,7 +38,12 @@ const loadingDot3 = ref(null);
 
 const isProd = true;
 
-const { isInitialLoadPreprocessed, isInitialLoadComplete, showWelcomeVideo } = useInitialLoad();
+const {
+  isInitialLoadPreprocessed,
+  isInitialLoadComplete,
+  showWelcomeVideo,
+  isLoadingExited,
+} = useInitialLoad();
 
 let isFirstVisit = false;
 
@@ -52,7 +57,7 @@ let hasFinished = false;
 const handlePageLoad = () => {
   if (loadTimer || hasStartedExit || hasFinished) return;
 
-  isInitialLoadPreprocessed.value = true;
+  preprocessInitialLoad();
   loadTimer = window.setTimeout(() => {
     loadTimer = undefined;
     finishLoading();
@@ -60,7 +65,7 @@ const handlePageLoad = () => {
 };
 
 onMounted(() => {
-  if (isInitialLoadComplete.value || showWelcomeVideo.value) {
+  if (isInitialLoadComplete.value || isLoadingExited.value) {
     if (loaderContainer.value) loaderContainer.value.style.display = "none";
     return;
   }
@@ -232,17 +237,20 @@ const finishLoading = () => {
   });
 };
 
+const preprocessInitialLoad = () => {
+  isInitialLoadPreprocessed.value = true;
+  // 預先掛載在 Loading 下方，退出動畫期間也不會露出首頁。
+  if (isFirstVisit) showWelcomeVideo.value = true;
+};
+
 const completeInitialLoad = () => {
   if (hasFinished) return;
 
   hasFinished = true;
 
-  isInitialLoadPreprocessed.value = true;
-  if (isFirstVisit) {
-    showWelcomeVideo.value = true;
-  } else {
-    isInitialLoadComplete.value = true;
-  }
+  preprocessInitialLoad();
+  isLoadingExited.value = true;
+  if (!isFirstVisit) isInitialLoadComplete.value = true;
 };
 
 onUnmounted(() => {

@@ -2,11 +2,12 @@
   <div
     v-if="showWelcomeVideo"
     ref="welcomeContainer"
-    class="fixed inset-0 w-dvw h-dvh z-999 bg-black-950 flex items-center justify-center"
+    class="fixed inset-0 w-dvw h-dvh z-99 bg-black-950 flex items-center justify-center"
   >
     <video
       ref="welcomeVideo"
-      class="w-full h-full object-contain"
+      class="w-2/5 min-w-60 h-auto object-contain"
+      style="opacity: 0"
       muted
       playsinline
       preload="none"
@@ -21,9 +22,11 @@
 import { gsap } from "gsap";
 import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 
-const { showWelcomeVideo, isInitialLoadComplete } = useInitialLoad();
+const { showWelcomeVideo, isInitialLoadComplete, isLoadingExited } =
+  useInitialLoad();
 const welcomeContainer = ref<HTMLElement | null>(null);
 const welcomeVideo = ref<HTMLVideoElement | null>(null);
+
 let fadeTween: gsap.core.Tween | undefined;
 let playbackTimer: ReturnType<typeof setTimeout> | undefined;
 let finishing = false;
@@ -33,17 +36,33 @@ function finishWelcome() {
   if (disposed || finishing || !showWelcomeVideo.value) return;
   finishing = true;
   clearTimeout(playbackTimer);
+  fadeTween?.kill();
   welcomeVideo.value?.pause();
 
-  fadeTween = gsap.to(welcomeContainer.value, {
-    opacity: 0,
-    duration: 0.6,
-    ease: "power2.out",
+  const tl = gsap.timeline({
     onComplete: () => {
       showWelcomeVideo.value = false;
       isInitialLoadComplete.value = true;
     },
   });
+
+  tl.to(welcomeVideo.value, {
+    autoAlpha: 0,
+    duration: 0.2,
+    y: 10,
+  });
+
+  tl.to(
+    welcomeContainer.value,
+    {
+      delay: 0.3,
+      opacity: 0,
+      duration: 0.6,
+      scale: 1.2,
+      ease: "power2.out",
+    },
+    "-=0.1",
+  );
 }
 
 async function playWelcome() {
@@ -65,11 +84,18 @@ async function playWelcome() {
 
     if (disposed || finishing) return;
 
+    fadeTween = gsap.to(video, {
+      opacity: 1,
+      duration: 0.5,
+      ease: "power1.out",
+    });
+
     clearTimeout(playbackTimer);
     try {
       localStorage.setItem(WELCOME_VIDEO_STORAGE_KEY, "1");
     } catch {
       // 隱私模式或儲存空間不可用不影響播放。
+      console.error("Failed to set welcome video storage key.");
     }
   } catch {
     finishWelcome();
@@ -78,9 +104,9 @@ async function playWelcome() {
 
 onMounted(() => {
   watch(
-    showWelcomeVideo,
-    (show) => {
-      if (show) void playWelcome();
+    () => showWelcomeVideo.value && isLoadingExited.value,
+    (canPlay) => {
+      if (canPlay) void playWelcome();
     },
     { immediate: true, flush: "post" },
   );
