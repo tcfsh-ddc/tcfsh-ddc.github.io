@@ -24,9 +24,7 @@
         </h2>
 
         <div class="card-meta flex min-w-0 items-center gap-2 text-sm">
-          <span class="category-tag text-sm shadow">
-            #{{ tagLabels[item.tag] }}
-          </span>
+          <span class="category-tag text-sm shadow"> #{{ tagLabels[item.tag] }} </span>
 
           <span class="card-handle" :title="item.slug"> @{{ item.slug }} </span>
         </div>
@@ -39,6 +37,7 @@
       <TooltipProvider>
         <div
           class="card-links flex items-center gap-2"
+          role="group"
           :aria-label="`${item.name}的連結`"
         >
           <Tooltip v-for="link in item.links" :key="`${link.type}-${link.url}`">
@@ -59,9 +58,7 @@
                 />
               </a>
             </TooltipTrigger>
-            <TooltipContent>
-              {{ linkLabels[link.type] }} · {{ link.url }}
-            </TooltipContent>
+            <TooltipContent> {{ linkLabels[link.type] }} · {{ link.url }} </TooltipContent>
           </Tooltip>
         </div>
       </TooltipProvider>
@@ -79,12 +76,7 @@ import {
   PhThreadsLogo,
   PhGithubLogo,
 } from "@phosphor-icons/vue";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
 
 import type { LinkList, Links } from "~/config/links";
 

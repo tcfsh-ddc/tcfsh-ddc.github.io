@@ -1,10 +1,12 @@
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger class="block md:hidden">
-      <PhChat :size="28" class="text-black-50" />
+      <button type="button" aria-label="開啟社群連結選單">
+        <PhChat :size="28" class="text-black-50" aria-hidden="true" />
+      </button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
-      <DropdownMenuItem class="flex gap-4">
+      <DropdownMenuItem as-child class="flex gap-4">
         <a
           href="https://www.instagram.com/tcfsh.ddc"
           class="flex w-full h-full items-center unstyled"
@@ -13,7 +15,7 @@
           <p>Instagram</p>
         </a>
       </DropdownMenuItem>
-      <DropdownMenuItem class="flex gap-4">
+      <DropdownMenuItem as-child class="flex gap-4">
         <a
           href="https://www.facebook.com/tcfshDDC"
           class="flex w-full h-full items-center unstyled"
@@ -22,7 +24,7 @@
           <p>Facebook</p>
         </a>
       </DropdownMenuItem>
-      <DropdownMenuItem class="flex gap-4">
+      <DropdownMenuItem as-child class="flex gap-4">
         <a
           href="https://www.threads.com/@tcfsh.ddc"
           class="flex w-full h-full items-center unstyled"
@@ -31,11 +33,8 @@
           <p>Threads</p>
         </a>
       </DropdownMenuItem>
-      <DropdownMenuItem class="flex gap-4">
-        <a
-          href="https://github.com/tcfsh-ddc"
-          class="flex w-full h-full items-center unstyled"
-        >
+      <DropdownMenuItem as-child class="flex gap-4">
+        <a href="https://github.com/tcfsh-ddc" class="flex w-full h-full items-center unstyled">
           <SvgoGithub class="!h-6 !w-6 mr-2" />
           <p>GitHub</p>
         </a>

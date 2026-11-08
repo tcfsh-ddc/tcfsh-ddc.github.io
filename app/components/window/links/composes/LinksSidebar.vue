@@ -1,8 +1,5 @@
 <template>
-  <aside
-    class="links-sidebar flex shrink-0 flex-col h-fit lg:h-full"
-    aria-label="連結搜尋與分類"
-  >
+  <aside class="links-sidebar flex shrink-0 flex-col h-fit lg:h-full" aria-label="連結搜尋與分類">
     <p class="sidebar-heading text-lg font-semibold">謝謝你們喜歡數創</p>
 
     <label class="search-field flex items-center gap-2">
@@ -38,12 +35,7 @@
         :aria-pressed="activeFilter === filter.value"
         @click="activeFilter = filter.value"
       >
-        <component
-          :is="filter.icon"
-          :size="20"
-          weight="duotone"
-          aria-hidden="true"
-        />
+        <component :is="filter.icon" :size="20" weight="duotone" aria-hidden="true" />
 
         <span>{{ filter.label }}</span>
 
@@ -126,6 +118,11 @@ const activeFilter = defineModel<string>("activeFilter", {
 .search-field input::placeholder {
   color: #a0a0a0;
   opacity: 1;
+}
+
+.search-field:focus-within {
+  outline: 2px solid #0fffc4;
+  outline-offset: 2px;
 }
 
 .search-field input::-webkit-search-cancel-button {

@@ -1,5 +1,6 @@
 <template>
   <nav
+    aria-label="主要導覽與社群連結"
     class="flex gap-2.5 bg-purple md:bg-purple-dark rounded-b-frame-1 justify-between items-center px-4 md:px-0"
   >
     <!-- 手機 - 頁面導覽 -->
@@ -12,11 +13,7 @@
       aria-label="回首頁"
       @click="$emit('home')"
     >
-      <img
-        src="~/assets/images/ddc-logo.jpg"
-        alt="數創logo"
-        class="size-10 md:size-12"
-      />
+      <img src="~/assets/images/ddc-logo.jpg" alt="數創logo" class="size-10 md:size-12" />
       <p class="sr-only">回首頁</p>
     </button>
 
@@ -24,10 +21,7 @@
     <LinksMenu />
 
     <!-- 導覽選項 -->
-    <div
-      class="hidden md:flex p-0 gap-6 items-center justify-center"
-      id="sh-nav-menu"
-    >
+    <div class="hidden md:flex p-0 gap-6 items-center justify-center" id="sh-nav-menu">
       <TooltipProvider class="flex gap-5 items-center">
         <Tooltip v-for="item in navConfig">
           <TooltipTrigger>
@@ -54,9 +48,7 @@
     <div
       class="hidden md:flex flex-row-reverse gap-3 h-fit bg-purple-dark rounded-b-frame-1 items-center justify-between pr-5 text-black-50"
     >
-      <div
-        class="flex flex-col justify-end h-full min-w-24 w-fit pointer-events-none select-none"
-      >
+      <div class="flex flex-col justify-end h-full min-w-24 w-fit pointer-events-none select-none">
         <p class="text-right text-nowrap" id="sh-time-date">2099/99/99</p>
         <p class="text-right text-nowrap" id="sh-time-time">00:00:00</p>
       </div>
@@ -66,11 +58,12 @@
           <TooltipTrigger>
             <a
               :href="item.link"
+              :aria-label="`${item.name}（新分頁開啟）`"
               target="_blank"
               rel="noopener noreferrer"
               class="flex w-full h-full items-center unstyled"
             >
-              <component class="!size-7" :is="item.icon" />
+              <component class="!size-7" :is="item.icon" aria-hidden="true" />
             </a>
           </TooltipTrigger>
           <TooltipContent>
@@ -90,12 +83,7 @@ import FacebookIcon from "~/assets/icons/facebook-round.svg";
 import ThreadsIcon from "~/assets/icons/threads.svg";
 import GithubIcon from "~/assets/icons/github.svg";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 import LinksMenu from "./LinksMenu.vue";
 import MobileMenu from "./MobileMenu.vue";

@@ -23,8 +23,7 @@
   --radius-frame-0: 24px;
   --radius-frame-1: 14px;
 
-  --default-font-family:
-    "GlowSansTCCom", "GlowSans", "Noto Sans TC", sans-serif;
+  --default-font-family: "GlowSansTCCom", "GlowSans", "Noto Sans TC", sans-serif;
 }
 
 @import "tailwindcss";
@@ -39,6 +38,26 @@ p {
 
 a:not(.unstyled) {
   @apply transition-all underline hover:underline-offset-6 underline-offset-4;
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-lime);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 1000;
+  padding: 8px 12px;
+  color: var(--color-black-50);
+  background: var(--color-black-900);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }
 
 /* 全局自訂卷軸 */

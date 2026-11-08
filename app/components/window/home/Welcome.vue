@@ -20,6 +20,7 @@
       <div ref="welcomeIntroContent" class="flex flex-col md:flex-row gap-4 items-end">
         <img
           src="~/assets/images/ddc-logo.jpg"
+          alt="台中一中數位創作研究社標誌"
           class="size-20 md:size-30 rounded-lg -mb-16 md:mb-0"
         />
         <div class="flex flex-col gap-1">
@@ -54,7 +55,7 @@
             DDC
             <span ref="welcomeDdcDot" class="inline-block text-purple">.</span>
           </span>
-          <h3 class="text-black-400 text-2xl">關於數創</h3>
+          <h2 class="text-black-400 text-2xl">關於數創</h2>
         </NuxtLink>
         <a
           href="https://github.com/tcfsh-ddc/tcfsh-ddc.github.io"
@@ -63,7 +64,7 @@
           class="sh-grid-item gap-2 group unstyled"
         >
           <PhCode :size="48" color="#ffffff" weight="duotone" />
-          <h3 class="text-black-400 text-2xl">網站原始碼</h3>
+          <h2 class="text-black-400 text-2xl">網站原始碼</h2>
         </a>
         <button
           @pointerenter="animateGridItem($event, true)"
@@ -72,7 +73,7 @@
           @click="emit('openPaintWindow')"
         >
           <PhPalette :size="48" color="#FFFFFF" weight="duotone" />
-          <h3 class="text-black-400 text-2xl text-left">認識電繪組</h3>
+          <h2 class="text-black-400 text-2xl text-left">認識電繪組</h2>
         </button>
         <button
           @pointerenter="animateGridItem($event, true)"
@@ -81,27 +82,28 @@
           @click="emit('openGameWindow')"
         >
           <PhGameController :size="48" color="#FFFFFF" weight="duotone" />
-          <h3 class="text-black-400 text-2xl text-left">認識遊戲組</h3>
+          <h2 class="text-black-400 text-2xl text-left">認識遊戲組</h2>
         </button>
         <button
           @pointerenter="animateGridItem($event, true)"
           @pointerleave="animateGridItem($event, false)"
           class="sh-grid-item group flex flex-col justify-start gap-2 cursor-not-allowed opacity-30"
+          disabled
           @click="emit('openMusicWindow')"
         >
           <PhPianoKeys :size="48" color="#ffffff" weight="duotone" />
-          <h3 class="text-black-400 text-2xl text-left">認識音樂組</h3>
+          <h2 class="text-black-400 text-2xl text-left">認識音樂組</h2>
         </button>
       </div>
 
-      <p ref="welcomeCredit" class="mt-2 text-black-700">
+      <p ref="welcomeCredit" class="mt-2 text-black-400">
         本社網由第二十一屆副社長
         <a
           ref="welcomeCreditLink"
           href="https://samhacker.xyz"
           @pointerenter="animateCreditLink(true)"
           @pointerleave="animateCreditLink(false)"
-          class="text-black-600 underline underline-offset-4"
+          class="text-black-400 underline underline-offset-4"
         >
           SamHacker</a
         >
@@ -213,7 +215,7 @@ function animateGridItem(event: PointerEvent, isHovered: boolean) {
 
 function animateCreditLink(isHovered: boolean) {
   gsap.to(welcomeCreditLink.value, {
-    color: isHovered ? "var(--color-black-500)" : "var(--color-black-600)",
+    color: isHovered ? "var(--color-black-200)" : "var(--color-black-400)",
     textUnderlineOffset: isHovered ? "6px" : "4px",
     duration: 0.2,
     overwrite: true,

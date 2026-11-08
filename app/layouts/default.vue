@@ -3,6 +3,7 @@
   <WelcomeVideo />
 
   <ViewportWarning />
+  <a href="#desktop-frame" class="skip-link">跳至主要內容</a>
 
   <div class="h-dvh w-screen bg-black p-0 md:p-6">
     <div
@@ -10,14 +11,15 @@
     >
       <!-- 畫面內容 -->
       <ContextMenuWrapper>
-        <div
+        <main
           class="flex-1 min-h-0 flex flex-col bg-blue-dark rounded-frame-1 rounded-b-frame-1 md:rounded-b-none overflow-hidden p-1"
           id="desktop-frame"
+          tabindex="-1"
         >
           <WindowsContainer ref="windowsContainer">
             <slot />
           </WindowsContainer>
-        </div>
+        </main>
       </ContextMenuWrapper>
 
       <!-- 工作列 -->

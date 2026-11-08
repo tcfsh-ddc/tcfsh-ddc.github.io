@@ -42,7 +42,7 @@
         @click="switchGamePlayOpen"
         class="flex flex-col gap-1 items-center justify-center cursor-pointer"
       >
-        <img :src="GamePlayIcon" class="!size-10" />
+        <img :src="GamePlayIcon" alt="" class="!size-10" />
         <span>社博遊戲.exe</span>
       </button>
     </div>

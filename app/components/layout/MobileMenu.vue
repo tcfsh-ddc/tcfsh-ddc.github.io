@@ -1,16 +1,18 @@
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger class="block md:hidden">
-      <PhList :size="28" class="text-black-50" />
+      <button type="button" aria-label="開啟頁面導覽選單">
+        <PhList :size="28" class="text-black-50" aria-hidden="true" />
+      </button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="start">
-      <DropdownMenuItem>
+      <DropdownMenuItem as-child>
         <NuxtLink to="/about" class="flex w-full h-full items-center unstyled">
           <SvgoAbout :filled="true" class="!h-6 !w-6 mr-2" />
           <p>關於</p>
         </NuxtLink>
       </DropdownMenuItem>
-      <DropdownMenuItem>
+      <DropdownMenuItem as-child>
         <NuxtLink to="/links" class="flex w-full h-full items-center unstyled">
           <SvgoMembers :filled="true" class="!h-6 !w-6 mr-2" />
           <p>友社連結</p>
