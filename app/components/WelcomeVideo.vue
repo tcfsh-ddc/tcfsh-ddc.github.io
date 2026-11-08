@@ -6,8 +6,7 @@
   >
     <video
       ref="welcomeVideo"
-      class="w-2/5 min-w-60 h-auto object-contain"
-      style="opacity: 0"
+      class="w-3/5 h-auto object-contain sh-cover-mask"
       muted
       playsinline
       preload="none"
@@ -48,7 +47,6 @@ let finishing = false;
 let disposed = false;
 
 function finishWelcome() {
-  // return;
   if (disposed || finishing || !showWelcomeVideo.value) return;
   finishing = true;
 
@@ -141,3 +139,25 @@ onUnmounted(() => {
   }
 });
 </script>
+
+<style scoped>
+.sh-cover-mask {
+  opacity: 0;
+  mask-image:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      black 3%,
+      black 97%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 3%,
+      black 97%,
+      transparent 100%
+    );
+  mask-composite: intersect;
+}
+</style>
