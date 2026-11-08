@@ -3,7 +3,7 @@
     <RekaContextMenuSubContent
       v-bind="$attrs"
       :side-offset="sideOffset"
-      class="sh-context-menu-content w-fit z-50 min-w-48 max-h-[var(--reka-context-menu-content-available-height)] overflow-x-hidden overflow-y-auto rounded-xl border border-black-700 bg-black-800 p-2 text-base leading-6 text-black-50 shadow-xl outline-none"
+      class="sh-context-menu-content ml-1 -mt-1 w-fit z-50 min-w-48 max-h-[var(--reka-context-menu-content-available-height)] overflow-x-hidden overflow-y-auto rounded-xl border border-black-700 bg-black-800 p-1 text-base leading-6 text-black-50 shadow-xl outline-none"
       :class="$attrs.class"
     >
       <slot />

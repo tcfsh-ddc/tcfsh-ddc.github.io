@@ -1,7 +1,7 @@
 <template>
   <RekaContextMenuSeparator
     v-bind="$attrs"
-    class="mx-1 my-2 h-px bg-black-700"
+    class="mx-1 my-1 h-px bg-black-700"
     :class="$attrs.class"
   />
 </template>
