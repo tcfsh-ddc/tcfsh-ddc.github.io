@@ -28,17 +28,20 @@
       class="hidden md:flex p-0 gap-6 items-center justify-center"
       id="sh-nav-menu"
     >
-      <!-- 關於頁面 -->
-      <NuxtLink class="flex p-0 gap-1 unstyled" to="/about">
-        <SvgoAbout :filled="true" class="!h-8 !w-8" />
-        <p class="sr-only">關於</p>
-      </NuxtLink>
+      <TooltipProvider class="flex gap-5 items-center">
+        <Tooltip v-for="item in navConfig">
+          <TooltipTrigger>
+            <NuxtLink class="flex p-0 gap-1 unstyled" :to="item.path">
+              <component :is="item.icon" :filled="true" class="!h-8 !w-8" />
+              <p class="sr-only">{{ item.title }}</p>
+            </NuxtLink>
+          </TooltipTrigger>
 
-      <!-- 連結頁面 -->
-      <NuxtLink class="flex p-0 gap-1 unstyled" to="/links">
-        <SvgoMembers :filled="true" class="!h-8 !w-8" />
-        <p class="sr-only">友情連結</p>
-      </NuxtLink>
+          <TooltipContent>
+            <p>{{ item.title }}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       <!-- 作品集頁面 -->
       <!-- <NuxtLink class="flex p-0 gap-1 unstyled" to="/works">
@@ -70,9 +73,9 @@
               <component class="!size-7" :is="item.icon" />
             </a>
           </TooltipTrigger>
-          <TooltipContent
-            ><p>{{ item.name }}</p></TooltipContent
-          >
+          <TooltipContent>
+            <p>{{ item.name }}</p>
+          </TooltipContent>
         </Tooltip>
       </TooltipProvider>
     </div>
@@ -80,6 +83,8 @@
 </template>
 
 <script setup lang="ts">
+import { navConfig } from "~/config/nav.ts";
+
 import InstagramIcon from "~/assets/icons/instagram.svg";
 import FacebookIcon from "~/assets/icons/facebook-round.svg";
 import ThreadsIcon from "~/assets/icons/threads.svg";
