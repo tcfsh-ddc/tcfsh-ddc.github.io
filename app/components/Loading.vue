@@ -36,17 +36,11 @@ const loadingDot1 = ref(null);
 const loadingDot2 = ref(null);
 const loadingDot3 = ref(null);
 
-const isProd = !import.meta.dev;
+const isProd = true;
 
-// Nuxt 全域狀態：記錄初次載入動畫是否完成
-const isInitialLoadPreprocessed = useState(
-  "sh-initial-load-preprocessed",
-  () => false,
-);
-const isInitialLoadComplete = useState("sh-initial-load-complete", () => false);
+const { isInitialLoadPreprocessed, isInitialLoadComplete, showWelcomeVideo } = useInitialLoad();
 
-const INITIAL_LOADED_PREPROCESS = "sh:initial-load-preprocess";
-const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
+let isFirstVisit = false;
 
 let mainTimeline;
 let exitTimeline;
@@ -59,14 +53,6 @@ const handlePageLoad = () => {
   if (loadTimer || hasStartedExit || hasFinished) return;
 
   isInitialLoadPreprocessed.value = true;
-  window.dispatchEvent(
-    new CustomEvent(INITIAL_LOADED_PREPROCESS, {
-      detail: {
-        type: "initial-load-complete",
-      },
-    }),
-  );
-
   loadTimer = window.setTimeout(() => {
     loadTimer = undefined;
     finishLoading();
@@ -74,8 +60,20 @@ const handlePageLoad = () => {
 };
 
 onMounted(() => {
+  if (isInitialLoadComplete.value || showWelcomeVideo.value) {
+    if (loaderContainer.value) loaderContainer.value.style.display = "none";
+    return;
+  }
+
+  try {
+    isFirstVisit = localStorage.getItem(WELCOME_VIDEO_STORAGE_KEY) === null;
+  } catch {
+    // 儲存空間不可用時仍允許播放，且不阻擋進站。
+    isFirstVisit = true;
+  }
+
   // 開發模式：直接完成初始載入
-  if (import.meta.dev) {
+  if (!isProd) {
     console.log("[Loading] Development mode, skipping animation");
 
     completeInitialLoad();
@@ -210,7 +208,6 @@ const finishLoading = () => {
   exitTimeline.to(
     loadingImg.value,
     {
-      y: 100,
       scale: 3,
       opacity: 0,
       duration: 0.8,
@@ -241,25 +238,11 @@ const completeInitialLoad = () => {
   hasFinished = true;
 
   isInitialLoadPreprocessed.value = true;
-  isInitialLoadComplete.value = true;
-
-  window.dispatchEvent(
-    new CustomEvent(INITIAL_LOADED_PREPROCESS, {
-      detail: {
-        type: "initial-load-complete",
-      },
-    }),
-  );
-
-  window.dispatchEvent(
-    new CustomEvent(INITIAL_LOAD_EVENT, {
-      detail: {
-        type: "initial-load-complete",
-      },
-    }),
-  );
-
-  console.log("[Loading] Initial load completed");
+  if (isFirstVisit) {
+    showWelcomeVideo.value = true;
+  } else {
+    isInitialLoadComplete.value = true;
+  }
 };
 
 onUnmounted(() => {

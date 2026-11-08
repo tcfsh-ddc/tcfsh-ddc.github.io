@@ -81,7 +81,7 @@ useSeoMeta({
   twitterImage: `${hostname}/opengraph/homepage-og.png`,
 });
 
-import { ref, watch, onMounted, onUnmounted, defineAsyncComponent } from "vue";
+import { ref, watch, onMounted, defineAsyncComponent } from "vue";
 import { gsap } from "gsap";
 import "@/assets/css/markdown.css";
 
@@ -91,18 +91,7 @@ const paintOpen = ref(false);
 const gameOpen = ref(false);
 const gamePlayOpen = ref(false);
 
-// Nuxt 全域初次載入狀態
-const isInitialLoadPreprocessed = useState(
-  "sh-initial-load-preprocessed",
-  () => false,
-);
-const isInitialLoadComplete = useState<boolean>(
-  "sh-initial-load-complete",
-  () => false,
-);
-
-const INITIAL_LOADED_PREPROCESS = "sh:initial-load-preprocess";
-const INITIAL_LOAD_EVENT = "sh:initial-load-complete";
+const { isInitialLoadPreprocessed, isInitialLoadComplete } = useInitialLoad();
 
 // 收到通知後開啟歡迎視窗
 function handleInitialLoadComplete() {
@@ -151,41 +140,24 @@ const animateDesktopIcons = () => {
 };
 
 onMounted(() => {
-  window.addEventListener(INITIAL_LOADED_PREPROCESS, initializeDesktopIcons);
+  watch(
+    isInitialLoadPreprocessed,
+    (preprocessed) => {
+      if (preprocessed && !isInitialLoadComplete.value) initializeDesktopIcons();
+    },
+    { immediate: true, flush: "post" },
+  );
 
-  window.addEventListener(INITIAL_LOAD_EVENT, handleInitialLoadComplete);
-
-  window.addEventListener(INITIAL_LOAD_EVENT, animateDesktopIcons);
-
-  // 補償錯過 PREPROCESS 事件
-  if (isInitialLoadPreprocessed.value) {
-    initializeDesktopIcons();
-  }
-
-  // 補償錯過 COMPLETE 事件
-  if (isInitialLoadComplete.value) {
-    if (!isInitialLoadPreprocessed.value) {
-      initializeDesktopIcons();
-    }
-
-    handleInitialLoadComplete();
-    animateDesktopIcons();
-  }
-});
-
-// 監聽全域狀態更新
-watch(isInitialLoadComplete, (completed) => {
-  if (completed) {
-    handleInitialLoadComplete();
-  }
-});
-
-onUnmounted(() => {
-  window.removeEventListener(INITIAL_LOADED_PREPROCESS, initializeDesktopIcons);
-
-  window.removeEventListener(INITIAL_LOAD_EVENT, handleInitialLoadComplete);
-
-  window.removeEventListener(INITIAL_LOAD_EVENT, animateDesktopIcons);
+  watch(
+    isInitialLoadComplete,
+    (completed) => {
+      if (completed) {
+        handleInitialLoadComplete();
+        animateDesktopIcons();
+      }
+    },
+    { immediate: true, flush: "post" },
+  );
 });
 </script>
 
