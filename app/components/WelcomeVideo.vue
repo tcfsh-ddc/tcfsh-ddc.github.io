@@ -15,6 +15,21 @@
       @ended="finishWelcome"
       @error="finishWelcome"
     ></video>
+
+    <!-- 跳過按鈕 -->
+    <button
+      class="absolute gap-2 right-4 top-2 lg:top-8 lg:right-12 text-black-300 text-xl flex items-center justify-end group cursor-pointer"
+      @click="finishWelcome"
+    >
+      <span
+        class="text-black-700 group-hover:text-black-300 transition-all duration-200"
+        >跳過</span
+      >
+      <div
+        ref="skip-btn-decoration"
+        class="h-0 w-2 group-hover:w-6 transition-all duration-300 ease-in-out border-b-1 border-black-700 group-hover:border-black-300"
+      />
+    </button>
   </div>
 </template>
 
@@ -33,8 +48,10 @@ let finishing = false;
 let disposed = false;
 
 function finishWelcome() {
+  // return;
   if (disposed || finishing || !showWelcomeVideo.value) return;
   finishing = true;
+
   clearTimeout(playbackTimer);
   fadeTween?.kill();
   welcomeVideo.value?.pause();
