@@ -1,5 +1,6 @@
 <template>
   <Loading />
+  <WelcomeVideo />
 
   <ViewportWarning />
 
@@ -31,9 +32,7 @@ import ViewportWarning from "~/components/ViewportWarning.vue";
 import ContextMenuWrapper from "~/components/layout/ContextMenuWrapper.vue";
 
 useHead({
-  link: [
-    { rel: "preload", href: desktopBg, as: "image", fetchpriority: "high" },
-  ],
+  link: [{ rel: "preload", href: desktopBg, as: "image", fetchpriority: "high" }],
 });
 
 const route = useRoute();
